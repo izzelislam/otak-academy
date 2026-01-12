@@ -17,7 +17,7 @@ export default function ContentCalendarIndex({ contents }) {
     const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm({
         id: null,
         folder_name: '',
-        content_date: '',
+        content_date: new Date().toISOString().split('T')[0],
         status: 'pending',
         platforms: [],
     });
