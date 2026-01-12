@@ -1,0 +1,243 @@
+# Implementation Plan: Blog and Downloadable Assets
+
+## Overview
+
+Implementasi fitur Blog CMS dan Downloadable Assets dengan sistem keamanan tinggi untuk platform e-course Laravel + Inertia.js + React. Fokus pada keamanan download system yang tidak bisa di-bypass.
+
+## Tasks
+
+- [x] 1. Database migrations dan models
+  - [x] 1.1 Create blog_categories migration dan model
+    - Fields: id, name, slug, description, timestamps
+    - _Requirements: 1.1, 2.3_
+  - [x] 1.2 Create blogs migration dan model
+    - Fields: id, title, slug, content, excerpt, thumbnail, category_id, author_id, status, published_at, meta_title, meta_description, timestamps
+    - Add relationships to BlogCategory and User
+    - _Requirements: 1.1, 1.2_
+  - [x] 1.3 Create downloadable_assets migration dan model
+    - Fields: id, title, slug, description, thumbnail, file_path, file_name, file_size, file_type, type (free/paid), download_count, is_published, timestamps
+    - _Requirements: 3.1, 3.2_
+  - [x] 1.4 Create asset_codes migration dan model
+    - Fields: id, asset_id, code_hash, code_prefix, user_id, is_used, used_at, expires_at, download_count, max_downloads, timestamps
+    - Add index on code_prefix for lookup optimization
+    - _Requirements: 4.1, 4.3_
+  - [x] 1.5 Create download_tokens migration dan model
+    - Fields: id, token_hash, asset_id, user_id, ip_address, nonce, expires_at, consumed_at, timestamps
+    - Add unique index on nonce
+    - _Requirements: 9.1, 9.3_
+  - [x] 1.6 Create download_audit_logs migration dan model
+    - Fields: id, asset_id, user_id, ip_address, user_agent, action, result, details (json), is_suspicious, timestamps
+    - Add indexes for IP and timestamp queries
+    - _Requirements: 7.5, 10.1_
+
+- [x] 2. Security services implementation
+  - [x] 2.1 Create AssetCodeService
+    - Implement generateCodes() with secure random + checksum
+    - Implement validateCode() with constant-time comparison
+    - Implement redeemCode() with database transaction and row locking
+    - Implement hasValidRedemption() for re-download check
+    - _Requirements: 4.1, 4.2, 6.1, 6.2, 7.4_
+  - [ ]* 2.2 Write property test for code uniqueness
+    - **Property 3: Asset Code Uniqueness and Security**
+    - **Validates: Requirements 4.1, 4.3**
+  - [ ]* 2.3 Write property test for code format validation
+    - **Property 4: Asset Code Format Validation**
+    - **Validates: Requirements 4.2**
+  - [x] 2.4 Create DownloadTokenService
+    - Implement generateToken() with HMAC signature
+    - Implement validateToken() with signature verification
+    - Implement consumeToken() for replay prevention
+    - _Requirements: 5.1, 5.2, 9.1, 9.2, 9.3_
+  - [ ]* 2.5 Write property test for token integrity
+    - **Property 8: Download Token Integrity**
+    - **Validates: Requirements 5.2, 7.2, 9.1, 9.2**
+  - [ ]* 2.6 Write property test for token expiry
+    - **Property 9: Download Token Expiry**
+    - **Validates: Requirements 5.4, 9.4**
+  - [ ]* 2.7 Write property test for token IP binding
+    - **Property 10: Download Token IP Binding**
+    - **Validates: Requirements 9.5**
+  - [ ]* 2.8 Write property test for token replay prevention
+    - **Property 11: Download Token Replay Prevention**
+    - **Validates: Requirements 9.3**
+  - [x] 2.9 Create DownloadAuditService
+    - Implement logAttempt() for all download actions
+    - Implement getFailedAttempts() for rate limit check
+    - Implement flagSuspiciousActivity() for anomaly detection
+    - _Requirements: 7.5, 10.1, 10.2_
+  - [ ]* 2.10 Write property test for audit log completeness
+    - **Property 14: Audit Log Completeness**
+    - **Validates: Requirements 7.5, 10.1**
+
+- [x] 3. Checkpoint - Ensure security services tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [x] 4. Rate limiting dan security middleware
+  - [x] 4.1 Create AssetRateLimiter middleware
+    - Configure 5 attempts/minute for code validation
+    - Configure 10 attempts/minute for downloads
+    - Implement cooldown period (15 minutes)
+    - _Requirements: 7.1, 7.6_
+  - [ ]* 4.2 Write property test for rate limiting
+    - **Property 12: Rate Limiting Enforcement**
+    - **Validates: Requirements 7.1, 7.6**
+  - [x] 4.3 Create PathValidator utility
+    - Implement validateFilePath() to prevent directory traversal
+    - Block ../, ..\, and other traversal patterns
+    - _Requirements: 8.4_
+  - [ ]* 4.4 Write property test for path traversal prevention
+    - **Property 13: Path Traversal Prevention**
+    - **Validates: Requirements 8.4**
+
+- [x] 5. Blog backend implementation
+  - [x] 5.1 Create BlogService
+    - Implement getPublishedPosts() with pagination
+    - Implement getPostBySlug() for single post
+    - Implement getPostsByCategory() with category filter
+    - Implement searchPosts() for search functionality
+    - Implement CRUD methods for admin
+    - _Requirements: 1.1-1.5, 2.1-2.4_
+  - [ ]* 5.2 Write property test for blog visibility
+    - **Property 1: Blog Visibility Based on Status**
+    - **Validates: Requirements 1.4, 1.5, 2.1**
+  - [ ]* 5.3 Write property test for category filter
+    - **Property 2: Blog Category Filter Correctness**
+    - **Validates: Requirements 2.3**
+  - [x] 5.4 Create BlogController (public)
+    - Implement index() for blog listing
+    - Implement show() for single post
+    - Implement category() for category filter
+    - Implement search() for search
+    - _Requirements: 2.1-2.4_
+  - [x] 5.5 Create Admin/BlogController
+    - Implement full CRUD operations
+    - Handle thumbnail upload
+    - _Requirements: 1.1-1.5_
+  - [x] 5.6 Create Admin/BlogCategoryController
+    - Implement CRUD for categories
+    - _Requirements: 2.3_
+
+- [x] 6. Asset backend implementation
+  - [x] 6.1 Create AssetService
+    - Implement file upload to private storage
+    - Implement randomized filename generation
+    - Implement CRUD methods
+    - _Requirements: 3.1-3.5_
+  - [x] 6.2 Create AssetController (public)
+    - Implement index() for asset listing
+    - Implement show() for asset detail
+    - Implement requestDownload() for free assets
+    - Implement redeemCode() for paid assets
+    - Apply rate limiting middleware
+    - _Requirements: 5.1-5.5, 6.1-6.5_
+  - [ ]* 6.3 Write property test for paid asset access control
+    - **Property 5: Paid Asset Access Control**
+    - **Validates: Requirements 3.5, 6.1**
+  - [ ]* 6.4 Write property test for code redemption atomicity
+    - **Property 6: Code Redemption Atomicity**
+    - **Validates: Requirements 6.2, 7.4**
+  - [ ]* 6.5 Write property test for error message uniformity
+    - **Property 7: Error Message Uniformity**
+    - **Validates: Requirements 6.5, 9.6**
+  - [x] 6.6 Create SecureDownloadController
+    - Implement download() with token validation
+    - Serve file through controller (not direct URL)
+    - Add CSP headers to response
+    - Increment download counter
+    - _Requirements: 5.3, 7.8, 8.5_
+  - [x] 6.7 Create Admin/AssetController
+    - Implement full CRUD operations
+    - Implement generateCodes() endpoint
+    - Implement exportCodes() with audit logging
+    - _Requirements: 3.1-3.5, 4.1-4.5_
+
+- [x] 7. Checkpoint - Ensure backend tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [x] 8. Blog frontend (React/Inertia)
+  - [x] 8.1 Create public Blog pages
+    - Blog/Index.jsx - paginated list with category filter
+    - Blog/Show.jsx - single post view
+    - Blog/Category.jsx - posts by category
+    - _Requirements: 2.1-2.4_
+  - [x] 8.2 Create Admin Blog pages
+    - Admin/Blogs/Index.jsx - list with DataTable
+    - Admin/Blogs/Create.jsx - create form
+    - Admin/Blogs/Edit.jsx - edit form
+    - Admin/Blogs/Show.jsx - detail view
+    - _Requirements: 1.1-1.5_
+  - [x] 8.3 Create Admin BlogCategory pages
+    - Admin/BlogCategories/Index.jsx
+    - Admin/BlogCategories/Create.jsx
+    - Admin/BlogCategories/Edit.jsx
+    - _Requirements: 2.3_
+
+- [x] 9. Asset frontend (React/Inertia)
+  - [x] 9.1 Create public Asset pages
+    - Assets/Index.jsx - asset listing with type filter
+    - Assets/Show.jsx - asset detail with download/redeem UI
+    - _Requirements: 5.1-5.5, 6.1-6.5_
+  - [x] 9.2 Create Admin Asset pages
+    - Admin/Assets/Index.jsx - list with DataTable
+    - Admin/Assets/Create.jsx - create form with file upload
+    - Admin/Assets/Edit.jsx - edit form
+    - Admin/Assets/Show.jsx - detail with code management
+    - Admin/Assets/GenerateCodes.jsx - code generation modal
+    - _Requirements: 3.1-3.5, 4.1-4.5_
+  - [x] 9.3 Create RedeemCodeModal component
+    - Input field for code entry
+    - Error handling with generic messages
+    - Success state with download button
+    - _Requirements: 6.1-6.5_
+
+- [x] 10. Routes dan navigation
+  - [x] 10.1 Add blog routes
+    - Public: /blog, /blog/{slug}, /blog/category/{slug}
+    - Admin: /admin/blogs/*, /admin/blog-categories/*
+    - _Requirements: 1.1-1.5, 2.1-2.4_
+  - [x] 10.2 Add asset routes
+    - Public: /assets, /assets/{slug}, /download/{token}
+    - Admin: /admin/assets/*
+    - Apply rate limiting to code validation endpoint
+    - _Requirements: 3.1-3.5, 5.1-5.5, 6.1-6.5, 7.1_
+  - [x] 10.3 Update navigation menus
+    - Add Blog link to public navigation
+    - Add Assets link to public navigation
+    - Add Blog and Assets to admin sidebar
+    - _Requirements: 1.1, 3.1_
+
+- [x] 11. Suspicious activity monitoring
+  - [x] 11.1 Create Admin/AuditLogController
+    - Implement index() with filtering
+    - Implement flagged() for suspicious activities
+    - _Requirements: 10.2, 10.5_
+  - [x] 11.2 Create Admin Audit Log pages
+    - Admin/AuditLogs/Index.jsx - log viewer with filters
+    - Admin/AuditLogs/Flagged.jsx - suspicious activity list
+    - _Requirements: 10.2, 10.5_
+  - [ ]* 11.3 Write property test for suspicious activity flagging
+    - **Property 15: Suspicious Activity Flagging**
+    - **Validates: Requirements 10.2**
+
+- [x] 12. Re-download functionality
+  - [x] 12.1 Implement re-download logic in AssetCodeService
+    - Check download_count vs max_downloads
+    - Check expires_at for time window
+    - _Requirements: 6.4_
+  - [ ]* 12.2 Write property test for re-download window
+    - **Property 16: Re-download Window Enforcement**
+    - **Validates: Requirements 6.4**
+
+- [x] 13. Final checkpoint - Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+  - Run full test suite including property tests
+  - Verify security measures are working
+
+## Notes
+
+- Tasks marked with `*` are optional and can be skipped for faster MVP
+- Security services (Task 2) are critical and should not be skipped
+- Property tests validate universal correctness properties
+- All file downloads go through SecureDownloadController, never direct URLs
+- Codes are hashed with bcrypt, never stored in plaintext
+- Download tokens expire in 5 minutes and are IP-bound

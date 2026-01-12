@@ -1,0 +1,284 @@
+# Implementation Plan: E-Course Platform
+
+## Overview
+
+Implementasi platform e-learning dengan Laravel 12, Inertia.js, React, dan Tailwind CSS. Tasks disusun secara incremental dimulai dari setup, database, backend, lalu frontend.
+
+## Tasks
+
+- [x] 1. Project Setup dan Dependencies
+  - [x] 1.1 Install Inertia.js dan React dependencies
+    - Install inertiajs/inertia-laravel via composer
+    - Install @inertiajs/react dan react via npm
+    - Configure Vite untuk React dan Inertia
+    - _Requirements: 11.1, 11.2, 11.3_
+  - [x] 1.2 Setup Inertia middleware dan root template
+    - Create HandleInertiaRequests middleware
+    - Create app.blade.php root template
+    - Configure app.jsx entry point
+    - _Requirements: 11.1, 11.2_
+
+- [x] 2. Database Migrations dan Models
+  - [x] 2.1 Update users table migration dengan role column
+    - Add role enum column (admin, member) with default 'member'
+    - _Requirements: 1.1_
+  - [x] 2.2 Create courses table migration
+    - Columns: id, title, slug (unique), description, thumbnail, is_published, timestamps
+    - _Requirements: 2.1, 2.5_
+  - [x] 2.3 Create sessions table migration
+    - Columns: id, course_id (foreign), title, order_priority, timestamps
+    - _Requirements: 3.1_
+  - [x] 2.4 Create materials table migration
+    - Columns: id, session_id (foreign), title, type (enum), content, order_priority, timestamps
+    - _Requirements: 4.1, 4.2_
+  - [x] 2.5 Create redeem_codes table migration
+    - Columns: id, course_id (foreign), code (unique), user_id (nullable foreign), is_used, used_at, timestamps
+    - _Requirements: 5.1, 5.2, 5.3_
+  - [x] 2.6 Create user_progress table migration
+    - Columns: id, user_id (foreign), material_id (foreign), is_completed, completed_at, timestamps
+    - _Requirements: 8.1, 8.4_
+  - [x] 2.7 Create Eloquent Models dengan relationships
+    - User model dengan redeemedCodes, progress, courses relationships
+    - Course model dengan sessions, redeemCodes, materials relationships
+    - Session model dengan course, materials relationships
+    - Material model dengan session, progress relationships
+    - RedeemCode model dengan course, user relationships
+    - UserProgress model dengan user, material relationships
+    - _Requirements: 2.1, 3.1, 4.1, 5.2, 8.1_
+  - [ ]* 2.8 Write property test untuk Course cascade deletion
+    - **Property 4: Course Cascade Deletion**
+    - **Validates: Requirements 2.3**
+  - [ ]* 2.9 Write property test untuk Session cascade deletion
+    - **Property 6: Session Cascade Deletion**
+    - **Validates: Requirements 3.3**
+
+- [x] 3. Checkpoint - Database Setup
+  - Ensure migrations run successfully
+  - Ensure all model relationships work correctly
+  - Ask user if questions arise
+
+- [x] 4. Authentication System (via Laravel Breeze)
+  - [x] 4.1 Create LoginController dengan Inertia response
+    - Handle login form display dan authentication
+    - Redirect based on user role
+    - _Requirements: 1.2_
+    - **Note: Provided by Laravel Breeze (AuthenticatedSessionController)**
+  - [x] 4.2 Create RegisterController dengan default member role
+    - Handle registration form dan user creation
+    - Set default role to 'member'
+    - _Requirements: 1.1_
+    - **Note: Provided by Laravel Breeze (RegisteredUserController) - updated to set default role**
+  - [x] 4.3 Create LogoutController
+    - Handle logout dan session invalidation
+    - _Requirements: 1.2_
+    - **Note: Provided by Laravel Breeze (AuthenticatedSessionController)**
+  - [x] 4.4 Create AdminMiddleware untuk route protection
+    - Check user role is admin
+    - Redirect non-admin to member dashboard
+    - _Requirements: 1.3, 1.4_
+  - [ ]* 4.5 Write property test untuk User Registration Default Role
+    - **Property 1: User Registration Default Role**
+    - **Validates: Requirements 1.1**
+  - [ ]* 4.6 Write property test untuk Role-Based Route Access
+    - **Property 2: Role-Based Route Access**
+    - **Validates: Requirements 1.3, 1.4**
+
+- [x] 5. Admin Course Management
+  - [x] 5.1 Create Admin CourseController (CRUD)
+    - Index: list all courses
+    - Create/Store: create new course with auto-generated slug
+    - Edit/Update: update course data
+    - Destroy: delete course with cascade
+    - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5_
+  - [x] 5.2 Create Admin SessionController (CRUD)
+    - Manage sessions within a course
+    - Handle order_priority updates
+    - _Requirements: 3.1, 3.2, 3.3, 3.4_
+  - [x] 5.3 Create Admin MaterialController (CRUD)
+    - Manage materials within a session
+    - Handle different material types
+    - Handle order_priority updates
+    - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 4.8_
+  - [ ]* 5.4 Write property test untuk Course Data Persistence
+    - **Property 3: Course Data Persistence**
+    - **Validates: Requirements 2.1, 2.5**
+  - [ ]* 5.5 Write property test untuk Ordering by Priority
+    - **Property 7: Ordering by Priority**
+    - **Validates: Requirements 3.2, 3.4, 4.8**
+  - [ ]* 5.6 Write property test untuk Material Type Validation
+    - **Property 8: Material Type Validation**
+    - **Validates: Requirements 4.2**
+
+- [x] 6. Redeem Code System
+  - [x] 6.1 Create RedeemCodeService
+    - Generate unique codes with format PROMO-YYYY-XXXX
+    - Validate code availability
+    - Process redemption
+    - _Requirements: 5.1, 5.3, 5.4, 6.1, 6.2_
+  - [x] 6.2 Create Admin RedeemCodeController
+    - Index: list codes with status
+    - Generate: create batch of codes for a course
+    - _Requirements: 5.1, 5.5_
+  - [x] 6.3 Create Member RedeemController
+    - Show redeem form
+    - Process code redemption
+    - Handle errors (invalid, used)
+    - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5_
+  - [ ]* 6.4 Write property test untuk Redeem Code Generation
+    - **Property 9: Redeem Code Generation**
+    - **Validates: Requirements 5.1, 5.3, 5.4**
+  - [ ]* 6.5 Write property test untuk Code Redemption
+    - **Property 10: Code Redemption**
+    - **Validates: Requirements 6.1, 6.2, 6.5**
+
+- [x] 7. Checkpoint - Backend Core Features
+  - Ensure all admin CRUD operations work
+  - Ensure redeem code system works
+  - Ask user if questions arise
+
+- [ ] 8. Linear Learning dan Progress System
+  - [ ] 8.1 Create ProgressService
+    - Calculate progress percentage
+    - Mark material as complete
+    - Check material accessibility (sequential validation)
+    - Get next available material
+    - _Requirements: 7.1, 7.2, 7.3, 7.5, 8.1, 8.2, 8.4_
+  - [ ] 8.2 Create CourseAccessMiddleware
+    - Validate member has redeemed the course
+    - _Requirements: 6.5_
+  - [ ] 8.3 Create MaterialAccessMiddleware
+    - Validate sequential access (previous materials completed)
+    - _Requirements: 7.4, 7.5_
+  - [ ] 8.4 Create Member CourseController
+    - Show enrolled courses with progress
+    - Show course detail with sessions/materials
+    - _Requirements: 10.1, 10.2, 10.3_
+  - [ ] 8.5 Create Member MaterialController
+    - Show material content based on type
+    - Handle mark as complete action
+    - _Requirements: 10.4, 10.5, 10.6, 10.7, 10.8_
+  - [ ] 8.6 Create Member ProgressController
+    - Update progress when material completed
+    - _Requirements: 8.1, 8.4_
+  - [ ]* 8.7 Write property test untuk Sequential Material Access
+    - **Property 11: Sequential Material Access**
+    - **Validates: Requirements 7.1, 7.2, 7.3, 7.4, 7.5**
+  - [ ]* 8.8 Write property test untuk Progress Tracking
+    - **Property 12: Progress Tracking**
+    - **Validates: Requirements 8.1, 8.2, 8.4**
+  - [ ]* 8.9 Write property test untuk Unpublished Course Visibility
+    - **Property 5: Unpublished Course Visibility**
+    - **Validates: Requirements 2.4**
+
+- [ ] 9. Checkpoint - Backend Complete
+  - Ensure linear learning works correctly
+  - Ensure progress tracking works
+  - Ask user if questions arise
+
+
+- [x] 10. Frontend Layouts dan Base Components (via Laravel Breeze)
+  - [x] 10.1 Create GuestLayout component
+    - Layout untuk halaman login/register
+    - _Requirements: 11.1_
+    - **Note: Provided by Laravel Breeze**
+  - [x] 10.2 Create AdminLayout component
+    - Sidebar navigation untuk admin
+    - Header dengan user info
+    - _Requirements: 11.1_
+    - **Note: Using AuthenticatedLayout from Breeze, will customize later**
+  - [x] 10.3 Create MemberLayout component
+    - Navigation untuk member
+    - Header dengan user info dan progress summary
+    - _Requirements: 11.2_
+    - **Note: Using AuthenticatedLayout from Breeze, will customize later**
+  - [x] 10.4 Create base UI components
+    - Button, Input, Card, Modal components
+    - _Requirements: 11.1, 11.2_
+    - **Note: Provided by Laravel Breeze**
+
+- [x] 11. Frontend Auth Pages (via Laravel Breeze)
+  - [x] 11.1 Create Login page
+    - Form dengan email dan password
+    - Error handling untuk invalid credentials
+    - _Requirements: 1.2, 1.5_
+    - **Note: Provided by Laravel Breeze**
+  - [x] 11.2 Create Register page
+    - Form dengan name, email, password, password confirmation
+    - _Requirements: 1.1_
+    - **Note: Provided by Laravel Breeze**
+
+- [x] 12. Frontend Admin Pages
+  - [x] 12.1 Create Admin Dashboard page
+    - Display statistics (total courses, members, redemptions)
+    - Recent activities
+    - _Requirements: 9.1, 9.2, 9.3_
+  - [x] 12.2 Create Admin Courses pages (Index, Create, Edit, Show)
+    - List courses dengan status
+    - Form untuk create/edit course
+    - Detail view dengan sessions
+    - _Requirements: 2.1, 2.2, 2.4_
+  - [x] 12.3 Create Admin Sessions management
+    - Inline management dalam course detail
+    - Drag-drop atau input untuk order_priority
+    - _Requirements: 3.1, 3.2_
+  - [x] 12.4 Create Admin Materials management
+    - Form dengan type selector
+    - Different input fields based on type
+    - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7_
+  - [x] 12.5 Create Admin RedeemCodes pages
+    - List codes dengan filter (used/unused)
+    - Generate form dengan quantity input
+    - _Requirements: 5.1, 5.5_
+
+- [x] 13. Frontend Member Pages
+  - [x] 13.1 Create Member Dashboard page
+    - Display "My Courses" dengan progress indicators
+    - _Requirements: 10.1_
+  - [x] 13.2 Create Redeem page
+    - Form untuk input redeem code
+    - Success/error feedback
+    - _Requirements: 6.1, 6.3, 6.4_
+  - [x] 13.3 Create Course Learning page
+    - SidebarCourse component dengan lock status
+    - Material content area
+    - _Requirements: 10.2, 10.3_
+  - [x] 13.4 Create Material Content components
+    - VideoContent: embed YouTube/Vimeo player
+    - TextContent: render rich text/markdown
+    - PdfContent: PDF viewer
+    - EbookContent: download button
+    - GmeetContent: join meeting button
+    - _Requirements: 10.4, 10.5, 10.6, 10.7, 10.8_
+  - [x] 13.5 Create ProgressBar component
+    - Visual progress indicator
+    - Percentage label
+    - _Requirements: 8.3_
+  - [x] 13.6 Create SidebarCourse component
+    - List sessions dan materials
+    - Lock/unlock icons
+    - Current material highlight
+    - _Requirements: 10.2, 10.3_
+  - [x] 13.7 Implement "Mark as Complete" functionality
+    - Button di akhir setiap material
+    - Update progress dan unlock next material
+    - _Requirements: 8.1, 7.3_
+
+- [x] 14. Routes Configuration
+  - [x] 14.1 Setup web routes
+    - Guest routes: login, register
+    - Admin routes dengan middleware
+    - Member routes dengan middleware
+    - _Requirements: 1.3, 1.4_
+
+- [x] 15. Final Checkpoint
+  - Ensure all features work end-to-end
+  - Ensure all tests pass
+  - Ask user if questions arise
+
+## Notes
+
+- Tasks marked with `*` are optional property-based tests
+- Each task references specific requirements for traceability
+- Checkpoints ensure incremental validation
+- Property tests validate universal correctness properties
+- Unit tests validate specific examples and edge cases
