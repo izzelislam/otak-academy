@@ -2,9 +2,43 @@ import { Head, Link, usePage } from '@inertiajs/react';
 import LearningLayout from '@/Layouts/LearningLayout';
 import LearningSidebar from '@/Components/LearningSidebar';
 import { VideoContent, TextContent, PdfContent, EbookContent, GmeetContent } from '@/Components/MaterialContent';
+import { useEffect } from 'react';
 
 export default function MaterialShow({ course, material, userProgress, progressPercentage, isCompleted }) {
     const { flash } = usePage().props;
+
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            // Disable F12
+            if (e.keyCode === 123) {
+                e.preventDefault();
+                return false;
+            }
+            // Disable Ctrl+Shift+I / Cmd+Opt+I
+            if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.keyCode === 73) {
+                e.preventDefault();
+                return false;
+            }
+            // Disable Ctrl+Shift+C / Cmd+Opt+C
+            if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.keyCode === 67) {
+                e.preventDefault();
+                return false;
+            }
+            // Disable Ctrl+Shift+J / Cmd+Opt+J
+            if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.keyCode === 74) {
+                e.preventDefault();
+                return false;
+            }
+            // Disable Ctrl+U / Cmd+Opt+U (View Source)
+            if ((e.ctrlKey || e.metaKey) && e.keyCode === 85) {
+                e.preventDefault();
+                return false;
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, []);
 
     // Render material content based on type
     const renderMaterialContent = () => {
@@ -121,7 +155,7 @@ export default function MaterialShow({ course, material, userProgress, progressP
                     className="flex-1 p-5 overflow-y-auto custom-scrollbar"
                     style={{ userSelect: 'none', WebkitUserSelect: 'none' }}
                 >
-                    <div className="max-w-4xl mx-auto">
+                    <div className="max-w-8xl mx-auto">
                         {renderMaterialContent()}
                     </div>
                 </div>
