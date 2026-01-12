@@ -35,21 +35,21 @@ export default function Login({ status, canResetPassword }) {
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                                     </svg>
                                 </div>
-                                <span className="text-xl font-semibold tracking-tight">E-Course</span>
+                                <span className="text-xl font-semibold tracking-tight">OtakAtikin</span>
                             </div>
                             <h1 className="text-4xl font-semibold mb-4 leading-tight tracking-tight">
-                                Mulai perjalanan<br />belajar Anda
+                                Akses semua konten<br />dalam satu platform
                             </h1>
                             <p className="text-base text-gray-400 leading-relaxed max-w-md">
-                                Platform pembelajaran online dengan materi berkualitas untuk mengembangkan skill Anda.
+                                Kursus, blog, produk digital, dan resources berkualitas untuk mengembangkan skill dan karir Anda.
                             </p>
                         </div>
 
                         <div className="space-y-5">
                             {[
-                                { text: "Materi dari instruktur berpengalaman" },
-                                { text: "Akses belajar tanpa batas waktu" },
-                                { text: "Sertifikat setelah menyelesaikan kursus" }
+                                { text: "Kursus, blog, dan produk digital premium" },
+                                { text: "Akses konten tanpa batas waktu" },
+                                { text: "Sertifikat & resources eksklusif" }
                             ].map((item, i) => (
                                 <div key={i} className="flex items-center gap-3">
                                     <div className="w-5 h-5 rounded-full bg-[#10a37f] flex items-center justify-center">
@@ -73,12 +73,12 @@ export default function Login({ status, canResetPassword }) {
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                                 </svg>
                             </div>
-                            <span className="text-lg font-semibold text-[#0a0a0a]">E-Course</span>
+                            <span className="text-lg font-semibold text-[#0a0a0a]">OtakAtikin</span>
                         </div>
 
                         <div className="text-center mb-8">
                             <h2 className="text-2xl font-semibold text-[#0a0a0a] mb-2 tracking-tight">Selamat datang kembali</h2>
-                            <p className="text-gray-500 text-sm">Masuk untuk melanjutkan belajar</p>
+                            <p className="text-gray-500 text-sm">Masuk untuk mengakses semua konten</p>
                         </div>
 
                         {status && (

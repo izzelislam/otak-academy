@@ -61,30 +61,30 @@ function DocumentIcon({ className }) {
 const features = [
     {
         icon: VideoCameraIcon,
-        title: 'Video Learning',
-        description: 'Akses ratusan video pembelajaran berkualitas HD kapan saja.',
+        title: 'Kursus Video',
+        description: 'Akses ratusan kursus video berkualitas HD dengan materi terstruktur.',
     },
     {
         icon: BookOpenIcon,
-        title: 'E-Book & Resources',
-        description: 'Download materi dan e-book untuk belajar offline.',
-    },
-    {
-        icon: UsersIcon,
-        title: 'Live Sessions',
-        description: 'Ikuti sesi live interaktif langsung dengan mentor.',
+        title: 'Blog & Resources',
+        description: 'Artikel, tutorial, dan resources gratis untuk belajar mandiri.',
     },
     {
         icon: DocumentIcon,
-        title: 'Sertifikat',
-        description: 'Dapatkan sertifikat resmi setelah menyelesaikan kursus.',
+        title: 'Produk Digital',
+        description: 'Download template, tools, dan assets premium untuk projekmu.',
+    },
+    {
+        icon: UsersIcon,
+        title: 'Komunitas',
+        description: 'Bergabung dengan komunitas learner aktif dan saling support.',
     },
 ];
 
 export default function Welcome({ auth }) {
     return (
         <>
-            <Head title="ECourse - Learn with Experts" />
+            <Head title="OtakAtikin - Platform Pembelajaran & Resources" />
             <div className="min-h-screen bg-white dark:bg-black text-gray-900 dark:text-white antialiased transition-colors duration-300">
                 <Navbar auth={auth} />
 
@@ -160,21 +160,21 @@ export default function Welcome({ auth }) {
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#10a37f] opacity-75"></span>
                                 <span className="relative inline-flex rounded-full h-2 w-2 bg-[#10a37f]"></span>
                             </span>
-                            <span className="text-[13px] text-gray-600 dark:text-white/60 font-medium">Platform pembelajaran terpercaya</span>
+                            <span className="text-[13px] text-gray-600 dark:text-white/60 font-medium">Platform konten & pembelajaran terpercaya</span>
                         </div>
 
                         {/* Headline */}
                         <h1 className="text-[clamp(40px,8vw,80px)] font-semibold leading-[1.1] tracking-[-0.02em] max-w-4xl mx-auto">
-                            <span className="text-gray-900 dark:text-white">Belajar skill baru</span>
+                            <span className="text-gray-900 dark:text-white">Kelas, blog, & assets</span>
                             <br />
                             <span className="text-[#10a37f]">
-                                bersama expert
+                                dalam satu platform
                             </span>
                         </h1>
 
                         {/* Subheadline */}
                         <p className="mt-6 text-[18px] sm:text-[20px] text-gray-500 dark:text-white/50 font-normal leading-relaxed max-w-xl mx-auto">
-                            Platform e-learning dengan kurikulum terstruktur dan mentor berpengalaman untuk membantu kamu mencapai karir impian.
+                            Akses Kelas video / Online, artikel blog, produk digital premium, dan berbagai resources untuk mengembangkan skill dan karir kamu.
                         </p>
 
                         {/* CTA Buttons */}
@@ -193,7 +193,7 @@ export default function Welcome({ auth }) {
                                         href={route('register')}
                                         className="group inline-flex items-center justify-center gap-2 px-6 py-3 text-[15px] font-medium text-white bg-black hover:bg-black/90 dark:text-black dark:bg-white dark:hover:bg-white/90 rounded-xl transition-all"
                                     >
-                                        Mulai belajar gratis
+                                        Mulai eksplorasi gratis
                                         <ArrowRightIcon className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
                                     </Link>
                                     <Link
@@ -211,10 +211,10 @@ export default function Welcome({ auth }) {
                         <div className="mt-20 pt-10 border-t border-gray-200 dark:border-white/10">
                             <div className="grid grid-cols-2 sm:grid-cols-4 gap-8">
                                 {[
-                                    { value: '500+', label: 'Video materi' },
-                                    { value: '50+', label: 'Kursus' },
-                                    { value: '10K+', label: 'Siswa aktif' },
-                                    { value: '4.9', label: 'Rating' },
+                                    { value: '100+', label: 'Kursus & Blog' },
+                                    { value: '50+', label: 'Produk Digital' },
+                                    { value: '5K+', label: 'Member Aktif' },
+                                    { value: '4.8', label: 'Rating' },
                                 ].map((stat, index) => (
                                     <div key={index} className="text-center">
                                         <div className="text-[28px] sm:text-[32px] font-semibold text-gray-900 dark:text-white tracking-tight">
@@ -240,10 +240,10 @@ export default function Welcome({ auth }) {
                 <section className="relative py-24 sm:py-32">
                     <div className="max-w-[1200px] mx-auto px-6">
                         <div className="text-center mb-16">
-                            <h2 className="text-[32px] sm:text-[40px] font-semibold text-white tracking-[-0.02em]">
+                            <h2 className="text-[32px] sm:text-[40px] font-semibold text-gray-900 dark:text-white tracking-[-0.02em]">
                                 Semua yang kamu butuhkan
                             </h2>
-                            <p className="mt-4 text-[16px] sm:text-[18px] text-white/40 font-normal">
+                            <p className="mt-4 text-[16px] sm:text-[18px] text-gray-500 dark:text-white/40 font-normal">
                                 Fitur lengkap untuk pengalaman belajar terbaik
                             </p>
                         </div>
@@ -252,15 +252,15 @@ export default function Welcome({ auth }) {
                             {features.map((feature, index) => (
                                 <div
                                     key={index}
-                                    className="group p-6 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.04] hover:border-white/[0.1] transition-all duration-300"
+                                    className="group p-6 rounded-2xl bg-gray-50 dark:bg-white/[0.02] border border-gray-200 dark:border-white/[0.06] hover:bg-gray-100 dark:hover:bg-white/[0.04] hover:border-gray-300 dark:hover:border-white/[0.1] transition-all duration-300"
                                 >
-                                    <div className="h-10 w-10 rounded-xl bg-white/[0.06] flex items-center justify-center mb-4 group-hover:bg-[#10a37f]/20 transition-colors">
-                                        <feature.icon className="h-5 w-5 text-white/60 group-hover:text-[#10a37f] transition-colors" />
+                                    <div className="h-10 w-10 rounded-xl bg-gray-200 dark:bg-white/[0.06] flex items-center justify-center mb-4 group-hover:bg-[#10a37f]/20 transition-colors">
+                                        <feature.icon className="h-5 w-5 text-gray-600 dark:text-white/60 group-hover:text-[#10a37f] transition-colors" />
                                     </div>
-                                    <h3 className="text-[16px] font-semibold text-white mb-2">
+                                    <h3 className="text-[16px] font-semibold text-gray-900 dark:text-white mb-2">
                                         {feature.title}
                                     </h3>
-                                    <p className="text-[14px] text-white/40 leading-relaxed">
+                                    <p className="text-[14px] text-gray-500 dark:text-white/40 leading-relaxed">
                                         {feature.description}
                                     </p>
                                 </div>
@@ -270,26 +270,26 @@ export default function Welcome({ auth }) {
                 </section>
 
                 {/* Why Section */}
-                <section className="relative py-24 sm:py-32 border-t border-white/[0.06]">
+                <section className="relative py-24 sm:py-32 border-t border-gray-200 dark:border-white/[0.06]">
                     <div className="max-w-[1200px] mx-auto px-6">
                         <div className="grid lg:grid-cols-2 gap-16 items-center">
                             <div>
-                                <h2 className="text-[32px] sm:text-[40px] font-semibold text-white tracking-[-0.02em] leading-tight">
+                                <h2 className="text-[32px] sm:text-[40px] font-semibold text-gray-900 dark:text-white tracking-[-0.02em] leading-tight">
                                     Kenapa memilih
                                     <br />
-                                    <span className="text-[#10a37f]">ECourse?</span>
+                                    <span className="text-[#10a37f]">OtakAtikin?</span>
                                 </h2>
-                                <p className="mt-6 text-[16px] sm:text-[18px] text-white/40 leading-relaxed">
-                                    Kami menyediakan pengalaman belajar yang berbeda dengan kurikulum yang dirancang oleh praktisi industri.
+                                <p className="mt-6 text-[16px] sm:text-[18px] text-gray-500 dark:text-white/40 leading-relaxed">
+                                    Platform all-in-one untuk belajar dan berkembang. Akses kursus, blog, produk digital, dan komunitas dalam satu tempat.
                                 </p>
 
                                 <div className="mt-10 space-y-4">
                                     {[
-                                        'Kurikulum disusun oleh praktisi industri',
-                                        'Akses materi seumur hidup',
-                                        'Belajar dengan pace sendiri',
-                                        'Komunitas learner yang supportive',
-                                        'Sertifikat yang diakui industri',
+                                        'Kursus video & artikel blog berkualitas',
+                                        'Produk digital & template premium',
+                                        'Akses konten seumur hidup',
+                                        'Komunitas learner yang aktif',
+                                        'Sertifikat & resources eksklusif',
                                     ].map((item, index) => (
                                         <div key={index} className="flex items-center gap-3">
                                             <div className="flex-shrink-0 h-5 w-5 rounded-full bg-[#10a37f]/20 flex items-center justify-center">
@@ -297,7 +297,7 @@ export default function Welcome({ auth }) {
                                                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                                 </svg>
                                             </div>
-                                            <span className="text-[15px] text-white/60">
+                                            <span className="text-[15px] text-gray-600 dark:text-white/60">
                                                 {item}
                                             </span>
                                         </div>
@@ -306,7 +306,7 @@ export default function Welcome({ auth }) {
                             </div>
 
                             <div className="relative">
-                                <div className="aspect-square rounded-3xl bg-gradient-to-br from-white/[0.04] to-white/[0.01] border border-white/[0.06] p-8 flex flex-col items-center justify-center">
+                                <div className="aspect-square rounded-3xl bg-gradient-to-br from-gray-100 to-gray-50 dark:from-white/[0.04] dark:to-white/[0.01] border border-gray-200 dark:border-white/[0.06] p-8 flex flex-col items-center justify-center">
                                     <div 
                                         className="absolute inset-0 rounded-3xl opacity-50"
                                         style={{
@@ -318,8 +318,8 @@ export default function Welcome({ auth }) {
                                             <AcademicCapIcon className="h-10 w-10 text-white" />
                                         </div>
                                         <div className="text-center">
-                                            <div className="text-[56px] font-semibold text-white tracking-tight">100+</div>
-                                            <div className="text-[16px] text-white/40">Kursus tersedia</div>
+                                            <div className="text-[56px] font-semibold text-gray-900 dark:text-white tracking-tight">100+</div>
+                                            <div className="text-[16px] text-gray-500 dark:text-white/40">Kursus tersedia</div>
                                         </div>
                                     </div>
                                 </div>
@@ -329,14 +329,14 @@ export default function Welcome({ auth }) {
                 </section>
 
                 {/* Testimonials */}
-                <section className="relative py-24 sm:py-32 border-t border-white/[0.06]">
+                <section className="relative py-24 sm:py-32 border-t border-gray-200 dark:border-white/[0.06]">
                     <div className="max-w-[1200px] mx-auto px-6">
                         <div className="text-center mb-16">
-                            <h2 className="text-[32px] sm:text-[40px] font-semibold text-white tracking-[-0.02em]">
+                            <h2 className="text-[32px] sm:text-[40px] font-semibold text-gray-900 dark:text-white tracking-[-0.02em]">
                                 Apa kata mereka
                             </h2>
-                            <p className="mt-4 text-[16px] sm:text-[18px] text-white/40">
-                                Ribuan siswa sudah merasakan manfaatnya
+                            <p className="mt-4 text-[16px] sm:text-[18px] text-gray-500 dark:text-white/40">
+                                Ribuan member sudah merasakan manfaatnya
                             </p>
                         </div>
 
@@ -360,22 +360,22 @@ export default function Welcome({ auth }) {
                             ].map((testimonial, index) => (
                                 <div
                                     key={index}
-                                    className="p-6 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.04] hover:border-white/[0.1] transition-all"
+                                    className="p-6 rounded-2xl bg-gray-50 dark:bg-white/[0.02] border border-gray-200 dark:border-white/[0.06] hover:bg-gray-100 dark:hover:bg-white/[0.04] hover:border-gray-300 dark:hover:border-white/[0.1] transition-all"
                                 >
                                     <div className="flex items-center gap-3 mb-4">
                                         <div className="h-10 w-10 rounded-full bg-[#10a37f]/20 flex items-center justify-center text-[#10a37f] font-semibold text-[14px]">
                                             {testimonial.name.charAt(0)}
                                         </div>
                                         <div>
-                                            <div className="text-[14px] font-semibold text-white">
+                                            <div className="text-[14px] font-semibold text-gray-900 dark:text-white">
                                                 {testimonial.name}
                                             </div>
-                                            <div className="text-[13px] text-white/40">
+                                            <div className="text-[13px] text-gray-500 dark:text-white/40">
                                                 {testimonial.role}
                                             </div>
                                         </div>
                                     </div>
-                                    <p className="text-[14px] text-white/50 leading-relaxed">
+                                    <p className="text-[14px] text-gray-600 dark:text-white/50 leading-relaxed">
                                         "{testimonial.content}"
                                     </p>
                                     <div className="mt-4 flex gap-0.5">
@@ -394,7 +394,7 @@ export default function Welcome({ auth }) {
                 {/* CTA Section - OpenAI Style */}
                 <section className="relative py-24 sm:py-32">
                     <div className="max-w-[1000px] mx-auto px-1">
-                        <div className="relative rounded-2xl bg-[#0a0a0a] border border-white/[0.08] p-10 sm:p-16 overflow-hidden">
+                        <div className="relative rounded-2xl bg-gray-100 dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/[0.08] p-10 sm:p-16 overflow-hidden">
                             {/* Subtle gradient overlay */}
                             <div 
                                 className="absolute inset-0 opacity-50"
@@ -404,17 +404,17 @@ export default function Welcome({ auth }) {
                             />
                             
                             <div className=" relative text-center">
-                                <h2 className="text-[28px] sm:text-[36px] lg:text-[42px] font-semibold text-white tracking-[-0.02em] leading-[1.2]">
-                                    Mulai belajar hari ini
+                                <h2 className="text-[28px] sm:text-[36px] lg:text-[42px] font-semibold text-gray-900 dark:text-white tracking-[-0.02em] leading-[1.2]">
+                                    Mulai eksplorasi hari ini
                                 </h2>
-                                <p className="mt-4 text-[15px] sm:text-[17px] text-white/50 max-w-md mx-auto leading-relaxed">
-                                    Bergabung dengan ribuan learner dan tingkatkan skill kamu bersama mentor berpengalaman.
+                                <p className="mt-4 text-[15px] sm:text-[17px] text-gray-600 dark:text-white/50 max-w-md mx-auto leading-relaxed">
+                                    Bergabung dengan ribuan member dan akses semua konten untuk mengembangkan skill kamu.
                                 </p>
                                 <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
                                     {auth.user ? (
                                         <Link
                                             href={route('dashboard')}
-                                            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-[14px] font-medium text-black bg-white hover:bg-white/90 rounded-lg transition-colors"
+                                            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-[14px] font-medium text-white bg-black hover:bg-black/90 dark:text-black dark:bg-white dark:hover:bg-white/90 rounded-lg transition-colors"
                                         >
                                             Masuk Dashboard
                                             <ArrowRightIcon className="h-4 w-4" />
@@ -423,14 +423,14 @@ export default function Welcome({ auth }) {
                                         <>
                                             <Link
                                                 href={route('register')}
-                                                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-[14px] font-medium text-black bg-white hover:bg-white/90 rounded-lg transition-colors"
+                                                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-[14px] font-medium text-white bg-black hover:bg-black/90 dark:text-black dark:bg-white dark:hover:bg-white/90 rounded-lg transition-colors"
                                             >
                                                 Daftar gratis
                                                 <ArrowRightIcon className="h-4 w-4" />
                                             </Link>
                                             <Link
                                                 href={route('login')}
-                                                className="inline-flex items-center justify-center px-5 py-2.5 text-[14px] font-medium text-white/60 hover:text-white transition-colors"
+                                                className="inline-flex items-center justify-center px-5 py-2.5 text-[14px] font-medium text-gray-600 hover:text-gray-900 dark:text-white/60 dark:hover:text-white transition-colors"
                                             >
                                                 Sudah punya akun? Masuk
                                             </Link>
@@ -443,7 +443,7 @@ export default function Welcome({ auth }) {
                 </section>
 
                 {/* Footer - OpenAI Style */}
-                <footer className="relative border-t border-white/[0.06]">
+                <footer className="relative border-t border-gray-200 dark:border-white/[0.06]">
                     <div className="max-w-[1200px] mx-auto px-6">
                         {/* Big text CTA - Main focus */}
                         <div className="py-16 sm:py-24">
@@ -452,10 +452,10 @@ export default function Welcome({ auth }) {
                                 className="group block"
                             >
                                 <div className="relative overflow-hidden h-[100px] sm:h-[150px] lg:h-[180px]">
-                                    <span className="absolute inset-0 flex items-center text-[400px] sm:text-[130px] lg:text-[245px] font-bold text-white/[0.80] leading-none tracking-[-0.04em] transition-all duration-500 group-hover:opacity-0 group-hover:-translate-y-10 select-none">
+                                    <span className="absolute inset-0 flex items-center text-[400px] sm:text-[130px] lg:text-[245px] font-bold text-gray-900 dark:text-white/[0.80] leading-none tracking-[-0.04em] transition-all duration-500 group-hover:opacity-0 group-hover:-translate-y-10 select-none">
                                         OtaKAtikin
                                     </span>
-                                    <span className="absolute inset-0 flex items-center text-[40px] sm:text-[70px] lg:text-[150px] font-bold text-white leading-none tracking-[-0.04em] opacity-0 translate-y-10 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0 select-none whitespace-nowrap">
+                                    <span className="absolute inset-0 flex items-center text-[40px] sm:text-[70px] lg:text-[150px] font-bold text-gray-900 dark:text-white leading-none tracking-[-0.04em] opacity-0 translate-y-10 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0 select-none whitespace-nowrap">
                                         Mulai Sekarang →
                                     </span>
                                 </div>
@@ -463,35 +463,35 @@ export default function Welcome({ auth }) {
                         </div>
 
                         {/* Bottom section */}
-                        <div className="py-8 border-t border-white/[0.06]">
+                        <div className="py-8 border-t border-gray-200 dark:border-white/[0.06]">
                             <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
                                 {/* Left - Logo & Copyright */}
                                 <div className="flex items-center gap-3">
                                     <img src="/favicon/favicon-96x96.png" alt="OtakAtikin" className="h-8 w-8" />
-                                    <p className="text-[13px] text-white/40">
+                                    <p className="text-[13px] text-gray-500 dark:text-white/40">
                                         © {new Date().getFullYear()} OtakAtikin
                                     </p>
                                 </div>
 
                                 {/* Center - Links */}
                                 <div className="flex flex-wrap items-center gap-6 text-[13px]">
-                                    <Link href={route('blog.index')} className="text-white/40 hover:text-white transition-colors">Blog</Link>
-                                    <Link href={route('assets.index')} className="text-white/40 hover:text-white transition-colors">Assets</Link>
-                                    <Link href={auth.user ? route('member.classes.index') : route('login')} className="text-white/40 hover:text-white transition-colors">Kelas</Link>
-                                    <Link href={auth.user ? route('member.courses.index') : route('login')} className="text-white/40 hover:text-white transition-colors">My Courses</Link>
-                                    <Link href={route('login')} className="text-white/40 hover:text-white transition-colors">Login</Link>
-                                    <Link href={route('register')} className="text-white/40 hover:text-white transition-colors">Register</Link>
+                                    <Link href={route('blog.index')} className="text-gray-500 hover:text-gray-900 dark:text-white/40 dark:hover:text-white transition-colors">Blog</Link>
+                                    <Link href={route('assets.index')} className="text-gray-500 hover:text-gray-900 dark:text-white/40 dark:hover:text-white transition-colors">Assets</Link>
+                                    <Link href={auth.user ? route('member.classes.index') : route('login')} className="text-gray-500 hover:text-gray-900 dark:text-white/40 dark:hover:text-white transition-colors">Kelas</Link>
+                                    <Link href={auth.user ? route('member.courses.index') : route('login')} className="text-gray-500 hover:text-gray-900 dark:text-white/40 dark:hover:text-white transition-colors">My Courses</Link>
+                                    <Link href={route('login')} className="text-gray-500 hover:text-gray-900 dark:text-white/40 dark:hover:text-white transition-colors">Login</Link>
+                                    <Link href={route('register')} className="text-gray-500 hover:text-gray-900 dark:text-white/40 dark:hover:text-white transition-colors">Register</Link>
                                 </div>
 
                                 {/* Right - Social */}
                                 <div className="flex items-center gap-4">
-                                    <a href="#" className="text-white/30 hover:text-white transition-colors">
+                                    <a href="#" className="text-gray-400 hover:text-gray-900 dark:text-white/30 dark:hover:text-white transition-colors">
                                         <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
                                     </a>
-                                    <a href="#" className="text-white/30 hover:text-white transition-colors">
+                                    <a href="#" className="text-gray-400 hover:text-gray-900 dark:text-white/30 dark:hover:text-white transition-colors">
                                         <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
                                     </a>
-                                    <a href="#" className="text-white/30 hover:text-white transition-colors">
+                                    <a href="#" className="text-gray-400 hover:text-gray-900 dark:text-white/30 dark:hover:text-white transition-colors">
                                         <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
                                     </a>
                                 </div>
