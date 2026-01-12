@@ -466,10 +466,8 @@ export default function Welcome({ auth }) {
                         <div className="py-8 border-t border-white/[0.06]">
                             <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
                                 {/* Left - Logo & Copyright */}
-                                <div className="flex items-center gap-6">
-                                    <div className="h-8 w-8 rounded-lg bg-white/10 flex items-center justify-center">
-                                        <AcademicCapIcon className="h-5 w-5 text-white/70" />
-                                    </div>
+                                <div className="flex items-center gap-3">
+                                    <img src="/favicon/favicon-96x96.png" alt="OtakAtikin" className="h-8 w-8" />
                                     <p className="text-[13px] text-white/40">
                                         © {new Date().getFullYear()} OtakAtikin
                                     </p>

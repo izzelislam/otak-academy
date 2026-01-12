@@ -1,4 +1,5 @@
 import { Head, Link, router } from '@inertiajs/react';
+import { useState } from 'react';
 import Navbar from '@/Components/Navbar';
 
 function LockIcon({ className }) {
@@ -100,21 +101,61 @@ function AssetCard({ asset }) {
     );
 }
 
-function Pagination({ data }) {
+function SkeletonCard() {
+    return (
+        <article className="bg-white dark:bg-white/[0.02] border border-gray-200 dark:border-white/[0.06] rounded-2xl overflow-hidden animate-pulse">
+            {/* Thumbnail skeleton */}
+            <div className="aspect-video bg-gray-200 dark:bg-white/[0.05]" />
+            <div className="p-6">
+                {/* Badges skeleton */}
+                <div className="flex items-center gap-2 mb-3">
+                    <div className="h-6 w-16 bg-gray-200 dark:bg-white/[0.05] rounded-full" />
+                    <div className="h-5 w-12 bg-gray-200 dark:bg-white/[0.05] rounded" />
+                </div>
+                {/* Title skeleton */}
+                <div className="h-6 bg-gray-200 dark:bg-white/[0.05] rounded mb-2 w-3/4" />
+                <div className="h-6 bg-gray-200 dark:bg-white/[0.05] rounded mb-4 w-1/2" />
+                {/* Description skeleton */}
+                <div className="space-y-2 mb-4">
+                    <div className="h-4 bg-gray-200 dark:bg-white/[0.05] rounded w-full" />
+                    <div className="h-4 bg-gray-200 dark:bg-white/[0.05] rounded w-2/3" />
+                </div>
+                {/* Footer skeleton */}
+                <div className="flex items-center justify-between">
+                    <div className="h-3 w-16 bg-gray-200 dark:bg-white/[0.05] rounded" />
+                    <div className="h-3 w-24 bg-gray-200 dark:bg-white/[0.05] rounded" />
+                </div>
+            </div>
+        </article>
+    );
+}
+
+
+function Pagination({ data, setIsLoading }) {
     if (!data || !data.links || data.last_page <= 1) return null;
+
+    const handlePaginationClick = (e, url) => {
+        if (url) {
+            e.preventDefault();
+            setIsLoading(true);
+            router.get(url, {}, {
+                onFinish: () => setIsLoading(false)
+            });
+        }
+    };
 
     return (
         <div className="flex justify-center gap-2 mt-12">
             {data.links.map((link, i) => (
-                <Link
+                <a
                     key={i}
                     href={link.url || '#'}
-                    preserveScroll
+                    onClick={(e) => handlePaginationClick(e, link.url)}
                     className={`px-3 py-2 text-[13px] rounded-lg transition-colors ${
                         link.active
                             ? 'bg-[#10a37f] text-white'
                             : link.url
-                            ? 'text-gray-500 hover:text-gray-900 hover:bg-gray-100 dark:text-white/60 dark:hover:text-white dark:hover:bg-white/10'
+                            ? 'text-gray-500 hover:text-gray-900 hover:bg-gray-100 dark:text-white/60 dark:hover:text-white dark:hover:bg-white/10 cursor-pointer'
                             : 'text-gray-300 dark:text-white/20 cursor-not-allowed'
                     }`}
                     dangerouslySetInnerHTML={{ __html: link.label }}
@@ -126,12 +167,18 @@ function Pagination({ data }) {
 
 export default function AssetsIndex({ assets, currentType, auth }) {
     const items = assets?.data || assets || [];
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleTypeFilter = (type) => {
+        setIsLoading(true);
         if (type === currentType) {
-            router.get(route('assets.index'));
+            router.get(route('assets.index'), {}, {
+                onFinish: () => setIsLoading(false)
+            });
         } else {
-            router.get(route('assets.index'), { type });
+            router.get(route('assets.index'), { type }, {
+                onFinish: () => setIsLoading(false)
+            });
         }
     };
 
@@ -194,14 +241,20 @@ export default function AssetsIndex({ assets, currentType, auth }) {
                 {/* Assets Grid */}
                 <section className="py-16">
                     <div className="max-w-[1200px] mx-auto px-6">
-                        {items.length > 0 ? (
+                        {isLoading ? (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {[...Array(6)].map((_, i) => (
+                                    <SkeletonCard key={i} />
+                                ))}
+                            </div>
+                        ) : items.length > 0 ? (
                             <>
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                     {items.map((asset) => (
                                         <AssetCard key={asset.id} asset={asset} />
                                     ))}
                                 </div>
-                                <Pagination data={assets} />
+                                <Pagination data={assets} setIsLoading={setIsLoading} />
                             </>
                         ) : (
                             <div className="text-center py-20">

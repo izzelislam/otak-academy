@@ -64,9 +64,7 @@ export default function Navbar({ auth = {} }) {
             <div className="max-w-[1200px] mx-auto px-6">
                 <div className="flex h-16 items-center justify-between">
                     <Link href="/" className="flex items-center gap-2">
-                        <div className="h-8 w-8 rounded-lg bg-black dark:bg-white flex items-center justify-center">
-                            <AcademicCapIcon className="h-5 w-5 text-white dark:text-black" />
-                        </div>
+                        <img src="/favicon/favicon-96x96.png" alt="OtakAtikin" className="h-8 w-8" />
                         <span className="text-[15px] font-semibold tracking-tight text-gray-900 dark:text-white">OtakAtikin</span>
                     </Link>
                     <nav className="flex items-center gap-1">

@@ -65,6 +65,19 @@ class AssetController extends Controller
                 $asset
             );
             
+            // Debug logging
+            \Log::info('Asset Show - Redemption Check', [
+                'user_id' => auth()->id(),
+                'asset_id' => $asset->id,
+                'asset_slug' => $asset->slug,
+                'has_redemption' => $existingRedemption !== null,
+                'redemption_data' => $existingRedemption ? [
+                    'id' => $existingRedemption->id,
+                    'is_used' => $existingRedemption->is_used,
+                    'user_id' => $existingRedemption->user_id,
+                ] : null
+            ]);
+            
             if ($existingRedemption) {
                 $hasValidRedemption = true;
                 $eligibility = $this->assetCodeService->checkRedownloadEligibility($existingRedemption);

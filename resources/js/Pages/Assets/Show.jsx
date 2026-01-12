@@ -63,6 +63,15 @@ export default function AssetShow({ auth, asset, hasValidRedemption, redownloadI
     const [error, setError] = useState(null);
     const [downloadsRemaining, setDownloadsRemaining] = useState(redownloadInfo?.downloads_remaining || 0);
 
+    // Debug logging
+    console.log('Asset Show Debug:', {
+        hasValidRedemption,
+        redownloadInfo,
+        downloadsRemaining,
+        isAuthenticated: !!auth?.user,
+        assetType: asset.type
+    });
+
     const handleFreeDownload = async () => {
         setIsLoading(true);
         setError(null);
@@ -252,11 +261,6 @@ export default function AssetShow({ auth, asset, hasValidRedemption, redownloadI
                                         </button>
                                     ) : hasValidRedemption ? (
                                         <div className="space-y-3">
-                                            <div className="flex items-center gap-2 p-3 bg-[#10a37f]/10 border border-[#10a37f]/20 rounded-lg">
-                                                <CheckIcon className="w-5 h-5 text-[#10a37f]" />
-                                                <span className="text-[13px] text-[#10a37f]">Kode sudah di-redeem</span>
-                                            </div>
-                                            
                                             {/* Re-download Info */}
                                             {redownloadInfo && (
                                                 <div className="p-3 bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/[0.06] rounded-lg space-y-2">
@@ -294,7 +298,7 @@ export default function AssetShow({ auth, asset, hasValidRedemption, redownloadI
                                                 ) : (
                                                     <>
                                                         <DownloadIcon className="w-5 h-5" />
-                                                        Re-download
+                                                        Download
                                                     </>
                                                 )}
                                             </button>

@@ -82,6 +82,33 @@ class AssetCodeService
         return $check['allowed'];
     }
 
+    /**
+     * Validate code format (basic validation).
+     * Code should be alphanumeric and between 10-50 characters.
+     */
+    public function validateCodeFormat(string $code): bool
+    {
+        $code = trim($code);
+        
+        // Check if code is not empty
+        if (empty($code)) {
+            return false;
+        }
+        
+        // Check length (typical format is PREFIX-HASH, around 16-50 chars)
+        if (strlen($code) < 10 || strlen($code) > 50) {
+            return false;
+        }
+        
+        // Check if alphanumeric with hyphens
+        if (!preg_match('/^[A-Z0-9\-]+$/', strtoupper($code))) {
+            return false;
+        }
+        
+        return true;
+    }
+
+
     // ...
 
     public function redeemCode(string $code, DownloadableAsset $asset, User $user): array

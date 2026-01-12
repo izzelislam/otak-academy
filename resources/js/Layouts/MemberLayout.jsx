@@ -130,7 +130,10 @@ export default function MemberLayout({ children, title }) {
                     />
                     <div className="fixed inset-y-0 left-0 flex w-[280px] flex-col bg-slate-900">
                         <div className="flex h-14 items-center justify-between px-4 border-b border-slate-800">
-                            <span className="text-[15px] font-semibold text-white">ECourse Learning</span>
+                            <div className="flex items-center gap-2">
+                                <img src="/favicon/favicon-96x96.png" alt="Logo" className="w-8 h-8" />
+                                <span className="text-[15px] font-semibold text-white">OtakAtikin</span>
+                            </div>
                             <button 
                                 onClick={() => setSidebarOpen(false)} 
                                 className="p-1.5 text-slate-400 hover:text-white rounded-md hover:bg-slate-800 transition-colors"
@@ -156,11 +159,19 @@ export default function MemberLayout({ children, title }) {
                         </nav>
                         <div className="p-3 border-t border-slate-800">
                             <div className="flex items-center gap-3 px-3 py-2.5 rounded-md hover:bg-slate-800 transition-colors cursor-pointer">
-                                <div className="h-8 w-8 rounded-full bg-gradient-to-br from-[#10a37f] to-emerald-600 flex items-center justify-center flex-shrink-0">
-                                    <span className="text-xs font-medium text-white">
-                                        {auth.user.name.charAt(0).toUpperCase()}
-                                    </span>
-                                </div>
+                                {auth.user.avatar ? (
+                                    <img 
+                                        src={auth.user.avatar} 
+                                        alt={auth.user.name}
+                                        className="h-8 w-8 rounded-full flex-shrink-0 object-cover"
+                                    />
+                                ) : (
+                                    <div className="h-8 w-8 rounded-full bg-gradient-to-br from-[#10a37f] to-emerald-600 flex items-center justify-center flex-shrink-0">
+                                        <span className="text-xs font-medium text-white">
+                                            {auth.user.name.charAt(0).toUpperCase()}
+                                        </span>
+                                    </div>
+                                )}
                                 <div className="flex-1 min-w-0">
                                     <p className="text-[13px] font-medium text-white truncate">{auth.user.name}</p>
                                 </div>
@@ -174,7 +185,10 @@ export default function MemberLayout({ children, title }) {
             <div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-[260px] lg:flex-col">
                 <div className="flex flex-col flex-grow bg-slate-900">
                     <div className="flex h-14 items-center px-4 border-b border-slate-800">
-                        <span className="text-[15px] font-semibold text-white">ECourse Learning</span>
+                        <div className="flex items-center gap-2">
+                            <img src="/favicon/favicon-96x96.png" alt="Logo" className="w-8 h-8" />
+                            <span className="text-[15px] font-semibold text-white">OtakAtikin</span>
+                        </div>
                     </div>
                     <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
                         {navigation.map((item) => (
@@ -194,11 +208,19 @@ export default function MemberLayout({ children, title }) {
                     </nav>
                     <div className="p-3 border-t border-slate-800">
                         <div className="flex items-center gap-3 px-3 py-2.5 rounded-md hover:bg-slate-800 transition-colors">
-                            <div className="h-8 w-8 rounded-full bg-gradient-to-br from-[#10a37f] to-emerald-600 flex items-center justify-center flex-shrink-0">
-                                <span className="text-xs font-medium text-white">
-                                    {auth.user.name.charAt(0).toUpperCase()}
-                                </span>
-                            </div>
+                            {auth.user.avatar ? (
+                                <img 
+                                    src={auth.user.avatar} 
+                                    alt={auth.user.name}
+                                    className="h-8 w-8 rounded-full flex-shrink-0 object-cover"
+                                />
+                            ) : (
+                                <div className="h-8 w-8 rounded-full bg-gradient-to-br from-[#10a37f] to-emerald-600 flex items-center justify-center flex-shrink-0">
+                                    <span className="text-xs font-medium text-white">
+                                        {auth.user.name.charAt(0).toUpperCase()}
+                                    </span>
+                                </div>
+                            )}
                             <div className="flex-1 min-w-0">
                                 <p className="text-[13px] font-medium text-white truncate">{auth.user.name}</p>
                                 <p className="text-[11px] text-slate-400 truncate">{auth.user.email}</p>

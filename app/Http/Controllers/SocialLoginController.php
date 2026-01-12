@@ -24,13 +24,11 @@ class SocialLoginController extends Controller
             $user = User::where('email', $googleUser->email)->first();
 
             if ($user) {
-                // If user exists, update google_id and avatar if missing
-                if (!$user->google_id) {
-                    $user->update([
-                        'google_id' => $googleUser->id,
-                        'avatar' => $googleUser->avatar,
-                    ]);
-                }
+                // If user exists, update google_id and avatar
+                $user->update([
+                    'google_id' => $googleUser->id,
+                    'avatar' => $googleUser->avatar,
+                ]);
                 
                 Auth::login($user);
                 
