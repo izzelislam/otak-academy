@@ -28,12 +28,16 @@ class AssetController extends Controller
     {
         $type = $request->input('type');
         
+        // Ensure we retrieve assets regardless of type if type is empty
         if ($type && in_array($type, ['free', 'paid'])) {
             $assets = $this->assetService->getPublishedAssetsByType($type, 12);
         } else {
             $assets = $this->assetService->getPublishedAssets(12);
         }
 
+        // Just to be safe, let's explicitly make sure the collection is transformed if needed, 
+        // but Inertia handles Paginator automatically.
+        
         return Inertia::render('Assets/Index', [
             'assets' => $assets,
             'currentType' => $type,
@@ -68,6 +72,7 @@ class AssetController extends Controller
                     'can_redownload' => $eligibility['can_redownload'],
                     'downloads_remaining' => $eligibility['downloads_remaining'],
                     'expires_at' => $eligibility['expires_at']?->toIso8601String(),
+                    'reason' => $eligibility['reason'] ?? null,
                 ];
             }
         }
@@ -103,6 +108,14 @@ class AssetController extends Controller
         $ipAddress = $request->ip();
         $userAgent = $request->userAgent() ?? 'Unknown';
         $user = auth()->user();
+        
+        if (!$user) {
+             return response()->json([
+                'message' => 'Silahkan login terlebih dahulu untuk mendownload.',
+                'needs_login' => true,
+                'redirect' => route('login'), 
+            ], 401);
+        }
 
         // Log the download request
         $this->auditService->logAttempt(
@@ -131,7 +144,7 @@ class AssetController extends Controller
     public function redeemCode(Request $request, DownloadableAsset $asset): JsonResponse
     {
         $request->validate([
-            'code' => ['required', 'string', 'max:50'],
+            'code' => ['nullable', 'string', 'max:50'],
         ]);
 
         // Verify asset is published
@@ -188,7 +201,7 @@ class AssetController extends Controller
                 );
 
                 return response()->json([
-                    'message' => 'Invalid or expired code.',
+                    'message' => $redownloadResult['error'] ?? 'Invalid or expired code.',
                 ], 400);
             }
 
@@ -211,6 +224,14 @@ class AssetController extends Controller
             ]);
         }
 
+        // If no existing redemption, code is required
+        if (empty($code)) {
+            return response()->json([
+                'message' => 'The code field is required.',
+                'errors' => ['code' => ['The code field is required.']],
+            ], 422);
+        }
+
         // Attempt to redeem the code
         $result = $this->assetCodeService->redeemCode($code, $asset, $user);
 
@@ -225,9 +246,9 @@ class AssetController extends Controller
                 'Invalid code attempt'
             );
 
-            // Return generic error message (security: don't reveal code status)
+            // Return specific error if available (e.g. Rate limit), otherwise generic
             return response()->json([
-                'message' => 'Invalid or expired code.',
+                'message' => $result['error'] ?? 'Invalid or expired code.',
             ], 400);
         }
 

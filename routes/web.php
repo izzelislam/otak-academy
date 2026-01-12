@@ -137,6 +137,10 @@ Route::middleware(['auth', 'verified'])->prefix('member')->name('member.')->grou
         ->name('courses.materials.show');
     Route::post('/courses/{course}/materials/{material}/complete', [MemberCourseController::class, 'completeMaterial'])
         ->name('courses.materials.complete');
+    
+    // Course Completion
+    Route::get('/courses/{course}/complete', [MemberCourseController::class, 'complete'])
+        ->name('courses.complete');
 
     // Redeem Code
     Route::get('/redeem', [MemberRedeemController::class, 'create'])->name('redeem.create');
@@ -147,5 +151,9 @@ Route::middleware(['auth', 'verified'])->prefix('member')->name('member.')->grou
     Route::patch('/profile', [MemberProfileController::class, 'update'])->name('profile.update');
     Route::put('/profile/password', [MemberProfileController::class, 'updatePassword'])->name('profile.password');
 });
+
+// Google Login Routes
+Route::get('auth/google', [App\Http\Controllers\SocialLoginController::class, 'redirectToGoogle'])->name('auth.google');
+Route::get('auth/google/callback', [App\Http\Controllers\SocialLoginController::class, 'handleGoogleCallback'])->name('auth.google.callback');
 
 require __DIR__.'/auth.php';

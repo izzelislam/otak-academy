@@ -5,7 +5,7 @@ import { Head } from '@inertiajs/react';
 
 export default function AssetCodes({ asset, codes }) {
     const columns = [
-        { label: 'Code Prefix' },
+        { label: 'Code' },
         { label: 'Status' },
         { label: 'Redeemed By' },
         { label: 'Used At' },
@@ -13,19 +13,28 @@ export default function AssetCodes({ asset, codes }) {
         { label: 'Expires At' },
     ];
 
+    const copyToClipboard = (code) => {
+        navigator.clipboard.writeText(code);
+        // Optional: Show a toast notification here
+    };
+
     const renderRow = (code) => (
         <tr key={code.id} className="hover:bg-gray-50 dark:hover:bg-slate-800/50">
             <td className="px-4 py-3">
-                <code className="text-sm font-mono text-gray-900 dark:text-white bg-gray-100 dark:bg-slate-800 px-2 py-0.5 rounded">
-                    {code.code_prefix}****
-                </code>
+                <div className="flex items-center gap-2">
+                    <code className="text-xs font-mono bg-gray-100 dark:bg-slate-800 px-2 py-1 rounded text-gray-700 dark:text-slate-300">
+                        {code.code || code.code_prefix}
+                    </code>
+                    {code.code && (
+                        <button onClick={() => copyToClipboard(code.code)} className="p-1 text-gray-400 hover:text-[#10a37f]" title="Copy">
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                        </button>
+                    )}
+                </div>
             </td>
             <td className="px-4 py-3">
-                <span className={`inline-flex px-2 py-0.5 text-xs font-medium rounded ${
-                    code.is_used 
-                        ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' 
-                        : 'bg-[#10a37f]/10 text-[#10a37f] dark:bg-[#10a37f]/20'
-                }`}>
+                <span className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded ${code.is_used ? 'bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-slate-400' : 'bg-[#10a37f]/10 dark:bg-[#10a37f]/20 text-[#10a37f]'}`}>
+                    <span className={`w-1.5 h-1.5 rounded-full ${code.is_used ? 'bg-gray-400' : 'bg-[#10a37f]'}`}></span>
                     {code.is_used ? 'Used' : 'Available'}
                 </span>
             </td>

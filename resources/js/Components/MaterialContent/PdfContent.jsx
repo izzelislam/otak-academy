@@ -38,30 +38,10 @@ export default function PdfContent({ content, title }) {
             {/* PDF Viewer */}
             <div className="relative w-full" style={{ height: '80vh', minHeight: '500px' }}>
                 <iframe
-                    src={`${pdfUrl}#toolbar=1&navpanes=1&scrollbar=1`}
+                    src={`${pdfUrl}#toolbar=0&navpanes=0&scrollbar=0&view=FitH`}
                     className="absolute top-0 left-0 w-full h-full border-0 rounded-t-lg"
                     title={title || 'PDF Document'}
                 />
-            </div>
-
-            {/* Fallback download link */}
-            <div className="p-4 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600">
-                <div className="flex items-center justify-between">
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                        Having trouble viewing the PDF?
-                    </p>
-                    <a
-                        href={pdfUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 focus:bg-blue-700 active:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150"
-                    >
-                        <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                        </svg>
-                        Open in New Tab
-                    </a>
-                </div>
             </div>
         </div>
     );

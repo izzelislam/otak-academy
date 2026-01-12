@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import axios from 'axios';
 
 function XMarkIcon({ className }) {
     return (
@@ -53,28 +54,15 @@ export default function RedeemCodeModal({ show, asset, onClose, onSuccess }) {
         setError(null);
 
         try {
-            const response = await fetch(route('assets.redeem', asset.id), {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content,
-                    'Accept': 'application/json',
-                },
-                body: JSON.stringify({ code: code.trim() }),
+            const response = await axios.post(route('assets.redeem', asset.id), {
+                code: code.trim()
             });
 
-            const data = await response.json();
-
-            if (!response.ok) {
-                // Generic error message for security (don't reveal code status)
-                throw new Error(data.message || 'Invalid or expired code.');
-            }
-
             setSuccess(true);
-            setDownloadData(data);
+            setDownloadData(response.data);
         } catch (err) {
-            // Always show generic error message for security
-            setError('Invalid or expired code.');
+            // Always show generic error message for security unless specifics are safe
+            setError(err.response?.data?.message || 'Invalid or expired code.');
         } finally {
             setIsLoading(false);
         }

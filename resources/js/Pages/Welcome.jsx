@@ -1,5 +1,5 @@
 import { Head, Link } from '@inertiajs/react';
-import { useState, useEffect } from 'react';
+import Navbar from '@/Components/Navbar';
 
 function AcademicCapIcon({ className }) {
     return (
@@ -82,84 +82,30 @@ const features = [
 ];
 
 export default function Welcome({ auth }) {
-    const [isScrolled, setIsScrolled] = useState(false);
-
-    useEffect(() => {
-        document.documentElement.classList.add('dark');
-        
-        const handleScroll = () => {
-            setIsScrolled(window.scrollY > 10);
-        };
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
-
     return (
         <>
             <Head title="ECourse - Learn with Experts" />
-            <div className="min-h-screen bg-black text-white antialiased">
-
-                {/* Header */}
-                <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${
-                    isScrolled ? 'bg-black/80 backdrop-blur-xl border-b border-white/10' : ''
-                }`}>
-                    <div className="max-w-[1200px] mx-auto px-6">
-                        <div className="flex h-16 items-center justify-between">
-                            <Link href="/" className="flex items-center gap-2">
-                                <div className="h-8 w-8 rounded-lg bg-white flex items-center justify-center">
-                                    <AcademicCapIcon className="h-5 w-5 text-black" />
-                                </div>
-                                <span className="text-[15px] font-semibold tracking-tight">OtakAtikin</span>
-                            </Link>
-                            <nav className="flex items-center gap-1">
-                                <Link
-                                    href={route('blog.index')}
-                                    className="px-4 py-2 text-[14px] font-medium text-white/70 hover:text-white transition-colors"
-                                >
-                                    Blog
-                                </Link>
-                                <Link
-                                    href={route('assets.index')}
-                                    className="px-4 py-2 text-[14px] font-medium text-white/70 hover:text-white transition-colors"
-                                >
-                                    Assets
-                                </Link>
-                                {auth.user ? (
-                                    <Link
-                                        href={route('dashboard')}
-                                        className="px-4 py-2 text-[14px] font-medium text-white bg-white/10 hover:bg-white/15 rounded-lg transition-colors"
-                                    >
-                                        Dashboard
-                                    </Link>
-                                ) : (
-                                    <>
-                                        <Link
-                                            href={route('login')}
-                                            className="px-4 py-2 text-[14px] font-medium text-white/70 hover:text-white transition-colors"
-                                        >
-                                            Log in
-                                        </Link>
-                                        <Link
-                                            href={route('register')}
-                                            className="px-4 py-2 text-[14px] font-medium text-black bg-white hover:bg-white/90 rounded-lg transition-colors"
-                                        >
-                                            Sign up
-                                        </Link>
-                                    </>
-                                )}
-                            </nav>
-                        </div>
-                    </div>
-                </header>
+            <div className="min-h-screen bg-white dark:bg-black text-gray-900 dark:text-white antialiased transition-colors duration-300">
+                <Navbar auth={auth} />
 
                 {/* Hero Section */}
                 <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-                    {/* Base dark background */}
-                    <div className="absolute inset-0 bg-black" />
+                    {/* Base background */}
+                    <div className="absolute inset-0 bg-white dark:bg-black" />
                     
-                    {/* Grid Pattern - only visible in center */}
+                    {/* Grid Pattern */}
                     <div 
-                        className="absolute inset-0"
+                        className="absolute inset-0 opacity-30 dark:opacity-100"
+                        style={{
+                            backgroundImage: `
+                                linear-gradient(rgba(0,0,0,0.1) 1px, transparent 1px),
+                                linear-gradient(90deg, rgba(0,0,0,0.1) 1px, transparent 1px)
+                            `,
+                            backgroundSize: '50px 50px',
+                        }}
+                    />
+                    <div 
+                        className="absolute inset-0 hidden dark:block"
                         style={{
                             backgroundImage: `
                                 linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px),
@@ -172,7 +118,7 @@ export default function Welcome({ auth }) {
                     />
 
                     {/* Moving Spotlight Container */}
-                    <div className="absolute inset-0 overflow-hidden">
+                    <div className="absolute inset-0 overflow-hidden dark:opacity-100 opacity-60">
                         {/* Spotlight 1 */}
                         <div 
                             className="spotlight-move-1 absolute w-[600px] h-[600px] rounded-full pointer-events-none"
@@ -209,17 +155,17 @@ export default function Welcome({ auth }) {
 
                     <div className="relative max-w-[1200px] mx-auto px-6 py-32 text-center">
                         {/* Badge */}
-                        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 mb-8">
+                        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 mb-8">
                             <span className="relative flex h-2 w-2">
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#10a37f] opacity-75"></span>
                                 <span className="relative inline-flex rounded-full h-2 w-2 bg-[#10a37f]"></span>
                             </span>
-                            <span className="text-[13px] text-white/60 font-medium">Platform pembelajaran terpercaya</span>
+                            <span className="text-[13px] text-gray-600 dark:text-white/60 font-medium">Platform pembelajaran terpercaya</span>
                         </div>
 
                         {/* Headline */}
                         <h1 className="text-[clamp(40px,8vw,80px)] font-semibold leading-[1.1] tracking-[-0.02em] max-w-4xl mx-auto">
-                            <span className="text-white">Belajar skill baru</span>
+                            <span className="text-gray-900 dark:text-white">Belajar skill baru</span>
                             <br />
                             <span className="text-[#10a37f]">
                                 bersama expert
@@ -227,7 +173,7 @@ export default function Welcome({ auth }) {
                         </h1>
 
                         {/* Subheadline */}
-                        <p className="mt-6 text-[18px] sm:text-[20px] text-white/50 font-normal leading-relaxed max-w-xl mx-auto">
+                        <p className="mt-6 text-[18px] sm:text-[20px] text-gray-500 dark:text-white/50 font-normal leading-relaxed max-w-xl mx-auto">
                             Platform e-learning dengan kurikulum terstruktur dan mentor berpengalaman untuk membantu kamu mencapai karir impian.
                         </p>
 
@@ -236,7 +182,7 @@ export default function Welcome({ auth }) {
                             {auth.user ? (
                                 <Link
                                     href={route('dashboard')}
-                                    className="group inline-flex items-center justify-center gap-2 px-6 py-3 text-[15px] font-medium text-black bg-white hover:bg-white/90 rounded-xl transition-all"
+                                    className="group inline-flex items-center justify-center gap-2 px-6 py-3 text-[15px] font-medium text-white bg-black hover:bg-black/90 dark:text-black dark:bg-white dark:hover:bg-white/90 rounded-xl transition-all"
                                 >
                                     Masuk Dashboard
                                     <ArrowRightIcon className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
@@ -245,14 +191,14 @@ export default function Welcome({ auth }) {
                                 <>
                                     <Link
                                         href={route('register')}
-                                        className="group inline-flex items-center justify-center gap-2 px-6 py-3 text-[15px] font-medium text-black bg-white hover:bg-white/90 rounded-xl transition-all"
+                                        className="group inline-flex items-center justify-center gap-2 px-6 py-3 text-[15px] font-medium text-white bg-black hover:bg-black/90 dark:text-black dark:bg-white dark:hover:bg-white/90 rounded-xl transition-all"
                                     >
                                         Mulai belajar gratis
                                         <ArrowRightIcon className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
                                     </Link>
                                     <Link
                                         href={route('login')}
-                                        className="group inline-flex items-center justify-center gap-2 px-6 py-3 text-[15px] font-medium text-white/80 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 rounded-xl transition-all"
+                                        className="group inline-flex items-center justify-center gap-2 px-6 py-3 text-[15px] font-medium text-gray-600 hover:text-gray-900 bg-transparent border border-gray-200 hover:border-gray-300 dark:text-white/80 dark:hover:text-white dark:bg-white/5 dark:hover:bg-white/10 dark:border-white/10 dark:hover:border-white/20 rounded-xl transition-all"
                                     >
                                         <PlayCircleIcon className="h-5 w-5" />
                                         Lihat demo
@@ -262,7 +208,7 @@ export default function Welcome({ auth }) {
                         </div>
 
                         {/* Stats */}
-                        <div className="mt-20 pt-10 border-t border-white/10">
+                        <div className="mt-20 pt-10 border-t border-gray-200 dark:border-white/10">
                             <div className="grid grid-cols-2 sm:grid-cols-4 gap-8">
                                 {[
                                     { value: '500+', label: 'Video materi' },
@@ -271,10 +217,10 @@ export default function Welcome({ auth }) {
                                     { value: '4.9', label: 'Rating' },
                                 ].map((stat, index) => (
                                     <div key={index} className="text-center">
-                                        <div className="text-[28px] sm:text-[32px] font-semibold text-white tracking-tight">
+                                        <div className="text-[28px] sm:text-[32px] font-semibold text-gray-900 dark:text-white tracking-tight">
                                             {stat.value}
                                         </div>
-                                        <div className="mt-1 text-[14px] text-white/40 font-medium">
+                                        <div className="mt-1 text-[14px] text-gray-500 dark:text-white/40 font-medium">
                                             {stat.label}
                                         </div>
                                     </div>
@@ -284,10 +230,10 @@ export default function Welcome({ auth }) {
                     </div>
 
                     {/* Bottom Gradient fade */}
-                    <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-black via-black/80 to-transparent" />
+                    <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-white via-white/80 to-transparent dark:from-black dark:via-black/80" />
                     
                     {/* Top vignette */}
-                    <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-black/50 to-transparent" />
+                    <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-white/50 to-transparent dark:from-black/50" />
                 </section>
 
                 {/* Features Section */}

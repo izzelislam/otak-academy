@@ -1,5 +1,7 @@
 import { Head, Link, router } from '@inertiajs/react';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import axios from 'axios';
+import Navbar from '@/Components/Navbar';
 import RedeemCodeModal from '@/Components/RedeemCodeModal';
 
 function DownloadIcon({ className }) {
@@ -54,46 +56,30 @@ function formatFileSize(bytes) {
     return `${size.toFixed(1)} ${units[unitIndex]}`;
 }
 
-export default function AssetShow({ asset, hasValidRedemption, redownloadInfo }) {
-    const [isScrolled, setIsScrolled] = useState(false);
+export default function AssetShow({ auth, asset, hasValidRedemption, redownloadInfo }) {
     const [showRedeemModal, setShowRedeemModal] = useState(false);
     const [downloadUrl, setDownloadUrl] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [downloadsRemaining, setDownloadsRemaining] = useState(redownloadInfo?.downloads_remaining || 0);
 
-    useEffect(() => {
-        document.documentElement.classList.add('dark');
-        const handleScroll = () => setIsScrolled(window.scrollY > 10);
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
-
     const handleFreeDownload = async () => {
         setIsLoading(true);
         setError(null);
 
         try {
-            const response = await fetch(route('assets.download', asset.id), {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content,
-                    'Accept': 'application/json',
-                },
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.message || 'Failed to generate download link');
-            }
+            const response = await axios.post(route('assets.download', asset.id));
+            const data = response.data;
 
             setDownloadUrl(data.download_url);
             // Auto-trigger download
             window.location.href = data.download_url;
         } catch (err) {
-            setError(err.message);
+            if (err.response?.status === 401 && err.response?.data?.redirect) {
+                router.visit(err.response.data.redirect);
+                return;
+            }
+            setError(err.response?.data?.message || err.message || 'Failed to generate download link');
         } finally {
             setIsLoading(false);
         }
@@ -114,21 +100,8 @@ export default function AssetShow({ asset, hasValidRedemption, redownloadInfo })
         setError(null);
 
         try {
-            const response = await fetch(route('assets.redeem', asset.id), {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content,
-                    'Accept': 'application/json',
-                },
-                body: JSON.stringify({ code: '' }), // Empty code triggers re-download check
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.message || 'Failed to generate download link');
-            }
+            const response = await axios.post(route('assets.redeem', asset.id), { code: '' });
+            const data = response.data;
 
             setDownloadUrl(data.download_url);
             if (data.downloads_remaining !== undefined) {
@@ -136,7 +109,7 @@ export default function AssetShow({ asset, hasValidRedemption, redownloadInfo })
             }
             window.location.href = data.download_url;
         } catch (err) {
-            setError(err.message);
+            setError(err.response?.data?.message || err.message || 'Failed to generate download link');
         } finally {
             setIsLoading(false);
         }
@@ -157,31 +130,8 @@ export default function AssetShow({ asset, hasValidRedemption, redownloadInfo })
     return (
         <>
             <Head title={asset.title} />
-            <div className="min-h-screen bg-black text-white antialiased">
-                {/* Header */}
-                <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${
-                    isScrolled ? 'bg-black/80 backdrop-blur-xl border-b border-white/10' : ''
-                }`}>
-                    <div className="max-w-[1200px] mx-auto px-6">
-                        <div className="flex h-16 items-center justify-between">
-                            <Link href="/" className="flex items-center gap-2">
-                                <div className="h-8 w-8 rounded-lg bg-white flex items-center justify-center">
-                                    <svg className="h-5 w-5 text-black" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5" />
-                                    </svg>
-                                </div>
-                                <span className="text-[15px] font-semibold tracking-tight">OtakAtikin</span>
-                            </Link>
-                            <nav className="flex items-center gap-4">
-                                <Link href={route('blog.index')} className="text-[14px] font-medium text-white/70 hover:text-white transition-colors">Blog</Link>
-                                <Link href={route('assets.index')} className="text-[14px] font-medium text-white">Assets</Link>
-                                <Link href={route('login')} className="px-4 py-2 text-[14px] font-medium text-black bg-white hover:bg-white/90 rounded-lg transition-colors">
-                                    Login
-                                </Link>
-                            </nav>
-                        </div>
-                    </div>
-                </header>
+            <div className="min-h-screen bg-white dark:bg-black text-gray-900 dark:text-white antialiased transition-colors duration-300">
+                <Navbar auth={auth} />
 
                 {/* Content */}
                 <article className="pt-24 pb-16">
@@ -189,7 +139,7 @@ export default function AssetShow({ asset, hasValidRedemption, redownloadInfo })
                         {/* Back Link */}
                         <Link 
                             href={route('assets.index')}
-                            className="inline-flex items-center gap-2 text-[14px] text-white/60 hover:text-white transition-colors mb-8"
+                            className="inline-flex items-center gap-2 text-[14px] text-gray-500 hover:text-gray-900 dark:text-white/60 dark:hover:text-white transition-colors mb-8"
                         >
                             <ArrowLeftIcon className="w-4 h-4" />
                             Kembali ke Assets
@@ -200,7 +150,7 @@ export default function AssetShow({ asset, hasValidRedemption, redownloadInfo })
                             <div className="lg:col-span-2">
                                 {/* Thumbnail */}
                                 {asset.thumbnail_url ? (
-                                    <div className="rounded-2xl overflow-hidden mb-8">
+                                    <div className="rounded-2xl overflow-hidden mb-8 shadow-sm dark:shadow-none bg-gray-100 dark:bg-white/[0.02] border border-gray-200 dark:border-white/[0.06]">
                                         <img 
                                             src={asset.thumbnail_url} 
                                             alt={asset.title}
@@ -208,8 +158,8 @@ export default function AssetShow({ asset, hasValidRedemption, redownloadInfo })
                                         />
                                     </div>
                                 ) : (
-                                    <div className="aspect-video rounded-2xl bg-white/[0.02] border border-white/[0.06] flex items-center justify-center mb-8">
-                                        <FileIcon className="w-24 h-24 text-white/20" />
+                                    <div className="aspect-video rounded-2xl bg-gray-100 dark:bg-white/[0.02] border border-gray-200 dark:border-white/[0.06] flex items-center justify-center mb-8">
+                                        <FileIcon className="w-24 h-24 text-gray-400 dark:text-white/20" />
                                     </div>
                                 )}
 
@@ -218,7 +168,7 @@ export default function AssetShow({ asset, hasValidRedemption, redownloadInfo })
                                     <span className={`inline-flex items-center gap-1 px-3 py-1 text-[12px] font-medium rounded-full ${
                                         asset.type === 'free' 
                                             ? 'text-[#10a37f] bg-[#10a37f]/10' 
-                                            : 'text-amber-400 bg-amber-400/10'
+                                            : 'text-amber-600 bg-amber-100 dark:text-amber-400 dark:bg-amber-400/10'
                                     }`}>
                                         {asset.type === 'free' ? (
                                             <>
@@ -228,20 +178,20 @@ export default function AssetShow({ asset, hasValidRedemption, redownloadInfo })
                                         ) : (
                                             <>
                                                 <LockIcon className="w-3.5 h-3.5" />
-                                                Paid
+                                                Premium
                                             </>
                                         )}
                                     </span>
                                 </div>
 
-                                <h1 className="text-[32px] sm:text-[40px] font-semibold tracking-[-0.02em] leading-[1.2] text-white mb-6">
+                                <h1 className="text-[32px] sm:text-[40px] font-semibold tracking-[-0.02em] leading-[1.2] text-gray-900 dark:text-white mb-6">
                                     {asset.title}
                                 </h1>
 
                                 {/* Description */}
                                 {asset.description && (
-                                    <div className="prose prose-invert prose-lg max-w-none mb-8">
-                                        <p className="text-white/70 leading-relaxed whitespace-pre-wrap">
+                                    <div className="prose prose-lg max-w-none mb-8 text-gray-600 dark:text-white/70">
+                                        <p className="leading-relaxed whitespace-pre-wrap">
                                             {asset.description}
                                         </p>
                                     </div>
@@ -250,31 +200,31 @@ export default function AssetShow({ asset, hasValidRedemption, redownloadInfo })
 
                             {/* Sidebar - Download Card */}
                             <div className="lg:col-span-1">
-                                <div className="sticky top-24 bg-white/[0.02] border border-white/[0.06] rounded-2xl p-6">
-                                    <h3 className="text-[16px] font-semibold text-white mb-4">Download</h3>
+                                <div className="sticky top-24 bg-white dark:bg-white/[0.02] border border-gray-200 dark:border-white/[0.06] rounded-2xl p-6 shadow-sm dark:shadow-none">
+                                    <h3 className="text-[16px] font-semibold text-gray-900 dark:text-white mb-4">Download</h3>
                                     
                                     {/* File Info */}
                                     <div className="space-y-3 mb-6">
                                         <div className="flex items-center justify-between text-[14px]">
-                                            <span className="text-white/50">File Size</span>
-                                            <span className="text-white font-medium">{formatFileSize(asset.file_size)}</span>
+                                            <span className="text-gray-500 dark:text-white/50">File Size</span>
+                                            <span className="text-gray-900 dark:text-white font-medium">{formatFileSize(asset.file_size)}</span>
                                         </div>
                                         {asset.file_type && (
                                             <div className="flex items-center justify-between text-[14px]">
-                                                <span className="text-white/50">Format</span>
-                                                <span className="text-white font-medium">{asset.file_type.split('/').pop()?.toUpperCase()}</span>
+                                                <span className="text-gray-500 dark:text-white/50">Format</span>
+                                                <span className="text-gray-900 dark:text-white font-medium">{asset.file_type.split('/').pop()?.toUpperCase()}</span>
                                             </div>
                                         )}
                                         <div className="flex items-center justify-between text-[14px]">
-                                            <span className="text-white/50">Downloads</span>
-                                            <span className="text-white font-medium">{asset.download_count || 0}</span>
+                                            <span className="text-gray-500 dark:text-white/50">Downloads</span>
+                                            <span className="text-gray-900 dark:text-white font-medium">{asset.download_count || 0}</span>
                                         </div>
                                     </div>
 
                                     {/* Error Message */}
                                     {error && (
-                                        <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
-                                            <p className="text-[13px] text-red-400">{error}</p>
+                                        <div className="mb-4 p-3 bg-red-50 text-red-600 border border-red-100 rounded-lg dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/20">
+                                            <p className="text-[13px]">{error}</p>
                                         </div>
                                     )}
 
@@ -283,7 +233,7 @@ export default function AssetShow({ asset, hasValidRedemption, redownloadInfo })
                                         <button
                                             onClick={handleFreeDownload}
                                             disabled={isLoading}
-                                            className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-[#10a37f] hover:bg-[#0e8c6b] disabled:opacity-50 text-white font-medium rounded-xl transition-colors"
+                                            className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-[#10a37f] hover:bg-[#0e8c6b] disabled:opacity-50 text-white font-medium rounded-xl transition-colors shadow-sm"
                                         >
                                             {isLoading ? (
                                                 <>
@@ -309,15 +259,15 @@ export default function AssetShow({ asset, hasValidRedemption, redownloadInfo })
                                             
                                             {/* Re-download Info */}
                                             {redownloadInfo && (
-                                                <div className="p-3 bg-white/[0.02] border border-white/[0.06] rounded-lg space-y-2">
+                                                <div className="p-3 bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/[0.06] rounded-lg space-y-2">
                                                     <div className="flex items-center justify-between text-[13px]">
-                                                        <span className="text-white/50">Downloads tersisa</span>
-                                                        <span className="text-white font-medium">{downloadsRemaining}</span>
+                                                        <span className="text-gray-500 dark:text-white/50">Limit per jam</span>
+                                                        <span className="text-gray-900 dark:text-white font-medium">{downloadsRemaining} / 3</span>
                                                     </div>
-                                                    {redownloadInfo.expires_at && (
-                                                        <div className="flex items-center justify-between text-[13px]">
-                                                            <span className="text-white/50">Berlaku sampai</span>
-                                                            <span className="text-white font-medium">{formatExpiryDate(redownloadInfo.expires_at)}</span>
+                                                    
+                                                    {!redownloadInfo.can_redownload && redownloadInfo.reason && (
+                                                        <div className="mt-2 p-2 bg-amber-50 dark:bg-amber-500/10 border border-amber-100 dark:border-amber-500/20 rounded text-[12px] text-amber-700 dark:text-amber-400">
+                                                            {redownloadInfo.reason}
                                                         </div>
                                                     )}
                                                 </div>
@@ -326,7 +276,7 @@ export default function AssetShow({ asset, hasValidRedemption, redownloadInfo })
                                             <button
                                                 onClick={handleRedownload}
                                                 disabled={isLoading || downloadsRemaining <= 0}
-                                                className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-[#10a37f] hover:bg-[#0e8c6b] disabled:opacity-50 text-white font-medium rounded-xl transition-colors"
+                                                className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-[#10a37f] hover:bg-[#0e8c6b] disabled:opacity-50 text-white font-medium rounded-xl transition-colors shadow-sm"
                                             >
                                                 {isLoading ? (
                                                     <>
@@ -352,7 +302,7 @@ export default function AssetShow({ asset, hasValidRedemption, redownloadInfo })
                                     ) : (
                                         <button
                                             onClick={() => setShowRedeemModal(true)}
-                                            className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-amber-500 hover:bg-amber-600 text-white font-medium rounded-xl transition-colors"
+                                            className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-amber-500 hover:bg-amber-600 text-white font-medium rounded-xl transition-colors shadow-sm"
                                         >
                                             <LockIcon className="w-5 h-5" />
                                             Redeem Code
@@ -361,8 +311,8 @@ export default function AssetShow({ asset, hasValidRedemption, redownloadInfo })
 
                                     {/* Download URL (if generated) */}
                                     {downloadUrl && (
-                                        <div className="mt-4 p-3 bg-white/[0.02] border border-white/[0.06] rounded-lg">
-                                            <p className="text-[12px] text-white/50 mb-2">Link download (expires in 5 minutes):</p>
+                                        <div className="mt-4 p-3 bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/[0.06] rounded-lg">
+                                            <p className="text-[12px] text-gray-500 dark:text-white/50 mb-2">Link download (expires in 5 minutes):</p>
                                             <a 
                                                 href={downloadUrl}
                                                 className="text-[13px] text-[#10a37f] hover:underline break-all"
@@ -378,9 +328,9 @@ export default function AssetShow({ asset, hasValidRedemption, redownloadInfo })
                 </article>
 
                 {/* Footer */}
-                <footer className="border-t border-white/[0.06] py-8">
+                <footer className="border-t border-gray-200 dark:border-white/[0.06] py-8">
                     <div className="max-w-[1200px] mx-auto px-6 text-center">
-                        <p className="text-[13px] text-white/40">
+                        <p className="text-[13px] text-gray-400 dark:text-white/40">
                             © {new Date().getFullYear()} OtakAtikin. All rights reserved.
                         </p>
                     </div>

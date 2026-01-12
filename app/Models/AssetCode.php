@@ -17,6 +17,7 @@ class AssetCode extends Model
      */
     protected $fillable = [
         'asset_id',
+        'code',
         'code_hash',
         'code_prefix',
         'user_id',
@@ -25,6 +26,8 @@ class AssetCode extends Model
         'expires_at',
         'download_count',
         'max_downloads',
+        'last_download_at',
+        'hourly_download_count',
     ];
 
     /**
@@ -40,6 +43,8 @@ class AssetCode extends Model
             'expires_at' => 'datetime',
             'download_count' => 'integer',
             'max_downloads' => 'integer',
+            'last_download_at' => 'datetime',
+            'hourly_download_count' => 'integer',
         ];
     }
 

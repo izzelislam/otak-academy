@@ -62,4 +62,14 @@ class CourseController extends Controller
 
         return redirect()->back()->with('success', 'Material marked as complete!');
     }
+
+    public function complete(Course $course)
+    {
+        $user = auth()->user();
+        $this->courseService->checkAccess($user, $course);
+
+        return Inertia::render('Member/Course/Complete', [
+            'course' => $course,
+        ]);
+    }
 }

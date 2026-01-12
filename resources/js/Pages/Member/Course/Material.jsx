@@ -112,14 +112,22 @@ export default function MaterialShow({ course, material, userProgress, progressP
             )}
 
             {/* Main Content */}
-            <div className="flex-1 flex flex-col">
+            <div 
+                className="flex-1 flex flex-col h-[calc(100vh-4rem)] overflow-hidden" 
+                onContextMenu={(e) => e.preventDefault()}
+            >
                 {/* Material Content */}
-                <div className="flex-1 p-4 sm:p-6">
-                    {renderMaterialContent()}
+                <div 
+                    className="flex-1 p-5 overflow-y-auto custom-scrollbar"
+                    style={{ userSelect: 'none', WebkitUserSelect: 'none' }}
+                >
+                    <div className="max-w-4xl mx-auto">
+                        {renderMaterialContent()}
+                    </div>
                 </div>
 
                 {/* Navigation Footer */}
-                <div className="border-t border-gray-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm">
+                <div className="flex-none border-t border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 z-30">
                     <div className="p-4 sm:p-6">
                         <div className="flex items-center justify-between">
                             {/* Previous Button */}
@@ -139,10 +147,11 @@ export default function MaterialShow({ course, material, userProgress, progressP
                                 )}
                             </div>
 
-                            {/* Mark Complete / Status */}
-                            <div className="flex items-center space-x-4">
+                            {/* Right Side Actions Group */}
+                            <div className="flex items-center gap-3">
+                                {/* Mark Complete / Status */}
                                 {isCompleted ? (
-                                    <span className="flex items-center text-[#10a37f]">
+                                    <span className="flex items-center text-[#10a37f] px-4 py-2 bg-[#10a37f]/10 border border-[#10a37f]/20 rounded-lg">
                                         <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                         </svg>
@@ -153,7 +162,7 @@ export default function MaterialShow({ course, material, userProgress, progressP
                                         href={route('member.courses.materials.complete', [course.id, material.id])}
                                         method="post"
                                         as="button"
-                                        className="inline-flex items-center px-4 py-2 bg-[#10a37f] hover:bg-[#0e8c6b] text-white rounded-lg font-medium text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-[#10a37f] focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-900"
+                                        className="inline-flex items-center px-4 py-2 border border-[#10a37f] text-[#10a37f] hover:bg-[#10a37f]/5 dark:hover:bg-[#10a37f]/10 rounded-lg font-medium text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-[#10a37f] focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-900"
                                     >
                                         <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
@@ -161,40 +170,40 @@ export default function MaterialShow({ course, material, userProgress, progressP
                                         Mark as Complete
                                     </Link>
                                 )}
-                            </div>
 
-                            {/* Next Button */}
-                            <div>
-                                {nextMaterial ? (
-                                    canAccessNext ? (
+                                {/* Next Button */}
+                                <div>
+                                    {nextMaterial ? (
+                                        canAccessNext ? (
+                                            <Link
+                                                href={route('member.courses.materials.show', [course.id, nextMaterial.id])}
+                                                className="inline-flex items-center px-4 py-2 text-sm bg-[#10a37f] hover:bg-[#0e8c6b] text-white rounded-lg font-medium transition-colors shadow-sm"
+                                            >
+                                                Next
+                                                <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                                                </svg>
+                                            </Link>
+                                        ) : (
+                                            <span className="inline-flex items-center px-4 py-2 text-sm text-gray-400 dark:text-slate-500 cursor-not-allowed rounded-lg border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800">
+                                                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                                </svg>
+                                                Next (Locked)
+                                            </span>
+                                        )
+                                    ) : (
                                         <Link
-                                            href={route('member.courses.materials.show', [course.id, nextMaterial.id])}
-                                            className="inline-flex items-center px-4 py-2 text-sm bg-[#10a37f] hover:bg-[#0e8c6b] text-white rounded-lg font-medium transition-colors"
+                                            href={route('member.courses.complete', course.id)}
+                                            className="inline-flex items-center px-4 py-2 text-sm bg-[#10a37f] hover:bg-[#0e8c6b] text-white rounded-lg font-medium transition-colors shadow-sm"
                                         >
-                                            Next
+                                            Finish Course
                                             <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                                             </svg>
                                         </Link>
-                                    ) : (
-                                        <span className="inline-flex items-center px-4 py-2 text-sm text-gray-400 dark:text-slate-500 cursor-not-allowed rounded-lg">
-                                            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                                            </svg>
-                                            Next (Locked)
-                                        </span>
-                                    )
-                                ) : (
-                                    <Link
-                                        href={route('member.courses.show', course.id)}
-                                        className="inline-flex items-center px-4 py-2 text-sm bg-[#10a37f] hover:bg-[#0e8c6b] text-white rounded-lg font-medium transition-colors"
-                                    >
-                                        Finish Course
-                                        <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                                        </svg>
-                                    </Link>
-                                )}
+                                    )}
+                                </div>
                             </div>
                         </div>
                     </div>

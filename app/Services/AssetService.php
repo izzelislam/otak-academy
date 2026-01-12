@@ -91,6 +91,10 @@ class AssetService
                 Storage::disk('s3')->delete($asset->thumbnail);
             }
             $data['thumbnail'] = $data['thumbnail']->storePublicly('asset-thumbnails', 's3');
+        } else {
+            // If thumbnail is not being updated (e.g. it is null), remove it from data
+            // so we don't accidentally clear the existing thumbnail in database
+            unset($data['thumbnail']);
         }
 
         // Handle file upload to private storage
@@ -102,6 +106,12 @@ class AssetService
             $fileData = $this->uploadFile($data['file']);
             $data = array_merge($data, $fileData);
             unset($data['file']);
+        } else {
+             unset($data['file']);
+             unset($data['file_path']); // Ensure we don't overwrite these if they crept in
+             unset($data['file_name']);
+             unset($data['file_size']);
+             unset($data['file_type']);
         }
 
         $asset->update($data);
@@ -166,7 +176,7 @@ class AssetService
     }
 
     /**
-     * Get the full path to an asset file.
+     * Get the relative path (S3 key) to an asset file.
      */
     public function getFilePath(DownloadableAsset $asset): ?string
     {
@@ -174,11 +184,11 @@ class AssetService
             return null;
         }
 
-        return Storage::disk('local')->path($asset->file_path);
+        return $asset->file_path;
     }
 
     /**
-     * Check if asset file exists.
+     * Check if asset file exists on S3.
      */
     public function fileExists(DownloadableAsset $asset): bool
     {
@@ -186,7 +196,7 @@ class AssetService
             return false;
         }
 
-        return Storage::disk('local')->exists($asset->file_path);
+        return Storage::disk('s3')->exists($asset->file_path);
     }
 
     /**

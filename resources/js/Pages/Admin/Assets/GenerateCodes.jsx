@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import axios from 'axios';
 
 function XMarkIcon({ className }) {
     return (
@@ -27,25 +28,13 @@ export default function GenerateCodesModal({ show, asset, onClose, onSuccess }) 
         setError(null);
 
         try {
-            const response = await fetch(route('admin.assets.generate-codes', asset.id), {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content,
-                    'Accept': 'application/json',
-                },
-                body: JSON.stringify({ quantity }),
+            const response = await axios.post(route('admin.assets.generate-codes', asset.id), {
+                quantity
             });
 
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.message || 'Failed to generate codes');
-            }
-
-            onSuccess(data.codes);
+            onSuccess(response.data.codes);
         } catch (err) {
-            setError(err.message);
+            setError(err.response?.data?.message || err.message || 'Failed to generate codes');
         } finally {
             setIsLoading(false);
         }

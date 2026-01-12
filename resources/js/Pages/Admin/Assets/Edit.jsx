@@ -161,9 +161,9 @@ export default function AssetEdit({ asset }) {
                                         alt="Thumbnail preview"
                                         className="w-20 h-20 rounded-lg object-cover"
                                     />
-                                ) : asset.thumbnail ? (
+                                ) : asset.thumbnail_url ? (
                                     <img 
-                                        src={asset.thumbnail} 
+                                        src={asset.thumbnail_url} 
                                         alt="Current thumbnail"
                                         className="w-20 h-20 rounded-lg object-cover"
                                     />

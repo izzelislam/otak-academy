@@ -7,8 +7,9 @@ use App\Services\DownloadAuditService;
 use App\Services\DownloadTokenService;
 use App\Utilities\PathValidator;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class SecureDownloadController extends Controller
 {
@@ -22,7 +23,7 @@ class SecureDownloadController extends Controller
      * Download a file using a secure token.
      * Validates token, serves file through controller, and logs the activity.
      */
-    public function download(Request $request, string $token): BinaryFileResponse|Response
+    public function download(Request $request, string $token): StreamedResponse|Response
     {
         $ipAddress = $request->ip();
         $userAgent = $request->userAgent() ?? 'Unknown';
@@ -91,9 +92,6 @@ class SecureDownloadController extends Controller
             ], 403);
         }
 
-        // Get the full file path
-        $filePath = $this->assetService->getFilePath($asset);
-
         // Increment download counter
         $this->assetService->incrementDownloadCount($asset);
 
@@ -108,27 +106,18 @@ class SecureDownloadController extends Controller
             'File downloaded successfully'
         );
 
-        // Serve the file with security headers
-        return $this->serveFile($filePath, $asset->file_name, $asset->file_type);
-    }
-
-    /**
-     * Serve the file with appropriate headers.
-     */
-    protected function serveFile(string $filePath, string $fileName, string $mimeType): BinaryFileResponse
-    {
-        $response = response()->download($filePath, $fileName, [
-            'Content-Type' => $mimeType,
-            'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
-            // Content Security Policy headers
+        // Security headers
+        $headers = [
+            'Content-Type' => $asset->file_type,
             'Content-Security-Policy' => "default-src 'none'; frame-ancestors 'none'",
             'X-Content-Type-Options' => 'nosniff',
             'X-Frame-Options' => 'DENY',
             'X-XSS-Protection' => '1; mode=block',
             'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0',
             'Pragma' => 'no-cache',
-        ]);
+        ];
 
-        return $response;
+        // Retrieve and stream the file from S3
+        return Storage::disk('s3')->download($asset->file_path, $asset->file_name, $headers);
     }
 }
