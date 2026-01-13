@@ -118,6 +118,8 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
 
     // Content Calendar Management
     Route::resource('content-calendars', AdminContentCalendarController::class);
+    Route::post('content-calendars/bulk-generate', [AdminContentCalendarController::class, 'bulkStore'])
+        ->name('content-calendars.bulk-generate');
 });
 
 // Member Routes
