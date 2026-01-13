@@ -20,7 +20,9 @@ class ContentCalendarController extends Controller
 
     public function index()
     {
-        $contents = ContentCalendar::orderBy('content_date', 'desc')->paginate(10);
+        $contents = ContentCalendar::orderBy('content_date', 'asc')
+            ->orderBy('id', 'asc')
+            ->paginate(10);
         return Inertia::render('Admin/ContentCalendars/Index', [
             'contents' => $contents,
         ]);
