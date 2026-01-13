@@ -152,6 +152,11 @@ Route::middleware(['auth', 'verified'])->prefix('member')->name('member.')->grou
     Route::put('/profile/password', [MemberProfileController::class, 'updatePassword'])->name('profile.password');
 });
 
+// Privacy Policy Route
+Route::get('/privacy-policy', function () {
+    return Inertia::render('PrivacyPolicy');
+})->name('privacy-policy');
+
 // Google Login Routes
 Route::get('auth/google', [App\Http\Controllers\SocialLoginController::class, 'redirectToGoogle'])->name('auth.google');
 Route::get('auth/google/callback', [App\Http\Controllers\SocialLoginController::class, 'handleGoogleCallback'])->name('auth.google.callback');
