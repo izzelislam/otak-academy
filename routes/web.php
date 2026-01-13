@@ -154,7 +154,11 @@ Route::middleware(['auth', 'verified'])->prefix('member')->name('member.')->grou
 
 // Privacy Policy Route
 Route::get('/privacy-policy', function () {
-    return Inertia::render('PrivacyPolicy');
+    return Inertia::render('PrivacyPolicy', [
+        'auth' => [
+            'user' => auth()->user(),
+        ],
+    ]);
 })->name('privacy-policy');
 
 // Google Login Routes

@@ -1,24 +1,15 @@
 import { Head, Link } from '@inertiajs/react';
+import Navbar from '@/Components/Navbar';
 
-export default function PrivacyPolicy() {
+export default function PrivacyPolicy({ auth }) {
     return (
         <>
             <Head title="Privacy Policy - OtakAtikin" />
             <div className="min-h-screen bg-white dark:bg-black text-gray-900 dark:text-white antialiased transition-colors duration-300">
-                {/* Header */}
-                <header className="border-b border-gray-200 dark:border-white/10">
-                    <div className="max-w-4xl mx-auto px-6 py-6">
-                        <Link href="/" className="inline-flex items-center gap-2 text-gray-600 dark:text-white/60 hover:text-gray-900 dark:hover:text-white transition-colors">
-                            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
-                            </svg>
-                            Kembali ke Beranda
-                        </Link>
-                    </div>
-                </header>
+                <Navbar auth={auth} />
 
                 {/* Content */}
-                <main className="max-w-4xl mx-auto px-6 py-12 sm:py-16">
+                <main className="max-w-4xl mx-auto px-6 pt-28 pb-16">
                     <div className="mb-12">
                         <h1 className="text-[32px] sm:text-[40px] font-semibold tracking-[-0.02em] text-gray-900 dark:text-white">
                             Privacy Policy
@@ -211,12 +202,15 @@ export default function PrivacyPolicy() {
                 </main>
 
                 {/* Footer */}
-                <footer className="border-t border-gray-200 dark:border-white/10 mt-16">
+                <footer className="border-t border-gray-200 dark:border-white/[0.06]">
                     <div className="max-w-4xl mx-auto px-6 py-8">
                         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                            <p className="text-[13px] text-gray-500 dark:text-white/40">
-                                © {new Date().getFullYear()} OtakAtikin. All rights reserved.
-                            </p>
+                            <div className="flex items-center gap-3">
+                                <img src="/favicon/favicon-96x96.png" alt="OtakAtikin" className="h-6 w-6" />
+                                <p className="text-[13px] text-gray-500 dark:text-white/40">
+                                    © {new Date().getFullYear()} OtakAtikin. All rights reserved.
+                                </p>
+                            </div>
                             <div className="flex items-center gap-6 text-[13px]">
                                 <Link href="/" className="text-gray-500 hover:text-gray-900 dark:text-white/40 dark:hover:text-white transition-colors">
                                     Beranda
