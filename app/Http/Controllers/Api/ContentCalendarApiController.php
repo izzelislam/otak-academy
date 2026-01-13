@@ -46,7 +46,7 @@ class ContentCalendarApiController extends Controller
     
     private function verifyToken(Request $request)
     {
-        $token = env('CONTENT_AUTOMATION_TOKEN');
+        $token = config('services.content_calendar.token');
         
         if (!$token) {
              abort(500, 'Automation token not configured in .env (CONTENT_AUTOMATION_TOKEN)');
@@ -55,8 +55,8 @@ class ContentCalendarApiController extends Controller
         // Check header or query parameter
         $providedToken = $request->header('X-API-TOKEN') ?? $request->input('token');
         
-        if ($providedToken !== $token) {
-            abort(401, 'Invalid authentication token');
+        if (trim($providedToken) !== trim($token)) {
+            abort(401, 'Invalid authentication token. Received: ' . $providedToken);
         }
     }
 }

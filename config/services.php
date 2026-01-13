@@ -41,4 +41,7 @@ return [
         'redirect' => env('GOOGLE_REDIRECT_URL'),
     ],
 
+    'content_calendar' => [
+        'token' => env('CONTENT_AUTOMATION_TOKEN'),
+    ],
 ];
