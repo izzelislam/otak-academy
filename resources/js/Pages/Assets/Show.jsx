@@ -167,7 +167,7 @@ export default function AssetShow({ auth, asset, hasValidRedemption, redownloadI
                                         />
                                     </div>
                                 ) : (
-                                    <div className="aspect-video rounded-2xl bg-gray-100 dark:bg-white/[0.02] border border-gray-200 dark:border-white/[0.06] flex items-center justify-center mb-8">
+                                    <div className="aspect-[4/5] rounded-2xl bg-gray-100 dark:bg-white/[0.02] border border-gray-200 dark:border-white/[0.06] flex items-center justify-center mb-8">
                                         <FileIcon className="w-24 h-24 text-gray-400 dark:text-white/20" />
                                     </div>
                                 )}

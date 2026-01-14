@@ -42,7 +42,7 @@ function AssetCard({ asset }) {
     return (
         <article className="group bg-white dark:bg-white/[0.02] border border-gray-200 dark:border-white/[0.06] rounded-2xl overflow-hidden hover:border-gray-300 dark:hover:bg-white/[0.04] dark:hover:border-white/[0.1] transition-all duration-300">
             {asset.thumbnail_url ? (
-                <Link href={route('assets.show', asset.slug)} className="block aspect-video overflow-hidden">
+                <Link href={route('assets.show', asset.slug)} className="block aspect-[4/5] overflow-hidden">
                     <img 
                         src={asset.thumbnail_url} 
                         alt={asset.title}
@@ -50,7 +50,7 @@ function AssetCard({ asset }) {
                     />
                 </Link>
             ) : (
-                <Link href={route('assets.show', asset.slug)} className="block aspect-video overflow-hidden bg-gray-100 dark:bg-white/[0.02] flex items-center justify-center">
+                <Link href={route('assets.show', asset.slug)} className="block aspect-[4/5] overflow-hidden bg-gray-100 dark:bg-white/[0.02] flex items-center justify-center">
                     <FileIcon className="w-16 h-16 text-gray-400 dark:text-white/20" />
                 </Link>
             )}
@@ -105,7 +105,7 @@ function SkeletonCard() {
     return (
         <article className="bg-white dark:bg-white/[0.02] border border-gray-200 dark:border-white/[0.06] rounded-2xl overflow-hidden animate-pulse">
             {/* Thumbnail skeleton */}
-            <div className="aspect-video bg-gray-200 dark:bg-white/[0.05]" />
+            <div className="aspect-[4/5] bg-gray-200 dark:bg-white/[0.05]" />
             <div className="p-6">
                 {/* Badges skeleton */}
                 <div className="flex items-center gap-2 mb-3">
