@@ -67,6 +67,11 @@ export default function AssetShow({ asset, codeStats }) {
                     }`}>
                         {asset.type === 'free' ? 'Free' : 'Paid'}
                     </span>
+                    {asset.type === 'free' && asset.is_redemption_required && (
+                        <span className="px-2 py-0.5 text-xs font-medium rounded bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400">
+                            Code Required
+                        </span>
+                    )}
                 </div>
                 <div className="flex items-center gap-2">
                     {asset.is_published && (
@@ -222,8 +227,8 @@ export default function AssetShow({ asset, codeStats }) {
                         </dl>
                     </div>
 
-                    {/* Code Management (for paid assets) */}
-                    {asset.type === 'paid' && (
+                    {/* Code Management (for paid assets or free assets with redemption) */}
+                    {(asset.type === 'paid' || (asset.type === 'free' && asset.is_redemption_required)) && (
                         <div className="bg-white dark:bg-slate-900 rounded-lg border border-gray-200 dark:border-slate-800 p-4">
                             <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Code Management</h3>
                             

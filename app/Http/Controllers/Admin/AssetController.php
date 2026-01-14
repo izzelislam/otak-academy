@@ -115,9 +115,11 @@ class AssetController extends Controller
             'file' => ['nullable', 'file', 'max:102400'], // 100MB max
             'type' => ['required', 'in:free,paid'],
             'is_published' => ['boolean'],
+            'is_redemption_required' => ['boolean'],
         ]);
 
         $validated['is_published'] = $validated['is_published'] ?? false;
+        $validated['is_redemption_required'] = $validated['is_redemption_required'] ?? false;
 
         $this->assetService->updateAsset($asset, $validated);
 
@@ -139,20 +141,20 @@ class AssetController extends Controller
     }
 
     /**
-     * Generate codes for a paid asset.
+     * Generate codes for a paid or redemption-required asset.
      */
     public function generateCodes(Request $request, DownloadableAsset $asset): RedirectResponse|\Illuminate\Http\JsonResponse
     {
-        // Verify asset is paid type
-        if ($asset->isFree()) {
+        // Verify asset allows code generation
+        if ($asset->isFree() && !$asset->is_redemption_required) {
             if ($request->wantsJson()) {
                 return response()->json([
-                    'message' => 'Codes can only be generated for paid assets.',
+                    'message' => 'Codes can only be generated for paid assets or free assets with redemption required.',
                 ], 400);
             }
             return redirect()
                 ->back()
-                ->with('error', 'Codes can only be generated for paid assets.');
+                ->with('error', 'Codes can only be generated for paid assets or free assets with redemption required.');
         }
 
         $validated = $request->validate([

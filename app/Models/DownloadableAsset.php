@@ -29,6 +29,7 @@ class DownloadableAsset extends Model
         'type',
         'download_count',
         'is_published',
+        'is_redemption_required',
     ];
 
     /**
@@ -40,6 +41,7 @@ class DownloadableAsset extends Model
     {
         return [
             'is_published' => 'boolean',
+            'is_redemption_required' => 'boolean',
             'download_count' => 'integer',
             'file_size' => 'integer',
         ];

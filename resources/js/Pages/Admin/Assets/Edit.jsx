@@ -28,6 +28,7 @@ export default function AssetEdit({ asset }) {
         file: null,
         type: asset.type || 'free',
         is_published: asset.is_published || false,
+        is_redemption_required: asset.is_redemption_required || false,
     });
 
     const handleFileChange = (e) => {
@@ -183,19 +184,28 @@ export default function AssetEdit({ asset }) {
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <FormSelect
-                                label="Tipe"
-                                id="type"
-                                value={data.type}
-                                onChange={(e) => setData('type', e.target.value)}
-                                error={errors.type}
-                                required
-                            >
-                                <option value="free">Free</option>
-                                <option value="paid">Paid (Requires Code)</option>
-                            </FormSelect>
+                            <div>
+                                <FormSelect
+                                    label="Tipe"
+                                    id="type"
+                                    value={data.type}
+                                    onChange={(e) => {
+                                        setData(data => ({
+                                            ...data,
+                                            type: e.target.value,
+                                            // Auto-check redemption for paid assets (locked)
+                                            is_redemption_required: e.target.value === 'paid' ? true : data.is_redemption_required
+                                        }));
+                                    }}
+                                    error={errors.type}
+                                    required
+                                >
+                                    <option value="free">Free</option>
+                                    <option value="paid">Paid (Requires Code)</option>
+                                </FormSelect>
+                            </div>
 
-                            <div className="flex items-end pb-2">
+                            <div className="space-y-3 pt-6">
                                 <FormCheckbox
                                     label="Publish asset"
                                     id="is_published"
@@ -203,6 +213,17 @@ export default function AssetEdit({ asset }) {
                                     onChange={(e) => setData('is_published', e.target.checked)}
                                     error={errors.is_published}
                                 />
+
+                                {data.type === 'free' && (
+                                    <FormCheckbox
+                                        label="Use Redemption Code"
+                                        id="is_redemption_required"
+                                        checked={data.is_redemption_required}
+                                        onChange={(e) => setData('is_redemption_required', e.target.checked)}
+                                        error={errors.is_redemption_required}
+                                        hint="If checked, users must enter a valid code to download this free asset."
+                                    />
+                                )}
                             </div>
                         </div>
 

@@ -25,8 +25,26 @@ function MoonIcon({ className }) {
     );
 }
 
+// ... (imports remain the same)
+function MenuIcon({ className }) {
+    return (
+        <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+        </svg>
+    );
+}
+
+function XMarkIcon({ className }) {
+    return (
+        <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+        </svg>
+    );
+}
+
 export default function Navbar({ auth = {} }) {
     const [isScrolled, setIsScrolled] = useState(false);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [theme, setTheme] = useState(
         () => {
             if (typeof window !== 'undefined') {
@@ -59,15 +77,18 @@ export default function Navbar({ auth = {} }) {
 
     return (
         <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${
-            isScrolled ? 'bg-white/80 dark:bg-black/80 backdrop-blur-xl border-b border-gray-200 dark:border-white/10' : 'bg-transparent'
+            isScrolled || mobileMenuOpen ? 'bg-white/80 dark:bg-black/80 backdrop-blur-xl border-b border-gray-200 dark:border-white/10' : 'bg-transparent'
         }`}>
             <div className="max-w-[1200px] mx-auto px-6">
                 <div className="flex h-16 items-center justify-between">
-                    <Link href="/" className="flex items-center gap-2">
+                    {/* Logo */}
+                    <Link href="/" className="flex items-center gap-2 z-50">
                         <img src="/favicon/favicon-96x96.png" alt="OtakAtikin" className="h-8 w-8" />
                         <span className="text-[15px] font-semibold tracking-tight text-gray-900 dark:text-white">OtakAtikin</span>
                     </Link>
-                    <nav className="flex items-center gap-1">
+
+                    {/* Desktop Navigation */}
+                    <nav className="hidden md:flex items-center gap-1">
                         <Link
                             href={route('blog.index')}
                             className="px-4 py-2 text-[14px] font-medium text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white transition-colors"
@@ -124,8 +145,90 @@ export default function Navbar({ auth = {} }) {
                             </>
                         )}
                     </nav>
+                    
+                    {/* Mobile Menu Button - Visible on Mobile Only */}
+                    <div className="flex items-center gap-2 md:hidden">
+                        <button
+                            onClick={toggleTheme}
+                            className="p-2 text-gray-500 hover:text-gray-700 dark:text-white/60 dark:hover:text-white transition-colors rounded-full hover:bg-gray-100 dark:hover:bg-white/10"
+                        >
+                             {theme === 'dark' ? (
+                                <SunIcon className="w-5 h-5" />
+                            ) : (
+                                <MoonIcon className="w-5 h-5" />
+                            )}
+                        </button>
+                        <button
+                            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                            className="p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
+                        >
+                            {mobileMenuOpen ? (
+                                <XMarkIcon className="w-6 h-6" />
+                            ) : (
+                                <MenuIcon className="w-6 h-6" />
+                            )}
+                        </button>
+                    </div>
                 </div>
             </div>
+
+            {/* Mobile Menu Dropdown */}
+            {mobileMenuOpen && (
+                <div className="md:hidden border-t border-gray-200 dark:border-white/10 bg-white dark:bg-black px-6 py-4 space-y-4 h-screen">
+                    <div className="flex flex-col space-y-4">
+                        <Link
+                            href={route('blog.index')}
+                            className="text-base font-medium text-gray-900 dark:text-white hover:text-[#10a37f] dark:hover:text-[#10a37f]"
+                            onClick={() => setMobileMenuOpen(false)}
+                        >
+                            Blog
+                        </Link>
+                        <Link
+                            href={route('assets.index')}
+                            className="text-base font-medium text-gray-900 dark:text-white hover:text-[#10a37f] dark:hover:text-[#10a37f]"
+                            onClick={() => setMobileMenuOpen(false)}
+                        >
+                            Produk Digital
+                        </Link>
+                        
+                        <div className="pt-4 border-t border-gray-100 dark:border-white/10 flex flex-col space-y-3">
+                            {user ? (
+                                <Link
+                                    href={route('dashboard')}
+                                    className="flex items-center justify-center gap-2 w-full py-2.5 text-sm font-medium text-white bg-black dark:bg-white/10 rounded-lg"
+                                    onClick={() => setMobileMenuOpen(false)}
+                                >
+                                    {user.avatar ? (
+                                        <img src={user.avatar} alt={user.name} className="w-6 h-6 rounded-full" />
+                                    ) : (
+                                        <div className="w-6 h-6 rounded-full bg-gray-600 dark:bg-white/20 flex items-center justify-center text-[10px] font-bold uppercase text-white">
+                                            {user.name.charAt(0)}
+                                        </div>
+                                    )}
+                                    Dashboard
+                                </Link>
+                            ) : (
+                                <>
+                                    <Link
+                                        href={route('login')}
+                                        className="w-full text-center py-2.5 text-sm font-medium text-gray-900 dark:text-white border border-gray-200 dark:border-white/20 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5"
+                                        onClick={() => setMobileMenuOpen(false)}
+                                    >
+                                        Log in
+                                    </Link>
+                                    <Link
+                                        href={route('register')}
+                                        className="w-full text-center py-2.5 text-sm font-medium text-white bg-black dark:bg-white dark:text-black rounded-lg hover:bg-gray-800 dark:hover:bg-white/90"
+                                        onClick={() => setMobileMenuOpen(false)}
+                                    >
+                                        Sign up
+                                    </Link>
+                                </>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
         </header>
     );
 }
