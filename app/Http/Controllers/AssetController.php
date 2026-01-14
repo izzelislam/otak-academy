@@ -55,11 +55,12 @@ class AssetController extends Controller
             abort(404, 'Asset not found.');
         }
 
-        // Check if user has valid redemption for paid assets
+
+        // Check if user has valid redemption for all assets (free or paid)
         $hasValidRedemption = false;
         $redownloadInfo = null;
         
-        if ($asset->isPaid() && auth()->check()) {
+        if (auth()->check()) {
             $existingRedemption = $this->assetCodeService->getValidRedemption(
                 auth()->user(),
                 $asset
@@ -111,43 +112,13 @@ class AssetController extends Controller
             ], 404);
         }
 
-        // Verify asset is free
-        if ($asset->isPaid()) {
-            return response()->json([
-                'message' => 'This asset requires a valid code.',
-            ], 403);
-        }
-
-        $ipAddress = $request->ip();
-        $userAgent = $request->userAgent() ?? 'Unknown';
-        $user = auth()->user();
+        // Even free assets now require a code, so requestDownload should probably just redirect or error
+        // But to keep backward compatibility or if some assets TRULY don't need code, we could check a flag.
+        // For now, based on user request "tetep butuh code", we'll enforce code.
         
-        if (!$user) {
-             return response()->json([
-                'message' => 'Silahkan login terlebih dahulu untuk mendownload.',
-                'needs_login' => true,
-                'redirect' => route('login'), 
-            ], 401);
-        }
-
-        // Log the download request
-        $this->auditService->logAttempt(
-            $asset,
-            $user,
-            $ipAddress,
-            $userAgent,
-            'download_request',
-            'success',
-            'Free asset download requested'
-        );
-
-        // Generate download token
-        $token = $this->downloadTokenService->generateToken($asset, $user, $ipAddress);
-
         return response()->json([
-            'message' => 'Download token generated.',
-            'download_url' => route('download', ['token' => $token]),
-        ]);
+            'message' => 'This asset requires a valid code.',
+        ], 403);
     }
 
     /**
@@ -167,12 +138,8 @@ class AssetController extends Controller
             ], 404);
         }
 
-        // Verify asset is paid
-        if ($asset->isFree()) {
-            return response()->json([
-                'message' => 'This asset is free and does not require a code.',
-            ], 400);
-        }
+        // Removed check for isFree to allow code redemption for free assets
+
 
         $ipAddress = $request->ip();
         $userAgent = $request->userAgent() ?? 'Unknown';
