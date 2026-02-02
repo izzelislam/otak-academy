@@ -5,7 +5,7 @@ import { Head } from '@inertiajs/react';
 
 export default function AssetCodes({ asset, codes }) {
     const columns = [
-        { label: 'Code' },
+        { label: 'Code Prefix' },
         { label: 'Status' },
         { label: 'Redeemed By' },
         { label: 'Used At' },
@@ -22,9 +22,16 @@ export default function AssetCodes({ asset, codes }) {
         <tr key={code.id} className="hover:bg-gray-50 dark:hover:bg-slate-800/50">
             <td className="px-4 py-3">
                 <div className="flex items-center gap-2">
-                    <code className="text-xs font-mono bg-gray-100 dark:bg-slate-800 px-2 py-1 rounded text-gray-700 dark:text-slate-300">
-                        {code.code || code.code_prefix}
-                    </code>
+                    <div className="group relative">
+                        <code className="text-xs font-mono bg-gray-100 dark:bg-slate-800 px-2 py-1 rounded text-gray-700 dark:text-slate-300">
+                            {code.code ? code.code : `${code.code_prefix}-****`}
+                        </code>
+                        {!code.code && (
+                            <div className="absolute left-0 -top-8 hidden group-hover:block w-max bg-gray-900 text-white text-xs px-2 py-1 rounded">
+                                Full code hidden (SHA-256)
+                            </div>
+                        )}
+                    </div>
                     {code.code && (
                         <button onClick={() => copyToClipboard(code.code)} className="p-1 text-gray-400 hover:text-[#10a37f]" title="Copy">
                             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
