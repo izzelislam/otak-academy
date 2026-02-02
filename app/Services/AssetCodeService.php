@@ -28,7 +28,37 @@ class AssetCodeService
      */
     protected const HOURLY_RATE_LIMIT = 3;
 
-    // ... generateCodes methods remain same ...
+    /**
+     * Generate a batch of codes for an asset.
+     *
+     * @param DownloadableAsset $asset
+     * @param int $quantity
+     * @return Collection
+     */
+    public function generateCodes(DownloadableAsset $asset, int $quantity): Collection
+    {
+        $codes = new Collection();
+
+        for ($i = 0; $i < $quantity; $i++) {
+            // Generate a random code: 16 characters uppercase
+            $plainCode = strtoupper(\Illuminate\Support\Str::random(16));
+            
+            $assetCode = AssetCode::create([
+                'asset_id' => $asset->id,
+                'code_hash' => Hash::make($plainCode),
+                'code_prefix' => substr($plainCode, 0, 4),
+                'is_used' => false,
+                'max_downloads' => self::DEFAULT_MAX_DOWNLOADS,
+            ]);
+            
+            // Attach plain code for display (not saved to DB)
+            $assetCode->code = $plainCode;
+            
+            $codes->push($assetCode);
+        }
+
+        return $codes;
+    }
 
     /**
      * Helper to check if rate limit is exceeded.
