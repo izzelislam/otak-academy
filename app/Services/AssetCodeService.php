@@ -149,16 +149,21 @@ class AssetCodeService
             // I'll assume I replace the updated methods.
 
             if (!$this->validateCodeFormat($code)) {
+                \Log::warning("Redeem failed: Invalid format", ['code' => $code]);
                 return ['success' => false, 'error' => 'Invalid or expired code', 'assetCode' => null];
             }
 
             $code = strtoupper($code);
             $prefix = substr($code, 0, 4);
 
+            \Log::info("Redeem attempt", ['prefix' => $prefix, 'asset_id' => $asset->id, 'user_id' => $user->id]);
+
             $potentialCodes = AssetCode::where('asset_id', $asset->id)
                 ->where('code_prefix', $prefix)
                 ->lockForUpdate()
                 ->get();
+
+            \Log::info("Found potential codes", ['count' => $potentialCodes->count()]);
 
             $matchedCode = null;
             foreach ($potentialCodes as $assetCode) {
@@ -169,6 +174,7 @@ class AssetCodeService
             }
 
             if (!$matchedCode) {
+                \Log::warning("Redeem failed: No hash match", ['code_tested' => $code]);
                 return ['success' => false, 'error' => 'Invalid or expired code', 'assetCode' => null];
             }
 
