@@ -109,4 +109,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(Payment::class);
     }
+
+    /**
+     * Get the asset codes owned/redeemed by this user.
+     */
+    public function assetCodes(): HasMany
+    {
+        return $this->hasMany(AssetCode::class);
+    }
 }

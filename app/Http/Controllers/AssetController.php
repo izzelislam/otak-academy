@@ -189,7 +189,7 @@ class AssetController extends Controller
         $ipAddress = $request->ip();
         $userAgent = $request->userAgent() ?? 'Unknown';
         $user = auth()->user();
-        $code = strtoupper(trim($request->input('code')));
+        $code = strtoupper(trim($request->input('code') ?? ''));
 
         // Check if user is authenticated (required for paid assets)
         if (!$user) {

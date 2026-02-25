@@ -69,9 +69,23 @@ function PaymentCard({ payment }) {
                         Metode: <span className="text-gray-700 dark:text-slate-300 capitalize">{payment.payment_type.replace(/_/g, ' ')}</span>
                     </span>
                     {payment.paid_at && (
-                        <span className="text-xs text-emerald-600 dark:text-emerald-400">
-                            Dibayar: {formatDate(payment.paid_at)}
-                        </span>
+                        <div className="flex items-center gap-4">
+                            <span className="text-xs text-emerald-600 dark:text-emerald-400">
+                                Dibayar: {formatDate(payment.paid_at)}
+                            </span>
+                            {payment.status === 'paid' && (
+                                <a
+                                    href={route('payment.invoice', payment.id)}
+                                    // Use target="_blank" so it doesn't navigate away in Inertia
+                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-gray-700 dark:text-slate-200 text-xs font-medium rounded-md transition-colors"
+                                >
+                                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m.75 12 3 3m0 0 3-3m-3 3v-6m-1.5-9H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+                                    </svg>
+                                    Invoice
+                                </a>
+                            )}
+                        </div>
                     )}
                 </div>
             )}

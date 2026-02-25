@@ -69,7 +69,7 @@ function AssetCard({ asset }) {
                         ) : (
                             <>
                                 <LockIcon className="w-3 h-3" />
-                                Premium
+                                Premium  • {asset.formatted_price}
                             </>
                         )}
                     </span>

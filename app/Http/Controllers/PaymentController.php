@@ -136,4 +136,25 @@ class PaymentController extends Controller
             'payments' => $payments,
         ]);
     }
+
+    /**
+     * Download transaction invoice.
+     */
+    public function invoice(Payment $payment)
+    {
+        $user = auth()->user();
+
+        if ($payment->user_id !== $user->id) {
+            abort(403);
+        }
+
+        if ($payment->status !== 'paid') {
+            abort(404, 'Invoice only available for paid status');
+        }
+
+        $payment->load('payable');
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.invoice', compact('payment', 'user'));
+        return $pdf->download('Invoice-' . $payment->order_id . '.pdf');
+    }
 }

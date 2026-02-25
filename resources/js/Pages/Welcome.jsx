@@ -181,10 +181,10 @@ export default function Welcome({ auth }) {
                         <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
                             {auth.user ? (
                                 <Link
-                                    href={route('dashboard')}
+                                    href={route('assets.index')}
                                     className="group inline-flex items-center justify-center gap-2 px-6 py-3 text-[15px] font-medium text-white bg-black hover:bg-black/90 dark:text-black dark:bg-white dark:hover:bg-white/90 rounded-xl transition-all"
                                 >
-                                    Masuk Dashboard
+                                    Explore Sekarang
                                     <ArrowRightIcon className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
                                 </Link>
                             ) : (
@@ -413,10 +413,10 @@ export default function Welcome({ auth }) {
                                 <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
                                     {auth.user ? (
                                         <Link
-                                            href={route('dashboard')}
+                                            href={route('assets.index')}
                                             className="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-[14px] font-medium text-white bg-black hover:bg-black/90 dark:text-black dark:bg-white dark:hover:bg-white/90 rounded-lg transition-colors"
                                         >
-                                            Masuk Dashboard
+                                            Explore
                                             <ArrowRightIcon className="h-4 w-4" />
                                         </Link>
                                     ) : (

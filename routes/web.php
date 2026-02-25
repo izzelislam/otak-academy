@@ -146,6 +146,9 @@ Route::middleware(['auth', 'verified'])->prefix('member')->name('member.')->grou
     Route::get('/courses', [MemberCourseController::class, 'index'])->name('courses.index');
     Route::get('/courses/{course}', [MemberCourseController::class, 'show'])->name('courses.show');
 
+    // My Assets
+    Route::get('/assets', [App\Http\Controllers\Member\AssetController::class, 'index'])->name('assets.index');
+
     // Material View & Complete
     Route::get('/courses/{course}/materials/{material}', [MemberCourseController::class, 'showMaterial'])
         ->name('courses.materials.show');
@@ -169,6 +172,7 @@ Route::middleware(['auth', 'verified'])->prefix('member')->name('member.')->grou
     Route::post('/payment/course/{course}', [PaymentController::class, 'createCoursePayment'])->name('payment.course');
     Route::post('/payment/asset/{asset}', [PaymentController::class, 'createAssetPayment'])->name('payment.asset');
     Route::get('/payment-history', [PaymentController::class, 'memberHistory'])->name('payment.history');
+    Route::get('/payment/{payment}/invoice', [PaymentController::class, 'invoice'])->name('payment.invoice');
 });
 
 // Privacy Policy Route
