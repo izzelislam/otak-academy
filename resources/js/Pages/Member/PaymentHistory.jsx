@@ -75,7 +75,7 @@ function PaymentCard({ payment }) {
                             </span>
                             {payment.status === 'paid' && (
                                 <a
-                                    href={route('payment.invoice', payment.id)}
+                                    href={route('member.payment.invoice', payment.id)}
                                     // Use target="_blank" so it doesn't navigate away in Inertia
                                     className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-gray-700 dark:text-slate-200 text-xs font-medium rounded-md transition-colors"
                                 >
