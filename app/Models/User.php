@@ -101,4 +101,12 @@ class User extends Authenticatable
     {
         return $this->role === 'member';
     }
+
+    /**
+     * Get the payments made by this user.
+     */
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class);
+    }
 }

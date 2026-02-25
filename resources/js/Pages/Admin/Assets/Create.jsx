@@ -25,6 +25,7 @@ export default function AssetCreate() {
         thumbnail: null,
         file: null,
         type: 'free',
+        price: 0,
         is_published: false,
         is_redemption_required: false,
     });
@@ -174,7 +175,7 @@ export default function AssetCreate() {
                                     required
                                 >
                                     <option value="free">Free</option>
-                                    <option value="paid">Paid (Requires Code)</option>
+                                    <option value="paid">Paid (Berbayar)</option>
                                 </FormSelect>
                             </div>
 
@@ -201,11 +202,18 @@ export default function AssetCreate() {
                         </div>
 
                         {data.type === 'paid' && (
-                            <div className="p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
-                                <p className="text-sm text-amber-800 dark:text-amber-200">
-                                    <strong>Note:</strong> Paid assets require redemption codes. You can generate codes after creating the asset.
-                                </p>
-                            </div>
+                            <FormInput
+                                label="Harga (IDR)"
+                                id="price"
+                                type="number"
+                                value={data.price}
+                                onChange={(e) => setData('price', parseInt(e.target.value) || 0)}
+                                placeholder="e.g., 50000"
+                                error={errors.price}
+                                hint="Harga dalam Rupiah. Contoh: 50000 = Rp 50.000"
+                                min="0"
+                                required
+                            />
                         )}
 
                         <FormActions 

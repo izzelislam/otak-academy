@@ -1,12 +1,57 @@
 import MemberLayout from '@/Layouts/MemberLayout';
 import { Head, Link } from '@inertiajs/react';
+import { useState } from 'react';
+import axios from 'axios';
+
+function formatCurrency(amount) {
+    return 'Rp ' + new Intl.NumberFormat('id-ID').format(amount);
+}
 
 export default function ClassShow({ course, isEnrolled }) {
     const totalMaterials = course.sessions?.reduce((acc, session) => acc + (session.materials?.length || 0), 0) || 0;
+    const [isPaymentLoading, setIsPaymentLoading] = useState(false);
+    const [paymentError, setPaymentError] = useState(null);
+
+    const handleBuyCourse = async () => {
+        setIsPaymentLoading(true);
+        setPaymentError(null);
+
+        try {
+            const response = await axios.post(route('member.payment.course', course.id));
+            const { snap_token, client_key } = response.data;
+
+            // Open Midtrans Snap popup
+            window.snap.pay(snap_token, {
+                onSuccess: function(result) {
+                    window.location.href = route('payment.finish') + '?order_id=' + result.order_id + '&transaction_status=settlement';
+                },
+                onPending: function(result) {
+                    window.location.href = route('payment.finish') + '?order_id=' + result.order_id + '&transaction_status=pending';
+                },
+                onError: function(result) {
+                    setPaymentError('Pembayaran gagal. Silakan coba lagi.');
+                    setIsPaymentLoading(false);
+                },
+                onClose: function() {
+                    setIsPaymentLoading(false);
+                }
+            });
+        } catch (err) {
+            setPaymentError(err.response?.data?.message || 'Gagal memproses pembayaran.');
+            setIsPaymentLoading(false);
+        }
+    };
 
     return (
         <MemberLayout title={course.title}>
             <Head title={course.title} />
+
+            {/* Midtrans Snap JS */}
+            <script
+                type="text/javascript"
+                src="https://app.sandbox.midtrans.com/snap/snap.js"
+                data-client-key={window.midtransClientKey || ''}
+            />
 
             <div className="space-y-6">
                 {/* Back Button */}
@@ -44,6 +89,12 @@ export default function ClassShow({ course, isEnrolled }) {
                                         ⭐ Featured
                                     </span>
                                 )}
+                                {course.access_type === 'premium' && (
+                                    <span className="px-2 py-0.5 bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 text-xs font-semibold rounded flex items-center gap-1">
+                                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" /></svg>
+                                        Premium
+                                    </span>
+                                )}
                                 {isEnrolled && (
                                     <span className="px-2 py-0.5 bg-[#10a37f]/10 text-[#10a37f] dark:bg-[#10a37f]/20 text-xs font-medium rounded">
                                         Enrolled
@@ -79,6 +130,20 @@ export default function ClassShow({ course, isEnrolled }) {
                                 </div>
                             </div>
 
+                            {/* Price for premium */}
+                            {course.access_type === 'premium' && course.price > 0 && !isEnrolled && (
+                                <div className="mb-4">
+                                    <span className="text-2xl font-bold text-amber-600 dark:text-amber-400">{formatCurrency(course.price)}</span>
+                                </div>
+                            )}
+
+                            {/* Payment Error */}
+                            {paymentError && (
+                                <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                                    <p className="text-sm text-red-700 dark:text-red-300">{paymentError}</p>
+                                </div>
+                            )}
+
                             {/* Action Button */}
                             {isEnrolled ? (
                                 <Link
@@ -91,6 +156,29 @@ export default function ClassShow({ course, isEnrolled }) {
                                     </svg>
                                     Mulai Belajar
                                 </Link>
+                            ) : course.access_type === 'premium' && course.price > 0 ? (
+                                <button
+                                    onClick={handleBuyCourse}
+                                    disabled={isPaymentLoading}
+                                    className="inline-flex items-center px-5 py-2.5 bg-amber-500 hover:bg-amber-600 disabled:opacity-50 text-white text-sm font-medium rounded-lg transition-colors"
+                                >
+                                    {isPaymentLoading ? (
+                                        <>
+                                            <svg className="animate-spin w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24">
+                                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                            </svg>
+                                            Memproses...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z" />
+                                            </svg>
+                                            Beli Course — {formatCurrency(course.price)}
+                                        </>
+                                    )}
+                                </button>
                             ) : (
                                 <Link
                                     href={route('member.redeem.create')}

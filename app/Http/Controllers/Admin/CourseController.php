@@ -45,6 +45,8 @@ class CourseController extends Controller
             'description' => ['nullable', 'string'],
             'thumbnail' => ['nullable', 'string', 'max:255'],
             'is_published' => ['boolean'],
+            'access_type' => ['required', 'in:free,premium'],
+            'price' => ['required_if:access_type,premium', 'integer', 'min:0'],
         ]);
 
         // Slug is auto-generated in the Course model boot method
@@ -103,6 +105,8 @@ class CourseController extends Controller
             'description' => ['nullable', 'string'],
             'thumbnail' => ['nullable', 'string', 'max:255'],
             'is_published' => ['boolean'],
+            'access_type' => ['required', 'in:free,premium'],
+            'price' => ['required_if:access_type,premium', 'integer', 'min:0'],
         ]);
 
         $course->update($validated);

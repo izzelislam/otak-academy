@@ -27,6 +27,7 @@ export default function AssetEdit({ asset }) {
         thumbnail: null,
         file: null,
         type: asset.type || 'free',
+        price: asset.price || 0,
         is_published: asset.is_published || false,
         is_redemption_required: asset.is_redemption_required || false,
     });
@@ -201,7 +202,7 @@ export default function AssetEdit({ asset }) {
                                     required
                                 >
                                     <option value="free">Free</option>
-                                    <option value="paid">Paid (Requires Code)</option>
+                                    <option value="paid">Paid (Berbayar)</option>
                                 </FormSelect>
                             </div>
 
@@ -226,6 +227,21 @@ export default function AssetEdit({ asset }) {
                                 )}
                             </div>
                         </div>
+
+                        {data.type === 'paid' && (
+                            <FormInput
+                                label="Harga (IDR)"
+                                id="price"
+                                type="number"
+                                value={data.price}
+                                onChange={(e) => setData('price', parseInt(e.target.value) || 0)}
+                                placeholder="e.g., 50000"
+                                error={errors.price}
+                                hint="Harga dalam Rupiah. Contoh: 50000 = Rp 50.000"
+                                min="0"
+                                required
+                            />
+                        )}
 
                         <FormActions 
                             cancelHref={route('admin.assets.show', asset.id)} 

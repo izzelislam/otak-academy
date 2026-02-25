@@ -36,10 +36,10 @@ function ArrowLeftIcon({ className }) {
     );
 }
 
-function CheckIcon({ className }) {
+function CreditCardIcon({ className }) {
     return (
-        <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+        <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z" />
         </svg>
     );
 }
@@ -56,23 +56,19 @@ function formatFileSize(bytes) {
     return `${size.toFixed(1)} ${units[unitIndex]}`;
 }
 
+function formatCurrency(amount) {
+    return 'Rp ' + new Intl.NumberFormat('id-ID').format(amount);
+}
+
 export default function AssetShow({ auth, asset, hasValidRedemption, redownloadInfo }) {
     const [showRedeemModal, setShowRedeemModal] = useState(false);
     const [downloadUrl, setDownloadUrl] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [isPaymentLoading, setIsPaymentLoading] = useState(false);
     const [error, setError] = useState(null);
     const [downloadsRemaining, setDownloadsRemaining] = useState(redownloadInfo?.downloads_remaining || 0);
 
-    // Debug logging
-    console.log('Asset Show Debug:', {
-        hasValidRedemption,
-        redownloadInfo,
-        downloadsRemaining,
-        isAuthenticated: !!auth?.user,
-        assetType: asset.type
-    });
-
-
+    const isPaidAsset = asset.type === 'paid' && asset.price > 0;
 
     const handleRedeemSuccess = (data) => {
         setDownloadUrl(data.download_url);
@@ -80,7 +76,6 @@ export default function AssetShow({ auth, asset, hasValidRedemption, redownloadI
         if (data.downloads_remaining !== undefined) {
             setDownloadsRemaining(data.downloads_remaining);
         }
-        // Auto-trigger download
         window.location.href = data.download_url;
     };
 
@@ -104,21 +99,69 @@ export default function AssetShow({ auth, asset, hasValidRedemption, redownloadI
         }
     };
 
-    const formatExpiryDate = (isoString) => {
-        if (!isoString) return null;
-        const date = new Date(isoString);
-        return date.toLocaleDateString('id-ID', {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-        });
+    const handleBuyAsset = async () => {
+        if (!auth?.user) {
+            window.location.href = route('login');
+            return;
+        }
+
+        setIsPaymentLoading(true);
+        setError(null);
+
+        try {
+            const response = await axios.post(route('member.payment.asset', asset.id));
+            const { snap_token } = response.data;
+
+            window.snap.pay(snap_token, {
+                onSuccess: function(result) {
+                    window.location.href = route('payment.finish') + '?order_id=' + result.order_id + '&transaction_status=settlement';
+                },
+                onPending: function(result) {
+                    window.location.href = route('payment.finish') + '?order_id=' + result.order_id + '&transaction_status=pending';
+                },
+                onError: function() {
+                    setError('Pembayaran gagal. Silakan coba lagi.');
+                    setIsPaymentLoading(false);
+                },
+                onClose: function() {
+                    setIsPaymentLoading(false);
+                }
+            });
+        } catch (err) {
+            setError(err.response?.data?.message || 'Gagal memproses pembayaran.');
+            setIsPaymentLoading(false);
+        }
+    };
+
+    const handleFreeDownload = async () => {
+        if (!auth?.user) {
+            window.location.href = route('login');
+            return;
+        }
+
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            const response = await axios.post(route('assets.download', asset.id));
+            window.location.href = response.data.download_url;
+        } catch (err) {
+            setError(err.response?.data?.message || 'Gagal mendownload.');
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
         <>
             <Head title={asset.title} />
+            {/* Midtrans Snap JS */}
+            <script
+                type="text/javascript"
+                src="https://app.sandbox.midtrans.com/snap/snap.js"
+                data-client-key={window.midtransClientKey || ''}
+            />
+
             <div className="min-h-screen bg-white dark:bg-black text-gray-900 dark:text-white antialiased transition-colors duration-300">
                 <Navbar auth={auth} />
 
@@ -208,6 +251,12 @@ export default function AssetShow({ auth, asset, hasValidRedemption, redownloadI
                                             <span className="text-gray-500 dark:text-white/50">Downloads</span>
                                             <span className="text-gray-900 dark:text-white font-medium">{asset.download_count || 0}</span>
                                         </div>
+                                        {isPaidAsset && (
+                                            <div className="flex items-center justify-between text-[14px]">
+                                                <span className="text-gray-500 dark:text-white/50">Harga</span>
+                                                <span className="text-amber-600 dark:text-amber-400 font-bold text-lg">{formatCurrency(asset.price)}</span>
+                                            </div>
+                                        )}
                                     </div>
 
                                     {/* Error Message */}
@@ -217,7 +266,7 @@ export default function AssetShow({ auth, asset, hasValidRedemption, redownloadI
                                         </div>
                                     )}
 
-                                    {/* Download Button */}
+                                    {/* Action Buttons */}
                                     {hasValidRedemption ? (
                                         <div className="space-y-3">
                                             {/* Re-download Info */}
@@ -262,7 +311,52 @@ export default function AssetShow({ auth, asset, hasValidRedemption, redownloadI
                                                 )}
                                             </button>
                                         </div>
+                                    ) : isPaidAsset ? (
+                                        /* Buy button for paid assets */
+                                        <button
+                                            onClick={handleBuyAsset}
+                                            disabled={isPaymentLoading}
+                                            className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-amber-500 hover:bg-amber-600 disabled:opacity-50 text-white font-medium rounded-xl transition-colors shadow-sm"
+                                        >
+                                            {isPaymentLoading ? (
+                                                <>
+                                                    <svg className="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
+                                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                    </svg>
+                                                    Memproses...
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <CreditCardIcon className="w-5 h-5" />
+                                                    Beli — {formatCurrency(asset.price)}
+                                                </>
+                                            )}
+                                        </button>
+                                    ) : asset.type === 'free' && !asset.is_redemption_required ? (
+                                        /* Free download button */
+                                        <button
+                                            onClick={handleFreeDownload}
+                                            disabled={isLoading}
+                                            className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-[#10a37f] hover:bg-[#0e8c6b] disabled:opacity-50 text-white font-medium rounded-xl transition-colors shadow-sm"
+                                        >
+                                            {isLoading ? (
+                                                <>
+                                                    <svg className="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
+                                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                    </svg>
+                                                    Generating...
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <DownloadIcon className="w-5 h-5" />
+                                                    Download Gratis
+                                                </>
+                                            )}
+                                        </button>
                                     ) : (
+                                        /* Redeem Code button (fallback for free+redemption_required) */
                                         <button
                                             onClick={() => setShowRedeemModal(true)}
                                             className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-amber-500 hover:bg-amber-600 text-white font-medium rounded-xl transition-colors shadow-sm"

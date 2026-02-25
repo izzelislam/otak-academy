@@ -13,11 +13,13 @@ use App\Http\Controllers\Admin\RedeemCodeController as AdminRedeemCodeController
 use App\Http\Controllers\Admin\SessionController as AdminSessionController;
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\Member\ClassController as MemberClassController;
 use App\Http\Controllers\Member\CourseController as MemberCourseController;
 use App\Http\Controllers\Member\DashboardController as MemberDashboardController;
 use App\Http\Controllers\Member\ProfileController as MemberProfileController;
 use App\Http\Controllers\Member\RedeemController as MemberRedeemController;
+use App\Http\Controllers\Admin\PaymentController as AdminPaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SecureDownloadController;
 use Illuminate\Foundation\Application;
@@ -56,6 +58,12 @@ Route::prefix('assets')->name('assets.')->group(function () {
 
 // Secure Download Route
 Route::get('/download/{token}', [SecureDownloadController::class, 'download'])->name('download');
+
+// Midtrans Notification Webhook (public, no auth needed)
+Route::post('/payment/notification', [PaymentController::class, 'handleNotification'])->name('payment.notification');
+
+// Payment finish page
+Route::get('/payment/finish', [PaymentController::class, 'finish'])->name('payment.finish');
 
 // Dashboard redirect based on role
 Route::get('/dashboard', function () {
@@ -120,6 +128,10 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
     Route::resource('content-calendars', AdminContentCalendarController::class);
     Route::post('content-calendars/bulk-generate', [AdminContentCalendarController::class, 'bulkStore'])
         ->name('content-calendars.bulk-generate');
+
+    // Payment Management
+    Route::get('payments', [AdminPaymentController::class, 'index'])->name('payments.index');
+    Route::get('payments/{payment}', [AdminPaymentController::class, 'show'])->name('payments.show');
 });
 
 // Member Routes
@@ -152,6 +164,11 @@ Route::middleware(['auth', 'verified'])->prefix('member')->name('member.')->grou
     Route::get('/profile', [MemberProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [MemberProfileController::class, 'update'])->name('profile.update');
     Route::put('/profile/password', [MemberProfileController::class, 'updatePassword'])->name('profile.password');
+
+    // Payment
+    Route::post('/payment/course/{course}', [PaymentController::class, 'createCoursePayment'])->name('payment.course');
+    Route::post('/payment/asset/{asset}', [PaymentController::class, 'createAssetPayment'])->name('payment.asset');
+    Route::get('/payment-history', [PaymentController::class, 'memberHistory'])->name('payment.history');
 });
 
 // Privacy Policy Route

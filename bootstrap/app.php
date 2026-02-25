@@ -24,6 +24,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
             'asset.rate' => \App\Http\Middleware\AssetRateLimiter::class,
         ]);
+
+        $middleware->validateCsrfTokens(except: [
+            'payment/notification',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

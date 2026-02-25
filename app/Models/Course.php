@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Str;
 
 class Course extends Model
@@ -25,6 +26,17 @@ class Course extends Model
         'thumbnail',
         'is_published',
         'is_featured',
+        'access_type',
+        'price',
+    ];
+
+    /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = [
+        'formatted_price',
     ];
 
     /**
@@ -37,6 +49,7 @@ class Course extends Model
         return [
             'is_published' => 'boolean',
             'is_featured' => 'boolean',
+            'price' => 'integer',
         ];
     }
 
@@ -104,5 +117,40 @@ class Course extends Model
             ->wherePivot('is_used', true)
             ->withPivot('code', 'is_used', 'used_at')
             ->withTimestamps();
+    }
+
+    /**
+     * Get the payments for this course.
+     */
+    public function payments(): MorphMany
+    {
+        return $this->morphMany(Payment::class, 'payable');
+    }
+
+    /**
+     * Check if the course is premium.
+     */
+    public function isPremium(): bool
+    {
+        return $this->access_type === 'premium';
+    }
+
+    /**
+     * Check if the course is free.
+     */
+    public function isFreeAccess(): bool
+    {
+        return $this->access_type === 'free';
+    }
+
+    /**
+     * Get formatted price attribute.
+     */
+    public function getFormattedPriceAttribute(): string
+    {
+        if ($this->price <= 0) {
+            return 'Gratis';
+        }
+        return 'Rp ' . number_format($this->price, 0, ',', '.');
     }
 }

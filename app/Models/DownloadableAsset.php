@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
@@ -27,6 +28,7 @@ class DownloadableAsset extends Model
         'file_size',
         'file_type',
         'type',
+        'price',
         'download_count',
         'is_published',
         'is_redemption_required',
@@ -44,6 +46,7 @@ class DownloadableAsset extends Model
             'is_redemption_required' => 'boolean',
             'download_count' => 'integer',
             'file_size' => 'integer',
+            'price' => 'integer',
         ];
     }
 
@@ -54,6 +57,7 @@ class DownloadableAsset extends Model
      */
     protected $appends = [
         'thumbnail_url',
+        'formatted_price',
     ];
 
     /**
@@ -140,5 +144,24 @@ class DownloadableAsset extends Model
         }
 
         return \Illuminate\Support\Facades\Storage::disk('s3')->url($this->thumbnail);
+    }
+
+    /**
+     * Get the payments for this asset.
+     */
+    public function payments(): MorphMany
+    {
+        return $this->morphMany(Payment::class, 'payable');
+    }
+
+    /**
+     * Get formatted price attribute.
+     */
+    public function getFormattedPriceAttribute(): string
+    {
+        if ($this->price <= 0) {
+            return 'Gratis';
+        }
+        return 'Rp ' . number_format($this->price, 0, ',', '.');
     }
 }

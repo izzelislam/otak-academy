@@ -38,6 +38,7 @@ class HandleInertiaRequests extends Middleware
                 'success' => fn () => $request->session()->get('success'),
                 'error' => fn () => $request->session()->get('error'),
             ],
+            'midtrans_client_key' => config('midtrans.client_key'),
         ];
     }
 }

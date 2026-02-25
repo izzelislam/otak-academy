@@ -53,6 +53,7 @@ class AssetController extends Controller
             'thumbnail' => ['nullable', 'image', 'max:2048'],
             'file' => ['required', 'file', 'max:102400'], // 100MB max
             'type' => ['required', 'in:free,paid'],
+            'price' => ['required_if:type,paid', 'integer', 'min:0'],
             'is_published' => ['boolean'],
         ]);
 
@@ -114,6 +115,7 @@ class AssetController extends Controller
             'thumbnail' => ['nullable', 'image', 'max:2048'],
             'file' => ['nullable', 'file', 'max:102400'], // 100MB max
             'type' => ['required', 'in:free,paid'],
+            'price' => ['required_if:type,paid', 'integer', 'min:0'],
             'is_published' => ['boolean'],
             'is_redemption_required' => ['boolean'],
         ]);
