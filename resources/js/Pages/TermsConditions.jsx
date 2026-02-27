@@ -293,7 +293,7 @@ export default function TermsConditions({ auth }) {
                                 </p>
                                 <div className="mt-4 p-4 rounded-xl bg-gray-50 dark:bg-white/[0.03] border border-gray-200 dark:border-white/10 space-y-2">
                                     <p className="text-gray-700 dark:text-white/70">
-                                        <strong className="text-gray-900 dark:text-white">Email:</strong> otakatikid@gmail.com
+                                        <strong className="text-gray-900 dark:text-white">Email:</strong> otakatikinid@gmail.com
                                     </p>
                                     <p className="text-gray-700 dark:text-white/70">
                                         <strong className="text-gray-900 dark:text-white">Halaman Kontak:</strong>{' '}

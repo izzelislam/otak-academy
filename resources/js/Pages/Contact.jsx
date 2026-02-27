@@ -64,9 +64,9 @@ const contactMethods = [
         icon: EnvelopeIcon,
         title: 'Email Support',
         description: 'Kirim pertanyaan atau kendala kamu via email. Tim kami akan merespons dalam 1x24 jam.',
-        action: 'otakatikid@gmail.com',
+        action: 'otakatikinid@gmail.com',
         actionLabel: 'Kirim Email',
-        href: 'mailto:otakatikid@gmail.com',
+        href: 'mailto:otakatikinid@gmail.com',
         badge: 'Respons 1x24 jam',
     },
     {
