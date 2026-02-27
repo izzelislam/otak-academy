@@ -42,6 +42,14 @@ function XMarkIcon({ className }) {
     );
 }
 
+function EnvelopeIcon({ className }) {
+    return (
+        <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+        </svg>
+    );
+}
+
 export default function Navbar({ auth = {} }) {
     const [isScrolled, setIsScrolled] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -100,6 +108,13 @@ export default function Navbar({ auth = {} }) {
                             className="px-4 py-2 text-[14px] font-medium text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white transition-colors"
                         >
                             Produk Digital
+                        </Link>
+                        <Link
+                            href={route('contact')}
+                            className="flex items-center gap-1.5 px-4 py-2 text-[14px] font-medium text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white transition-colors"
+                        >
+                            <EnvelopeIcon className="w-4 h-4" />
+                            Kontak
                         </Link>
 
                         <button
@@ -189,6 +204,14 @@ export default function Navbar({ auth = {} }) {
                             onClick={() => setMobileMenuOpen(false)}
                         >
                             Produk Digital
+                        </Link>
+                        <Link
+                            href={route('contact')}
+                            className="flex items-center gap-2 text-base font-medium text-gray-900 dark:text-white hover:text-[#10a37f] dark:hover:text-[#10a37f]"
+                            onClick={() => setMobileMenuOpen(false)}
+                        >
+                            <EnvelopeIcon className="w-5 h-5" />
+                            Kontak
                         </Link>
                         
                         <div className="pt-4 border-t border-gray-100 dark:border-white/10 flex flex-col space-y-3">

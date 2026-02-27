@@ -175,6 +175,15 @@ Route::middleware(['auth', 'verified'])->prefix('member')->name('member.')->grou
     Route::get('/payment/{payment}/invoice', [PaymentController::class, 'invoice'])->name('payment.invoice');
 });
 
+// Contact/Support Page
+Route::get('/kontak', function () {
+    return Inertia::render('Contact', [
+        'auth' => [
+            'user' => auth()->user(),
+        ],
+    ]);
+})->name('contact');
+
 // Privacy Policy Route
 Route::get('/privacy-policy', function () {
     return Inertia::render('PrivacyPolicy', [
@@ -183,6 +192,15 @@ Route::get('/privacy-policy', function () {
         ],
     ]);
 })->name('privacy-policy');
+
+// Terms & Conditions Route
+Route::get('/syarat-ketentuan', function () {
+    return Inertia::render('TermsConditions', [
+        'auth' => [
+            'user' => auth()->user(),
+        ],
+    ]);
+})->name('terms-conditions');
 
 // Google Login Routes
 Route::get('auth/google', [App\Http\Controllers\SocialLoginController::class, 'redirectToGoogle'])->name('auth.google');

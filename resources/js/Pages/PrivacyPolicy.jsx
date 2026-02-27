@@ -203,7 +203,7 @@ export default function PrivacyPolicy({ auth }) {
 
                 {/* Footer */}
                 <footer className="border-t border-gray-200 dark:border-white/[0.06]">
-                    <div className="max-w-4xl mx-auto px-6 py-8">
+                    <div className="max-w-[1200px] mx-auto px-6 py-8">
                         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                             <div className="flex items-center gap-3">
                                 <img src="/favicon/favicon-96x96.png" alt="OtakAtikin" className="h-6 w-6" />
@@ -215,8 +215,20 @@ export default function PrivacyPolicy({ auth }) {
                                 <Link href="/" className="text-gray-500 hover:text-gray-900 dark:text-white/40 dark:hover:text-white transition-colors">
                                     Beranda
                                 </Link>
-                                <Link href="/terms-of-service" className="text-gray-500 hover:text-gray-900 dark:text-white/40 dark:hover:text-white transition-colors">
-                                    Terms of Service
+                                <Link href={route('blog.index')} className="text-gray-500 hover:text-gray-900 dark:text-white/40 dark:hover:text-white transition-colors">
+                                    Blog
+                                </Link>
+                                <Link href={route('assets.index')} className="text-gray-500 hover:text-gray-900 dark:text-white/40 dark:hover:text-white transition-colors">
+                                    Produk Digital
+                                </Link>
+                                {/* <Link href={route('privacy-policy')} className="text-gray-500 hover:text-gray-900 dark:text-white/40 dark:hover:text-white transition-colors">
+                                    Privacy Policy
+                                </Link> */}
+                                <Link href={route('terms-conditions')} className="text-gray-500 hover:text-gray-900 dark:text-white/40 dark:hover:text-white transition-colors">
+                                    Syarat & Ketentuan
+                                </Link>
+                                <Link href={route('contact')} className="text-gray-500 hover:text-gray-900 dark:text-white/40 dark:hover:text-white transition-colors">
+                                    Kontak
                                 </Link>
                             </div>
                         </div>
