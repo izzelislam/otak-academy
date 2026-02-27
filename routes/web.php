@@ -104,6 +104,8 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
     Route::resource('redeem-codes', AdminRedeemCodeController::class)->except(['edit', 'update']);
 
     // Blog Management
+    Route::post('blogs/generate', [AdminBlogController::class, 'generate'])->name('blogs.generate');
+    Route::post('blogs/generate-image', [AdminBlogController::class, 'generateImage'])->name('blogs.generateImage');
     Route::resource('blogs', AdminBlogController::class);
 
     // Blog Category Management

@@ -105,12 +105,19 @@ class BlogService
      */
     public function updatePost(Blog $blog, array $data): Blog
     {
-        if (isset($data['thumbnail']) && $data['thumbnail'] instanceof \Illuminate\Http\UploadedFile) {
-            // Delete old thumbnail if exists
-            if ($blog->thumbnail) {
-                Storage::disk('public')->delete($blog->thumbnail);
+        if (isset($data['thumbnail'])) {
+            if ($data['thumbnail'] instanceof \Illuminate\Http\UploadedFile) {
+                // Delete old thumbnail if exists
+                if ($blog->thumbnail) {
+                    $this->deleteThumbnail($blog->thumbnail);
+                }
+                $data['thumbnail'] = $data['thumbnail']->store('blog-thumbnails', 'public');
+            } elseif (is_string($data['thumbnail']) && $data['thumbnail'] !== $blog->thumbnail) {
+                // URL string was passed (new AI image), delete the old one
+                if ($blog->thumbnail) {
+                    $this->deleteThumbnail($blog->thumbnail);
+                }
             }
-            $data['thumbnail'] = $data['thumbnail']->store('blog-thumbnails', 'public');
         }
 
         // Set published_at when status changes to published
@@ -130,10 +137,38 @@ class BlogService
     {
         // Delete thumbnail if exists
         if ($blog->thumbnail) {
-            Storage::disk('public')->delete($blog->thumbnail);
+            $this->deleteThumbnail($blog->thumbnail);
         }
 
         return $blog->delete();
+    }
+
+    /**
+     * Safely delete the thumbnail from storage (Local or Cloud/S3)
+     */
+    protected function deleteThumbnail(?string $thumbnailUrl)
+    {
+        if (!$thumbnailUrl) {
+            return;
+        }
+
+        if (filter_var($thumbnailUrl, FILTER_VALIDATE_URL)) {
+            // It's a full URL, likely an AI generated image via MediaService.
+            $filename = basename($thumbnailUrl);
+            $media = \App\Models\Media::where('storage_path', 'like', '%' . $filename)->first();
+            
+            if ($media) {
+                $disk = in_array(strtolower($media->extension), ['mp4', 'mov', 'avi', 'mkv', 'webm', 'wmv', 'flv']) ? 'public' : 's3';
+                Storage::disk($disk)->delete($media->storage_path);
+                $media->delete();
+            } else {
+                // If media model not found but it's an S3 URL
+                Storage::disk('s3')->delete('media/blogs/' . $filename);
+            }
+        } else {
+            // It's a local public path (e.g. blog-thumbnails/xxx.jpg)
+            Storage::disk('public')->delete($thumbnailUrl);
+        }
     }
 
     /**
