@@ -208,7 +208,7 @@ export default function Welcome({ auth }) {
                         </div>
 
                         {/* Stats */}
-                        <div className="mt-20 pt-10 border-t border-gray-200 dark:border-white/10">
+                        {/* <div className="mt-20 pt-10 border-t border-gray-200 dark:border-white/10">
                             <div className="grid grid-cols-2 sm:grid-cols-4 gap-8">
                                 {[
                                     { value: '100+', label: 'Kursus & Blog' },
@@ -226,7 +226,7 @@ export default function Welcome({ auth }) {
                                     </div>
                                 ))}
                             </div>
-                        </div>
+                        </div> */}
                     </div>
 
                     {/* Bottom Gradient fade */}
@@ -318,8 +318,9 @@ export default function Welcome({ auth }) {
                                             <AcademicCapIcon className="h-10 w-10 text-white" />
                                         </div>
                                         <div className="text-center">
-                                            <div className="text-[56px] font-semibold text-gray-900 dark:text-white tracking-tight">100+</div>
-                                            <div className="text-[16px] text-gray-500 dark:text-white/40">Kursus tersedia</div>
+                                            <div className="text-[30px] font-semibold text-gray-900 dark:text-white tracking-tight">Kursus Degan Kualitas Tinggi</div>
+                                            <div className="text-[16px] text-gray-500 dark:text-white/40">Membantu kamu belajar dan praktik lebih maksimal</div>
+                                            {/* <div className="text-[56px] font-semibold text-gray-900 dark:text-white tracking-tight">Kursus Degan Kualitas Tinggi</div> */}
                                         </div>
                                     </div>
                                 </div>
@@ -336,7 +337,7 @@ export default function Welcome({ auth }) {
                                 Apa kata mereka
                             </h2>
                             <p className="mt-4 text-[16px] sm:text-[18px] text-gray-500 dark:text-white/40">
-                                Ribuan member sudah merasakan manfaatnya
+                                Para member sudah merasakan manfaatnya
                             </p>
                         </div>
 
