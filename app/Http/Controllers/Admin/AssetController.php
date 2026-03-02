@@ -10,6 +10,7 @@ use App\Services\DownloadAuditService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response as InertiaResponse;
@@ -39,7 +40,12 @@ class AssetController extends Controller
      */
     public function create(): InertiaResponse
     {
-        return Inertia::render('Admin/Assets/Create');
+        $models = explode(',', env('OPENROUTER_MODELS', 'openai/gpt-4o-mini'));
+        $models = array_map('trim', $models);
+
+        return Inertia::render('Admin/Assets/Create', [
+            'availableModels' => array_filter($models),
+        ]);
     }
 
     /**
@@ -55,6 +61,7 @@ class AssetController extends Controller
             'type' => ['required', 'in:free,paid'],
             'price' => ['required_if:type,paid', 'integer', 'min:0'],
             'is_published' => ['boolean'],
+            'specifications' => ['nullable', 'array'],
         ]);
 
         $validated['is_published'] = $validated['is_published'] ?? false;
@@ -93,8 +100,12 @@ class AssetController extends Controller
      */
     public function edit(DownloadableAsset $asset): InertiaResponse
     {
+        $models = explode(',', env('OPENROUTER_MODELS', 'openai/gpt-4o-mini'));
+        $models = array_map('trim', $models);
+
         return Inertia::render('Admin/Assets/Edit', [
             'asset' => $asset,
+            'availableModels' => array_filter($models),
         ]);
     }
 
@@ -118,6 +129,7 @@ class AssetController extends Controller
             'price' => ['required_if:type,paid', 'integer', 'min:0'],
             'is_published' => ['boolean'],
             'is_redemption_required' => ['boolean'],
+            'specifications' => ['nullable', 'array'],
         ]);
 
         $validated['is_published'] = $validated['is_published'] ?? false;
@@ -274,5 +286,101 @@ class AssetController extends Controller
         }
 
         return \Illuminate\Support\Facades\Storage::disk('s3')->download($asset->file_path, $asset->file_name);
+    }
+
+    /**
+     * Generate AI Asset Content (Description & Specifications)
+     */
+    public function generate(Request $request)
+    {
+        $request->validate([
+            'title' => 'required|string',
+            'tone' => 'required|string',
+            'level' => 'required|string',
+            'max_words' => 'required|string',
+            'model' => 'nullable|string',
+            'brief' => 'nullable|string',
+        ]);
+
+        $apiKey = env('OPENROUTER_API_KEY');
+        $baseUrl = env('OPENROUTER_BASE_URL', 'https://openrouter.ai/api/v1');
+        
+        $allowedModels = explode(',', env('OPENROUTER_MODELS', 'openai/gpt-4o-mini'));
+        $allowedModels = array_map('trim', $allowedModels);
+        
+        $model = $request->model && in_array($request->model, $allowedModels) 
+                 ? $request->model 
+                 : ($allowedModels[0] ?? 'openai/gpt-4o-mini');
+
+        if (empty($apiKey)) {
+            return response()->json(['error' => 'API Key OpenRouter tidak ditemukan di konfigurasi.'], 500);
+        }
+
+        $prompt = "Buatkan deskripsi dan spesifikasi untuk produk digital (asset) dengan detail berikut:\n" .
+                  "- Judul Produk: {$request->title}\n" .
+                  "- Gaya Bahasa: {$request->tone}\n" .
+                  "- Level Pengguna: {$request->level}\n" .
+                  "- Panjang Maksimal Deskripsi: Sekitar {$request->max_words} kata.\n";
+                  
+        if ($request->filled('brief')) {
+            $prompt .= "- Brief Tambahan (PENTING): {$request->brief}\n";
+        }
+
+        $prompt .= "\nInstruksi WAJIB:\n" .
+                  "1. Artikel ditulis dalam bahasa Indonesia yang baik.\n" .
+                  "2. Bagian \"description\" berupa teks biasa (bisa mengandung newline atau paragraf).\n" .
+                  "3. Bagian \"specifications\" berupa array string. Setiap string adalah satu poin fitur/spesifikasi unggulan, boleh menyertakan emoji.\n" .
+                  "4. Kamu HARUS membalas SECARA KETAT hanya dalam format JSON murni yang valid tanpa teks pembuka/penutup apapun.\n" .
+                  "5. Format JSON persis seperti ini:\n" .
+                  "{\n" .
+                  "  \"description\": \"<teks deskripsi lengkap>\",\n" .
+                  "  \"specifications\": [\n" .
+                  "    \"<spesifikasi 1>\",\n" .
+                  "    \"<spesifikasi 2>\"\n" .
+                  "  ]\n" .
+                  "}\n" .
+                  "6. JANGAN bungkus dalam markdown (```json). Langsung mulai dengan { dan akhiri dengan }.";
+
+        try {
+            $response = Http::withHeaders([
+                'Authorization' => "Bearer {$apiKey}",
+                'HTTP-Referer' => config('app.url'),
+                'X-Title' => config('app.name'),
+            ])->timeout(60)->post("{$baseUrl}/chat/completions", [
+                'model' => $model,
+                'messages' => [
+                    ['role' => 'user', 'content' => $prompt]
+                ],
+            ]);
+
+            if ($response->successful()) {
+                $rawContent = $response->json('choices.0.message.content');
+                
+                $cleanContent = preg_replace('/^```(?:json)?\s*/i', '', trim($rawContent));
+                $cleanContent = preg_replace('/\s*```$/', '', $cleanContent);
+                $cleanContent = trim($cleanContent);
+                
+                $parsed = json_decode($cleanContent, true);
+                
+                if (json_last_error() === JSON_ERROR_NONE && isset($parsed['description']) && isset($parsed['specifications'])) {
+                    return response()->json([
+                        'description' => trim($parsed['description']),
+                        'specifications' => $parsed['specifications'],
+                    ]);
+                }
+                
+                return response()->json([
+                    'error' => 'Gagal memparsing JSON atau atribut kurang.',
+                    'raw' => $cleanContent
+                ], 500);
+            }
+
+            return response()->json([
+                'error' => 'Gagal generate konten.', 
+                'details' => $response->json()
+            ], 500);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Terjadi kesalahan sistem: ' . $e->getMessage()], 500);
+        }
     }
 }

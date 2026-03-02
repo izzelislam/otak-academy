@@ -2,6 +2,7 @@ import AdminLayout from '@/Layouts/AdminLayout';
 import { FormCard, FormInput, FormTextarea, FormSelect, FormCheckbox, FormActions, BackLink } from '@/Components/Admin/FormCard';
 import { Head, useForm } from '@inertiajs/react';
 import { useState } from 'react';
+import axios from 'axios';
 
 function formatFileSize(bytes) {
     if (!bytes) return '';
@@ -15,7 +16,7 @@ function formatFileSize(bytes) {
     return `${size.toFixed(1)} ${units[unitIndex]}`;
 }
 
-export default function AssetEdit({ asset }) {
+export default function AssetEdit({ asset, availableModels }) {
     const [selectedFile, setSelectedFile] = useState(null);
     const [selectedThumbnail, setSelectedThumbnail] = useState(null);
 
@@ -30,7 +31,47 @@ export default function AssetEdit({ asset }) {
         price: asset.price || 0,
         is_published: asset.is_published || false,
         is_redemption_required: asset.is_redemption_required || false,
+        specifications: asset.specifications || [],
     });
+
+    const [aiLoading, setAiLoading] = useState(false);
+    const [showAiSettings, setShowAiSettings] = useState(false);
+    const [aiSettings, setAiSettings] = useState({
+        model: availableModels && availableModels.length > 0 ? availableModels[0] : 'openai/gpt-4o-mini',
+        tone: 'Santai & Menarik',
+        level: 'Pemula',
+        max_words: '300',
+        brief: ''
+    });
+
+    const handleGenerateAi = async () => {
+        if (!data.title) {
+            alert('Silakan isi judul asset terlebih dahulu!');
+            return;
+        }
+        setAiLoading(true);
+        try {
+            const response = await axios.post(route('admin.assets.generate'), {
+                title: data.title,
+                tone: aiSettings.tone,
+                level: aiSettings.level,
+                max_words: aiSettings.max_words,
+                model: aiSettings.model,
+                brief: aiSettings.brief
+            });
+            setData(data => ({
+                ...data,
+                description: response.data.description || data.description,
+                specifications: response.data.specifications || data.specifications,
+            }));
+            setShowAiSettings(false);
+        } catch (error) {
+            console.error('Error generating AI content:', error);
+            alert(error.response?.data?.error || 'Gagal generate detail asset.');
+        } finally {
+            setAiLoading(false);
+        }
+    };
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
@@ -86,6 +127,114 @@ export default function AssetEdit({ asset }) {
                             required
                         />
 
+                        {/* AI Generate Section */}
+                        <div className="space-y-4">
+                            <div className="flex items-center justify-between">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    Detail & Spesifikasi
+                                </label>
+                                <button
+                                    type="button"
+                                    onClick={() => setShowAiSettings(!showAiSettings)}
+                                    className="inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-purple-700 bg-purple-100 dark:text-purple-300 dark:bg-purple-900/30 rounded-lg hover:bg-purple-200 dark:hover:bg-purple-900/50 transition-colors"
+                                >
+                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                    </svg>
+                                    Generate AI
+                                </button>
+                            </div>
+
+                            {showAiSettings && (
+                                <div className="p-4 bg-purple-50 dark:bg-purple-900/10 border border-purple-100 dark:border-purple-900/30 rounded-xl space-y-4">
+                                    <h4 className="text-sm font-semibold text-purple-900 dark:text-purple-300 flex items-center gap-2">
+                                        ✨ Pengaturan AI
+                                    </h4>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <FormSelect
+                                            label="Gaya Bahasa"
+                                            id="ai_tone"
+                                            value={aiSettings.tone}
+                                            onChange={(e) => setAiSettings({...aiSettings, tone: e.target.value})}
+                                        >
+                                            <option value="Santai & Menarik">Santai & Menarik</option>
+                                            <option value="Formal & Profesional">Formal & Profesional</option>
+                                            <option value="Persuasif & Menjual">Persuasif & Menjual</option>
+                                        </FormSelect>
+                                        
+                                        <FormSelect
+                                            label="Level Pengguna"
+                                            id="ai_level"
+                                            value={aiSettings.level}
+                                            onChange={(e) => setAiSettings({...aiSettings, level: e.target.value})}
+                                        >
+                                            <option value="Pemula">Pemula</option>
+                                            <option value="Menengah">Menengah</option>
+                                            <option value="Mahir">Mahir</option>
+                                            <option value="Umum">Umum</option>
+                                        </FormSelect>
+                                        
+                                        <FormSelect
+                                            label="Panjang Deskripsi"
+                                            id="ai_words"
+                                            value={aiSettings.max_words}
+                                            onChange={(e) => setAiSettings({...aiSettings, max_words: e.target.value})}
+                                        >
+                                            <option value="150">Singkat (~150 kata)</option>
+                                            <option value="300">Sedang (~300 kata)</option>
+                                            <option value="500">Panjang (~500 kata)</option>
+                                        </FormSelect>
+
+                                        <FormSelect
+                                            label="AI Model"
+                                            id="ai_model"
+                                            value={aiSettings.model}
+                                            onChange={(e) => setAiSettings({...aiSettings, model: e.target.value})}
+                                        >
+                                            {availableModels && availableModels.map(model => (
+                                                <option key={model} value={model}>{model}</option>
+                                            ))}
+                                        </FormSelect>
+                                    </div>
+
+                                    <FormTextarea
+                                        label="Prompt / Brief Tambahan (Opsional)"
+                                        id="ai_brief"
+                                        value={aiSettings.brief}
+                                        onChange={(e) => setAiSettings({...aiSettings, brief: e.target.value})}
+                                        placeholder="Contoh: Fokuskan deskripsi pada format ebook ini (PDF) dan sebutkan ada 5 bab utama..."
+                                        rows={2}
+                                    />
+
+                                    <div className="flex justify-end">
+                                        <button
+                                            type="button"
+                                            onClick={handleGenerateAi}
+                                            disabled={aiLoading}
+                                            className="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50"
+                                        >
+                                            {aiLoading ? (
+                                                <>
+                                                    <svg className="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                    </svg>
+                                                    Sedang Generate...
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                                                    </svg>
+                                                    Mulai Generate
+                                                </>
+                                            )}
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
                         <FormTextarea
                             label="Deskripsi"
                             id="description"
@@ -95,6 +244,45 @@ export default function AssetEdit({ asset }) {
                             error={errors.description}
                             rows={4}
                         />
+
+                        {/* Specifications Field */}
+                        <div className="space-y-2">
+                            <label className="block text-sm font-medium text-gray-700 dark:text-slate-300">
+                                Spesifikasi (Fitur)
+                            </label>
+                            {data.specifications.map((spec, index) => (
+                                <div key={index} className="flex gap-2">
+                                    <input
+                                        type="text"
+                                        className="block w-full px-3 py-2 text-sm rounded-lg border border-gray-300 dark:border-slate-700 dark:bg-slate-800 dark:text-white focus:ring-2 focus:ring-[#10a37f] focus:border-[#10a37f] transition-colors placeholder:text-gray-400 dark:placeholder:text-slate-500"
+                                        value={spec}
+                                        onChange={(e) => {
+                                            const newSpecs = [...data.specifications];
+                                            newSpecs[index] = e.target.value;
+                                            setData('specifications', newSpecs);
+                                        }}
+                                        placeholder="e.g. 📦 Produk Digital (Ebook PDF)"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            const newSpecs = data.specifications.filter((_, i) => i !== index);
+                                            setData('specifications', newSpecs);
+                                        }}
+                                        className="px-3 py-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-sm font-medium transition-colors"
+                                    >
+                                        Hapus
+                                    </button>
+                                </div>
+                            ))}
+                            <button
+                                type="button"
+                                onClick={() => setData('specifications', [...data.specifications, ''])}
+                                className="text-sm text-[#10a37f] hover:text-[#0e8c6b] font-medium"
+                            >
+                                + Tambah Spesifikasi
+                            </button>
+                        </div>
 
                         {/* Current File Info */}
                         <div className="p-3 bg-gray-50 dark:bg-slate-800 rounded-lg">

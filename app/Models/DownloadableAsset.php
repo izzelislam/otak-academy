@@ -32,6 +32,7 @@ class DownloadableAsset extends Model
         'download_count',
         'is_published',
         'is_redemption_required',
+        'specifications',
     ];
 
     /**
@@ -47,6 +48,7 @@ class DownloadableAsset extends Model
             'download_count' => 'integer',
             'file_size' => 'integer',
             'price' => 'integer',
+            'specifications' => 'array',
         ];
     }
 

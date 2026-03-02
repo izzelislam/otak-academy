@@ -112,6 +112,7 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
     Route::resource('blog-categories', AdminBlogCategoryController::class)->except(['show']);
 
     // Asset Management
+    Route::post('assets/generate', [AdminAssetController::class, 'generate'])->name('assets.generate');
     Route::resource('assets', AdminAssetController::class);
     Route::post('assets/{asset}/generate-codes', [AdminAssetController::class, 'generateCodes'])
         ->name('assets.generate-codes');

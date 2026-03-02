@@ -220,6 +220,31 @@ export default function AssetShow({ auth, asset, hasValidRedemption, redownloadI
                                     {asset.title}
                                 </h1>
 
+                                {/* Specifications (Collapsible) */}
+                                {asset.specifications && asset.specifications.length > 0 && (
+                                    <div className="mb-8">
+                                        <details className="group border border-gray-200 dark:border-white/[0.06] rounded-xl overflow-hidden bg-white dark:bg-white/[0.02]">
+                                            <summary className="flex items-center justify-between p-4 cursor-pointer font-medium text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors list-none [&::-webkit-details-marker]:hidden select-none">
+                                                <span>Spesifikasi Produk</span>
+                                                <span className="transition-transform group-open:rotate-180 text-gray-400 dark:text-white/40">
+                                                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                                                    </svg>
+                                                </span>
+                                            </summary>
+                                            <div className="p-4 pt-4 border-t border-gray-100 dark:border-white/[0.06] bg-gray-50/50 dark:bg-transparent">
+                                                <ul className="space-y-3 text-gray-600 dark:text-white/70">
+                                                    {asset.specifications.map((spec, index) => (
+                                                        <li key={index} className="flex items-start gap-3 leading-relaxed">
+                                                            <span>{spec}</span>
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                        </details>
+                                    </div>
+                                )}
+
                                 {/* Description */}
                                 {asset.description && (
                                     <div className="prose prose-lg max-w-none mb-8 text-gray-600 dark:text-white/70">
