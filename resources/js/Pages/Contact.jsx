@@ -1,6 +1,7 @@
-import { Head, Link } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
 import Navbar from '@/Components/Navbar';
 import { useState } from 'react';
+import Seo from '@/Components/Seo';
 
 function EnvelopeIcon({ className }) {
     return (
@@ -116,7 +117,17 @@ export default function Contact({ auth }) {
 
     return (
         <>
-            <Head title="Kontak & Support - OtakAtikin" />
+            <Seo
+                title="Kontak & Support"
+                description="Hubungi tim OtakAtikin untuk bantuan pembelian, akses kursus, produk digital, dan pertanyaan umum lainnya."
+                canonical={route('contact')}
+                schema={{
+                    '@context': 'https://schema.org',
+                    '@type': 'ContactPage',
+                    name: 'Kontak OtakAtikin',
+                    url: route('contact'),
+                }}
+            />
             <div className="min-h-screen bg-white dark:bg-black text-gray-900 dark:text-white antialiased transition-colors duration-300">
                 <Navbar auth={auth} />
 

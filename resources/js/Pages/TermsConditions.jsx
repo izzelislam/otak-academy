@@ -1,10 +1,21 @@
-import { Head, Link } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
 import Navbar from '@/Components/Navbar';
+import Seo from '@/Components/Seo';
 
 export default function TermsConditions({ auth }) {
     return (
         <>
-            <Head title="Syarat & Ketentuan - OtakAtikin" />
+            <Seo
+                title="Syarat & Ketentuan"
+                description="Syarat dan ketentuan penggunaan platform OtakAtikin untuk kursus, blog, dan produk digital."
+                canonical={route('terms-conditions')}
+                schema={{
+                    '@context': 'https://schema.org',
+                    '@type': 'WebPage',
+                    name: 'Syarat & Ketentuan - OtakAtikin',
+                    url: route('terms-conditions'),
+                }}
+            />
             <div className="min-h-screen bg-white dark:bg-black text-gray-900 dark:text-white antialiased transition-colors duration-300">
                 <Navbar auth={auth} />
 

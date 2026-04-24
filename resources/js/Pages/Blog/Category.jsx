@@ -1,5 +1,6 @@
-import { Head, Link, router } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 import { useState, useEffect } from 'react';
+import Seo from '@/Components/Seo';
 
 function CalendarIcon({ className }) {
     return (
@@ -125,7 +126,18 @@ export default function BlogCategory({ posts, category, categories }) {
 
     return (
         <>
-            <Head title={`${category.name} - Blog`} />
+            <Seo
+                title={`${category.name} Blog`}
+                description={category.description || `Kumpulan artikel dalam kategori ${category.name} di Blog OtakAtikin.`}
+                canonical={route('blog.category', category.slug)}
+                schema={{
+                    '@context': 'https://schema.org',
+                    '@type': 'CollectionPage',
+                    name: `${category.name} - Blog OtakAtikin`,
+                    description: category.description || `Kumpulan artikel dalam kategori ${category.name}.`,
+                    url: route('blog.category', category.slug),
+                }}
+            />
             <div className="min-h-screen bg-black text-white antialiased">
                 {/* Header */}
                 <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${

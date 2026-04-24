@@ -1,5 +1,6 @@
-import { Head, Link } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
 import Navbar from '@/Components/Navbar';
+import Seo from '@/Components/Seo';
 
 function AcademicCapIcon({ className }) {
     return (
@@ -13,15 +14,6 @@ function ArrowRightIcon({ className }) {
     return (
         <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-        </svg>
-    );
-}
-
-function PlayCircleIcon({ className }) {
-    return (
-        <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15.91 11.672a.375.375 0 0 1 0 .656l-5.603 3.113a.375.375 0 0 1-.557-.328V8.887c0-.286.307-.466.557-.327l5.603 3.112Z" />
         </svg>
     );
 }
@@ -42,14 +34,6 @@ function VideoCameraIcon({ className }) {
     );
 }
 
-function UsersIcon({ className }) {
-    return (
-        <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" />
-        </svg>
-    );
-}
-
 function DocumentIcon({ className }) {
     return (
         <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
@@ -58,33 +42,83 @@ function DocumentIcon({ className }) {
     );
 }
 
+function SparklesIcon({ className }) {
+    return (
+        <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904 9 18l-.813-2.096a4.5 4.5 0 0 0-2.291-2.291L3.75 12l2.146-.813a4.5 4.5 0 0 0 2.291-2.291L9 6.75l.813 2.146a4.5 4.5 0 0 0 2.291 2.291L14.25 12l-2.146.813a4.5 4.5 0 0 0-2.291 2.291ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.456-2.456L14.25 6l1.035-.259a3.375 3.375 0 0 0 2.456-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z" />
+        </svg>
+    );
+}
+
 const features = [
     {
         icon: VideoCameraIcon,
-        title: 'Kursus Video',
-        description: 'Akses ratusan kursus video berkualitas HD dengan materi terstruktur.',
+        title: 'Course & Video Class',
+        description: 'Pelajari skill baru lewat course video terstruktur, praktikal, dan relevan dengan kebutuhan industri.',
     },
     {
         icon: BookOpenIcon,
-        title: 'Blog & Resources',
-        description: 'Artikel, tutorial, dan resources gratis untuk belajar mandiri.',
+        title: 'Blog, Ebook & Resources',
+        description: 'Temukan artikel, ebook, dan resources gratis untuk mempercepat proses belajar mandiri.',
     },
     {
         icon: DocumentIcon,
-        title: 'Produk Digital',
-        description: 'Download template, tools, dan assets premium untuk projekmu.',
+        title: 'Produk Digital & Ebook',
+        description: 'Download ebook, template, tools, dan produk digital premium yang siap pakai untuk projekmu.',
     },
     {
-        icon: UsersIcon,
-        title: 'Komunitas',
-        description: 'Bergabung dengan komunitas learner aktif dan saling support.',
+        icon: SparklesIcon,
+        title: 'Ebook Generator AI',
+        description: 'Buat draft ebook, outline, dan ide konten lebih cepat lewat tool AI OtakAtikin.',
     },
 ];
 
 export default function Welcome({ auth }) {
+    const canonical = typeof window !== 'undefined' ? `${window.location.origin}/` : '/';
+
     return (
         <>
-            <Head title="OtakAtikin - Platform Pembelajaran & Resources" />
+            <Seo
+                title="Ebook, Produk Digital, Course & Ebook Generator AI"
+                description="OtakAtikin menyediakan ebook, produk digital, course online, artikel belajar, dan ebook generator AI untuk developer, kreator, dan pebisnis digital."
+                canonical={canonical}
+                keywords={[
+                    'ebook',
+                    'ebook digital',
+                    'produk digital',
+                    'course online',
+                    'kursus online',
+                    'ebook generator ai',
+                    'ai.otakatikin.com',
+                    'template digital',
+                ]}
+                schema={[
+                    {
+                        '@context': 'https://schema.org',
+                        '@type': 'WebSite',
+                        name: 'OtakAtikin',
+                        url: canonical,
+                    },
+                    {
+                        '@context': 'https://schema.org',
+                        '@type': 'EducationalOrganization',
+                        name: 'OtakAtikin',
+                        url: canonical,
+                    },
+                    {
+                        '@context': 'https://schema.org',
+                        '@type': 'Service',
+                        name: 'OtakAtikin Ebook Generator AI',
+                        provider: {
+                            '@type': 'Organization',
+                            name: 'OtakAtikin',
+                        },
+                        areaServed: 'ID',
+                        serviceType: 'AI Ebook Generator',
+                        url: 'https://ai.otakatikin.com',
+                    },
+                ]}
+            />
             <div className="min-h-screen bg-white dark:bg-black text-gray-900 dark:text-white antialiased transition-colors duration-300">
                 <Navbar auth={auth} />
 
@@ -160,49 +194,62 @@ export default function Welcome({ auth }) {
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#10a37f] opacity-75"></span>
                                 <span className="relative inline-flex rounded-full h-2 w-2 bg-[#10a37f]"></span>
                             </span>
-                            <span className="text-[13px] text-gray-600 dark:text-white/60 font-medium">Platform konten & pembelajaran terpercaya</span>
+                            <span className="text-[13px] text-gray-600 dark:text-white/60 font-medium">Platform ebook, produk digital, course, dan AI generator</span>
                         </div>
 
                         {/* Headline */}
                         <h1 className="text-[clamp(40px,8vw,80px)] font-semibold leading-[1.1] tracking-[-0.02em] max-w-4xl mx-auto">
-                            <span className="text-gray-900 dark:text-white">Kelas, blog, & assets</span>
+                            <span className="text-gray-900 dark:text-white">Ebook, course,</span>
                             <br />
                             <span className="text-[#10a37f]">
-                                dalam satu platform
+                                produk digital, & AI tools
                             </span>
                         </h1>
 
                         {/* Subheadline */}
                         <p className="mt-6 text-[18px] sm:text-[20px] text-gray-500 dark:text-white/50 font-normal leading-relaxed max-w-xl mx-auto">
-                            Akses Kelas video / Online, artikel blog, produk digital premium, dan berbagai resources untuk mengembangkan skill dan karir kamu.
+                            Akses course online, ebook premium, produk digital siap pakai, artikel blog, dan ebook generator AI untuk membangun skill sekaligus output yang bisa langsung dijual atau dipakai.
                         </p>
 
                         {/* CTA Buttons */}
                         <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
                             {auth.user ? (
-                                <Link
-                                    href={route('assets.index')}
-                                    className="group inline-flex items-center justify-center gap-2 px-6 py-3 text-[15px] font-medium text-white bg-black hover:bg-black/90 dark:text-black dark:bg-white dark:hover:bg-white/90 rounded-xl transition-all"
-                                >
-                                    Explore Sekarang
-                                    <ArrowRightIcon className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
-                                </Link>
+                                <>
+                                    <Link
+                                        href={route('assets.index')}
+                                        className="group inline-flex items-center justify-center gap-2 px-6 py-3 text-[15px] font-medium text-white bg-black hover:bg-black/90 dark:text-black dark:bg-white dark:hover:bg-white/90 rounded-xl transition-all"
+                                    >
+                                        Lihat Ebook & Produk Digital
+                                        <ArrowRightIcon className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
+                                    </Link>
+                                    <a
+                                        href="https://ai.otakatikin.com"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="group inline-flex items-center justify-center gap-2 px-6 py-3 text-[15px] font-medium text-gray-600 hover:text-gray-900 bg-transparent border border-gray-200 hover:border-gray-300 dark:text-white/80 dark:hover:text-white dark:bg-white/5 dark:hover:bg-white/10 dark:border-white/10 dark:hover:border-white/20 rounded-xl transition-all"
+                                    >
+                                        <SparklesIcon className="h-5 w-5" />
+                                        Buka Ebook Generator AI
+                                    </a>
+                                </>
                             ) : (
                                 <>
                                     <Link
                                         href={route('register')}
                                         className="group inline-flex items-center justify-center gap-2 px-6 py-3 text-[15px] font-medium text-white bg-black hover:bg-black/90 dark:text-black dark:bg-white dark:hover:bg-white/90 rounded-xl transition-all"
                                     >
-                                        Mulai eksplorasi gratis
+                                        Mulai belajar gratis
                                         <ArrowRightIcon className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
                                     </Link>
-                                    <Link
-                                        href={route('login')}
+                                    <a
+                                        href="https://ai.otakatikin.com"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
                                         className="group inline-flex items-center justify-center gap-2 px-6 py-3 text-[15px] font-medium text-gray-600 hover:text-gray-900 bg-transparent border border-gray-200 hover:border-gray-300 dark:text-white/80 dark:hover:text-white dark:bg-white/5 dark:hover:bg-white/10 dark:border-white/10 dark:hover:border-white/20 rounded-xl transition-all"
                                     >
-                                        <PlayCircleIcon className="h-5 w-5" />
-                                        Lihat demo
-                                    </Link>
+                                        <SparklesIcon className="h-5 w-5" />
+                                        Coba Ebook Generator AI
+                                    </a>
                                 </>
                             )}
                         </div>
@@ -244,7 +291,7 @@ export default function Welcome({ auth }) {
                                 Semua yang kamu butuhkan
                             </h2>
                             <p className="mt-4 text-[16px] sm:text-[18px] text-gray-500 dark:text-white/40 font-normal">
-                                Fitur lengkap untuk pengalaman belajar terbaik
+                                Fokus pada pertumbuhan skill dan produksi aset digital yang bisa langsung dipakai
                             </p>
                         </div>
 
@@ -280,16 +327,17 @@ export default function Welcome({ auth }) {
                                     <span className="text-[#10a37f]">OtakAtikin?</span>
                                 </h2>
                                 <p className="mt-6 text-[16px] sm:text-[18px] text-gray-500 dark:text-white/40 leading-relaxed">
-                                    Platform all-in-one untuk belajar dan berkembang. Akses kursus, blog, produk digital, dan komunitas dalam satu tempat.
+                                    Platform all-in-one untuk belajar dan berkembang. Akses course, ebook, produk digital, blog, dan tool AI dalam satu ekosistem.
                                 </p>
 
                                 <div className="mt-10 space-y-4">
                                     {[
-                                        'Kursus video & artikel blog berkualitas',
-                                        'Produk digital & template premium',
+                                        'Course online dan video class berkualitas',
+                                        'Ebook, template, dan produk digital premium',
+                                        'Ebook generator AI untuk riset, outline, dan draft',
                                         'Akses konten seumur hidup',
-                                        'Komunitas learner yang aktif',
-                                        'Sertifikat & resources eksklusif',
+                                        'Blog praktikal dan resources eksklusif',
+                                        'Workflow belajar ke output digital yang lebih cepat',
                                     ].map((item, index) => (
                                         <div key={index} className="flex items-center gap-3">
                                             <div className="flex-shrink-0 h-5 w-5 rounded-full bg-[#10a37f]/20 flex items-center justify-center">
@@ -318,11 +366,78 @@ export default function Welcome({ auth }) {
                                             <AcademicCapIcon className="h-10 w-10 text-white" />
                                         </div>
                                         <div className="text-center">
-                                            <div className="text-[30px] font-semibold text-gray-900 dark:text-white tracking-tight">Kursus Degan Kualitas Tinggi</div>
-                                            <div className="text-[16px] text-gray-500 dark:text-white/40">Membantu kamu belajar dan praktik lebih maksimal</div>
+                                            <div className="text-[30px] font-semibold text-gray-900 dark:text-white tracking-tight">Belajar, bikin, lalu jual lebih cepat</div>
+                                            <div className="text-[16px] text-gray-500 dark:text-white/40">Dari course dan ebook sampai produk digital dan generator AI</div>
                                             {/* <div className="text-[56px] font-semibold text-gray-900 dark:text-white tracking-tight">Kursus Degan Kualitas Tinggi</div> */}
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section className="relative py-24 sm:py-28 border-t border-gray-200 dark:border-white/[0.06]">
+                    <div className="max-w-[1200px] mx-auto px-6">
+                        <div className="grid lg:grid-cols-[1.15fr_0.85fr] gap-8 items-stretch">
+                            <div className="relative rounded-3xl border border-gray-200 dark:border-white/[0.08] bg-gradient-to-br from-gray-100 to-white dark:from-white/[0.04] dark:to-white/[0.01] p-8 sm:p-10 overflow-hidden">
+                                <div
+                                    className="absolute inset-0 opacity-50"
+                                    style={{
+                                        background: 'radial-gradient(circle at top left, rgba(16,163,127,0.12) 0%, transparent 50%)',
+                                    }}
+                                />
+                                <div className="relative max-w-2xl">
+                                    <div className="inline-flex items-center gap-2 rounded-full border border-[#10a37f]/20 bg-[#10a37f]/10 px-3 py-1 text-[12px] font-medium text-[#10a37f]">
+                                        <SparklesIcon className="h-4 w-4" />
+                                        ai.otakatikin.com
+                                    </div>
+                                    <h2 className="mt-5 text-[30px] sm:text-[40px] font-semibold tracking-[-0.02em] text-gray-900 dark:text-white leading-tight">
+                                        Ebook Generator AI untuk riset, outline, dan draft lebih cepat
+                                    </h2>
+                                    <p className="mt-4 text-[16px] sm:text-[18px] leading-relaxed text-gray-600 dark:text-white/55">
+                                        Pakai ebook generator dari OtakAtikin untuk bantu menyusun ide, judul, kerangka isi, dan draft awal ebook sebelum masuk tahap editing, desain, dan distribusi.
+                                    </p>
+                                    <div className="mt-8 flex flex-col sm:flex-row gap-3">
+                                        <a
+                                            href="https://ai.otakatikin.com"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="inline-flex items-center justify-center gap-2 px-5 py-3 text-[14px] font-medium text-white bg-[#10a37f] hover:bg-[#0d8b6c] rounded-xl transition-colors"
+                                        >
+                                            Buka Ebook Generator AI
+                                            <ArrowRightIcon className="h-4 w-4" />
+                                        </a>
+                                        <Link
+                                            href={route('assets.index')}
+                                            className="inline-flex items-center justify-center gap-2 px-5 py-3 text-[14px] font-medium text-gray-700 hover:text-gray-900 border border-gray-200 hover:border-gray-300 dark:text-white/80 dark:hover:text-white dark:border-white/10 dark:hover:border-white/20 rounded-xl transition-colors"
+                                        >
+                                            Lihat Ebook & Produk Digital
+                                        </Link>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="rounded-3xl border border-gray-200 dark:border-white/[0.08] bg-gray-50 dark:bg-white/[0.02] p-8 sm:p-10">
+                                <h3 className="text-[18px] font-semibold text-gray-900 dark:text-white">
+                                    Alur yang ditonjolkan OtakAtikin
+                                </h3>
+                                <div className="mt-6 space-y-4">
+                                    {[
+                                        'Belajar lewat course dan artikel praktikal',
+                                        'Pakai ebook generator untuk mempercepat draft',
+                                        'Download ebook, template, dan produk digital siap pakai',
+                                        'Ulangi workflow sampai output kamu lebih cepat jadi',
+                                    ].map((item, index) => (
+                                        <div key={index} className="flex items-start gap-3">
+                                            <div className="mt-0.5 h-6 w-6 rounded-full bg-[#10a37f]/15 text-[#10a37f] flex items-center justify-center text-[12px] font-semibold">
+                                                {index + 1}
+                                            </div>
+                                            <p className="text-[14px] leading-relaxed text-gray-600 dark:text-white/60">
+                                                {item}
+                                            </p>
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
                         </div>
@@ -406,35 +521,47 @@ export default function Welcome({ auth }) {
                             
                             <div className=" relative text-center">
                                 <h2 className="text-[28px] sm:text-[36px] lg:text-[42px] font-semibold text-gray-900 dark:text-white tracking-[-0.02em] leading-[1.2]">
-                                    Mulai eksplorasi hari ini
+                                    Mulai dari course, lanjut ke ebook dan AI workflow
                                 </h2>
                                 <p className="mt-4 text-[15px] sm:text-[17px] text-gray-600 dark:text-white/50 max-w-md mx-auto leading-relaxed">
-                                    Bergabung dengan ribuan member dan akses semua konten untuk mengembangkan skill kamu.
+                                    Bangun skill lewat course, dapatkan ebook dan produk digital, lalu percepat produksi konten dengan ebook generator AI.
                                 </p>
                                 <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
                                     {auth.user ? (
-                                        <Link
-                                            href={route('assets.index')}
-                                            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-[14px] font-medium text-white bg-black hover:bg-black/90 dark:text-black dark:bg-white dark:hover:bg-white/90 rounded-lg transition-colors"
-                                        >
-                                            Explore
-                                            <ArrowRightIcon className="h-4 w-4" />
-                                        </Link>
+                                        <>
+                                            <Link
+                                                href={route('assets.index')}
+                                                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-[14px] font-medium text-white bg-black hover:bg-black/90 dark:text-black dark:bg-white dark:hover:bg-white/90 rounded-lg transition-colors"
+                                            >
+                                                Explore Ebook & Produk Digital
+                                                <ArrowRightIcon className="h-4 w-4" />
+                                            </Link>
+                                            <a
+                                                href="https://ai.otakatikin.com"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-[14px] font-medium text-gray-600 hover:text-gray-900 dark:text-white/60 dark:hover:text-white transition-colors"
+                                            >
+                                                Coba Ebook Generator AI
+                                            </a>
+                                        </>
                                     ) : (
                                         <>
                                             <Link
                                                 href={route('register')}
                                                 className="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-[14px] font-medium text-white bg-black hover:bg-black/90 dark:text-black dark:bg-white dark:hover:bg-white/90 rounded-lg transition-colors"
                                             >
-                                                Daftar gratis
+                                                Daftar untuk akses course
                                                 <ArrowRightIcon className="h-4 w-4" />
                                             </Link>
-                                            <Link
-                                                href={route('login')}
+                                            <a
+                                                href="https://ai.otakatikin.com"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
                                                 className="inline-flex items-center justify-center px-5 py-2.5 text-[14px] font-medium text-gray-600 hover:text-gray-900 dark:text-white/60 dark:hover:text-white transition-colors"
                                             >
-                                                Sudah punya akun? Masuk
-                                            </Link>
+                                                Coba Ebook Generator AI
+                                            </a>
                                         </>
                                     )}
                                 </div>
@@ -481,6 +608,14 @@ export default function Welcome({ auth }) {
                                     <Link href={route('assets.index')} className="text-gray-500 hover:text-gray-900 dark:text-white/40 dark:hover:text-white transition-colors">
                                         Produk Digital
                                     </Link>
+                                    <a
+                                        href="https://ai.otakatikin.com"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-gray-500 hover:text-gray-900 dark:text-white/40 dark:hover:text-white transition-colors"
+                                    >
+                                        Ebook Generator AI
+                                    </a>
                                     {/* <Link href={route('privacy-policy')} className="text-gray-500 hover:text-gray-900 dark:text-white/40 dark:hover:text-white transition-colors">
                                         Privacy Policy
                                     </Link> */}

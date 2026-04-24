@@ -1,10 +1,21 @@
-import { Head, Link } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
 import Navbar from '@/Components/Navbar';
+import Seo from '@/Components/Seo';
 
 export default function PrivacyPolicy({ auth }) {
     return (
         <>
-            <Head title="Privacy Policy - OtakAtikin" />
+            <Seo
+                title="Privacy Policy"
+                description="Kebijakan privasi OtakAtikin yang menjelaskan pengumpulan, penggunaan, dan perlindungan data pengguna."
+                canonical={route('privacy-policy')}
+                schema={{
+                    '@context': 'https://schema.org',
+                    '@type': 'WebPage',
+                    name: 'Privacy Policy - OtakAtikin',
+                    url: route('privacy-policy'),
+                }}
+            />
             <div className="min-h-screen bg-white dark:bg-black text-gray-900 dark:text-white antialiased transition-colors duration-300">
                 <Navbar auth={auth} />
 

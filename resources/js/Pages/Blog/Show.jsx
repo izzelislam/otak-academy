@@ -1,6 +1,6 @@
-import { Head, Link } from '@inertiajs/react';
-import { useState, useEffect } from 'react';
+import { Link } from '@inertiajs/react';
 import Navbar from '@/Components/Navbar';
+import Seo from '@/Components/Seo';
 
 function CalendarIcon({ className }) {
     return (
@@ -27,19 +27,40 @@ function ArrowLeftIcon({ className }) {
 }
 
 export default function BlogShow({ post, categories, auth }) {
-
     const formattedDate = post.published_at 
         ? new Date(post.published_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })
         : null;
+    const canonical = route('blog.show', post.slug);
+    const description = post.meta_description || post.excerpt || post.content;
 
     return (
         <>
-            <Head title={post.meta_title || post.title} />
-            {post.meta_description && (
-                <Head>
-                    <meta name="description" content={post.meta_description} />
-                </Head>
-            )}
+            <Seo
+                title={post.meta_title || post.title}
+                description={description}
+                image={post.thumbnail}
+                canonical={canonical}
+                type="article"
+                publishedTime={post.published_at || post.created_at}
+                modifiedTime={post.updated_at}
+                schema={{
+                    '@context': 'https://schema.org',
+                    '@type': 'Article',
+                    headline: post.title,
+                    description: post.meta_description || post.excerpt || undefined,
+                    image: post.thumbnail ? [post.thumbnail] : undefined,
+                    datePublished: post.published_at || post.created_at,
+                    dateModified: post.updated_at,
+                    author: post.author?.name
+                        ? {
+                            '@type': 'Person',
+                            name: post.author.name,
+                        }
+                        : undefined,
+                    articleSection: post.category?.name,
+                    mainEntityOfPage: canonical,
+                }}
+            />
             <div className="min-h-screen bg-white dark:bg-black text-gray-900 dark:text-white antialiased transition-colors duration-300">
                 <Navbar auth={auth} />
 

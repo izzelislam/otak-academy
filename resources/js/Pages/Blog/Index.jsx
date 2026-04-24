@@ -1,6 +1,7 @@
-import { Head, Link, router } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 import Navbar from '@/Components/Navbar';
 import { useState } from 'react';
+import Seo from '@/Components/Seo';
 
 function CalendarIcon({ className }) {
     return (
@@ -118,7 +119,18 @@ export default function BlogIndex({ posts, categories, auth }) {
 
     return (
         <>
-            <Head title="Blog" />
+            <Seo
+                title="Blog"
+                description="Baca artikel, tips, dan insight seputar teknologi, pengembangan skill, dan praktik belajar yang bisa langsung diterapkan."
+                canonical={route('blog.index')}
+                schema={{
+                    '@context': 'https://schema.org',
+                    '@type': 'Blog',
+                    name: 'Blog OtakAtikin',
+                    url: route('blog.index'),
+                    description: 'Artikel, tips, dan insight seputar teknologi dan pengembangan skill.',
+                }}
+            />
             <div className="min-h-screen bg-white dark:bg-black text-gray-900 dark:text-white antialiased transition-colors duration-300">
                 <Navbar auth={auth} />
 

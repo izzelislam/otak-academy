@@ -1,6 +1,7 @@
-import { Head, Link, router } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 import { useState } from 'react';
 import Navbar from '@/Components/Navbar';
+import Seo from '@/Components/Seo';
 
 function LockIcon({ className }) {
     return (
@@ -24,6 +25,12 @@ function DownloadIcon({ className }) {
             <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
         </svg>
     );
+}
+
+function isEbookAsset(asset) {
+    const extension = asset.file_type?.split('/').pop()?.toLowerCase();
+
+    return extension === 'pdf' || asset.title?.toLowerCase().includes('ebook');
 }
 
 function formatFileSize(bytes) {
@@ -73,6 +80,11 @@ function AssetCard({ asset }) {
                             </>
                         )}
                     </span>
+                    {isEbookAsset(asset) && (
+                        <span className="px-2.5 py-1 text-[11px] font-medium text-sky-700 bg-sky-100 dark:text-sky-300 dark:bg-sky-400/10 rounded-full">
+                            Ebook
+                        </span>
+                    )}
                     {asset.file_type && (
                         <span className="px-2 py-0.5 text-[10px] font-medium text-gray-500 bg-gray-100 dark:text-white/40 dark:bg-white/[0.05] rounded">
                             {asset.file_type.split('/').pop()?.toUpperCase()}
@@ -168,6 +180,9 @@ function Pagination({ data, setIsLoading }) {
 export default function AssetsIndex({ assets, currentType, auth }) {
     const items = assets?.data || assets || [];
     const [isLoading, setIsLoading] = useState(false);
+    const canonical = currentType
+        ? `${route('assets.index')}?type=${currentType}`
+        : route('assets.index');
 
     const handleTypeFilter = (type) => {
         setIsLoading(true);
@@ -184,7 +199,26 @@ export default function AssetsIndex({ assets, currentType, auth }) {
 
     return (
         <>
-            <Head title="Produk Digital" />
+            <Seo
+                title="Ebook & Produk Digital"
+                description="Temukan ebook, template, source code, dan produk digital praktis untuk mempercepat development, belajar, dan produksi kontenmu."
+                canonical={canonical}
+                keywords={[
+                    'ebook digital',
+                    'produk digital',
+                    'template premium',
+                    'source code',
+                    'ebook pdf',
+                    'otakatikin ebook',
+                ]}
+                schema={{
+                    '@context': 'https://schema.org',
+                    '@type': 'CollectionPage',
+                    name: 'Ebook dan Produk Digital OtakAtikin',
+                    description: 'Ebook, template, source code, dan resource digital untuk mempercepat development.',
+                    url: canonical,
+                }}
+            />
             <div className="min-h-screen bg-white dark:bg-black text-gray-900 dark:text-white antialiased transition-colors duration-300">
                 <Navbar auth={auth} />
 
@@ -193,11 +227,17 @@ export default function AssetsIndex({ assets, currentType, auth }) {
                     <div className="max-w-[1200px] mx-auto px-6">
                         <div className="text-center max-w-2xl mx-auto">
                             <h1 className="text-[40px] sm:text-[56px] font-semibold tracking-[-0.02em] leading-[1.1]">
-                                Produk Digital
+                                Ebook & Produk Digital
                             </h1>
                             <p className="mt-4 text-[16px] sm:text-[18px] text-gray-600 dark:text-white/50">
-                                Template, source code, dan resource digital untuk mempercepat development
+                                Koleksi ebook, template, source code, dan resource digital untuk belajar lebih cepat dan membangun output yang siap pakai
                             </p>
+                            <div className="mt-5 flex flex-wrap justify-center gap-2 text-[12px] font-medium">
+                                <span className="rounded-full bg-gray-100 px-3 py-1 text-gray-600 dark:bg-white/5 dark:text-white/50">Ebook</span>
+                                <span className="rounded-full bg-gray-100 px-3 py-1 text-gray-600 dark:bg-white/5 dark:text-white/50">Template</span>
+                                <span className="rounded-full bg-gray-100 px-3 py-1 text-gray-600 dark:bg-white/5 dark:text-white/50">Source Code</span>
+                                <span className="rounded-full bg-gray-100 px-3 py-1 text-gray-600 dark:bg-white/5 dark:text-white/50">Produk Digital</span>
+                            </div>
                         </div>
 
                         {/* Type Filter */}

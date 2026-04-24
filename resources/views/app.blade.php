@@ -3,8 +3,19 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="OtakAtikin adalah platform pembelajaran digital untuk kursus, blog, dan produk digital praktis bagi developer dan kreator di Indonesia.">
+        <meta name="robots" content="index,follow">
+        <meta property="og:type" content="website">
+        <meta property="og:site_name" content="{{ config('app.name', 'OtakAtikin') }}">
+        <meta property="og:title" content="{{ config('app.name', 'OtakAtikin') }}">
+        <meta property="og:description" content="OtakAtikin adalah platform pembelajaran digital untuk kursus, blog, dan produk digital praktis bagi developer dan kreator di Indonesia.">
+        <meta property="og:url" content="{{ url()->current() }}">
+        <meta property="og:image" content="{{ url('/favicon/web-app-manifest-512x512.png') }}">
+        <meta name="twitter:card" content="summary_large_image">
+        <link rel="canonical" href="{{ url()->current() }}">
+        <link rel="alternate" type="application/xml" title="Sitemap" href="{{ url('/sitemap.xml') }}">
 
-        <title inertia>{{ config('app.name', 'Laravel') }}</title>
+        <title inertia>{{ config('app.name', 'OtakAtikin') }}</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">

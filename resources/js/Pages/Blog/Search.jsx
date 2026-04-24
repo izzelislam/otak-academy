@@ -1,5 +1,6 @@
-import { Head, Link, router } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 import { useState, useEffect } from 'react';
+import Seo from '@/Components/Seo';
 
 function CalendarIcon({ className }) {
     return (
@@ -125,7 +126,17 @@ export default function BlogSearch({ posts, query, categories }) {
 
     return (
         <>
-            <Head title={`Pencarian: ${query} - Blog`} />
+            <Seo
+                title={query ? `Pencarian Blog: ${query}` : 'Pencarian Blog'}
+                description={query ? `Hasil pencarian artikel blog untuk kata kunci "${query}".` : 'Pencarian artikel blog.'}
+                robots="noindex,follow"
+                schema={{
+                    '@context': 'https://schema.org',
+                    '@type': 'SearchResultsPage',
+                    name: query ? `Pencarian blog ${query}` : 'Pencarian blog',
+                    url: typeof window !== 'undefined' ? window.location.href : route('blog.search'),
+                }}
+            />
             <div className="min-h-screen bg-black text-white antialiased">
                 {/* Header */}
                 <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${

@@ -1,8 +1,9 @@
-import { Head, Link, router } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 import { useState } from 'react';
 import axios from 'axios';
 import Navbar from '@/Components/Navbar';
 import RedeemCodeModal from '@/Components/RedeemCodeModal';
+import Seo from '@/Components/Seo';
 
 function DownloadIcon({ className }) {
     return (
@@ -69,6 +70,9 @@ export default function AssetShow({ auth, asset, hasValidRedemption, redownloadI
     const [downloadsRemaining, setDownloadsRemaining] = useState(redownloadInfo?.downloads_remaining || 0);
 
     const isPaidAsset = asset.type === 'paid' && asset.price > 0;
+    const canonical = route('assets.show', asset.slug);
+    const fileExtension = asset.file_type?.split('/').pop()?.toLowerCase();
+    const isEbook = fileExtension === 'pdf' || asset.title?.toLowerCase().includes('ebook');
 
     const handleRedeemSuccess = (data) => {
         setDownloadUrl(data.download_url);
@@ -154,7 +158,40 @@ export default function AssetShow({ auth, asset, hasValidRedemption, redownloadI
 
     return (
         <>
-            <Head title={asset.title} />
+            <Seo
+                title={asset.title}
+                description={asset.description || `Detail ${isEbook ? 'ebook' : 'produk digital'} ${asset.title} dari OtakAtikin.`}
+                image={asset.thumbnail_url}
+                canonical={canonical}
+                keywords={[
+                    isEbook ? 'ebook' : 'produk digital',
+                    asset.title,
+                    'otakatikin',
+                    asset.type === 'paid' ? 'premium digital product' : 'free digital product',
+                ]}
+                type="product"
+                modifiedTime={asset.updated_at}
+                schema={{
+                    '@context': 'https://schema.org',
+                    '@type': 'Product',
+                    name: asset.title,
+                    description: asset.description || undefined,
+                    image: asset.thumbnail_url ? [asset.thumbnail_url] : undefined,
+                    url: canonical,
+                    category: isEbook
+                        ? 'Ebook Digital'
+                        : asset.type === 'paid'
+                        ? 'Premium Digital Product'
+                        : 'Free Digital Product',
+                    offers: {
+                        '@type': 'Offer',
+                        priceCurrency: 'IDR',
+                        price: asset.price || 0,
+                        availability: 'https://schema.org/InStock',
+                        url: canonical,
+                    },
+                }}
+            />
             {/* Midtrans Snap JS */}
             <script
                 type="text/javascript"
@@ -196,7 +233,7 @@ export default function AssetShow({ auth, asset, hasValidRedemption, redownloadI
                                 )}
 
                                 {/* Title & Badge */}
-                                <div className="flex items-start gap-3 mb-4">
+                                <div className="flex items-start gap-3 mb-4 flex-wrap">
                                     <span className={`inline-flex items-center gap-1 px-3 py-1 text-[12px] font-medium rounded-full ${
                                         asset.type === 'free' 
                                             ? 'text-[#10a37f] bg-[#10a37f]/10' 
@@ -214,6 +251,11 @@ export default function AssetShow({ auth, asset, hasValidRedemption, redownloadI
                                             </>
                                         )}
                                     </span>
+                                    {isEbook && (
+                                        <span className="inline-flex items-center gap-1 px-3 py-1 text-[12px] font-medium rounded-full text-sky-700 bg-sky-100 dark:text-sky-300 dark:bg-sky-400/10">
+                                            Ebook
+                                        </span>
+                                    )}
                                 </div>
 
                                 <h1 className="text-[32px] sm:text-[40px] font-semibold tracking-[-0.02em] leading-[1.2] text-gray-900 dark:text-white mb-6">
