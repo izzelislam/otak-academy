@@ -1,5 +1,7 @@
 import { Link, router } from '@inertiajs/react';
 import { useState, useEffect } from 'react';
+import Navbar from '@/Components/Navbar';
+import PublicFooter from '@/Components/PublicFooter';
 import Seo from '@/Components/Seo';
 
 function CalendarIcon({ className }) {
@@ -106,13 +108,10 @@ function Pagination({ data }) {
 
 export default function BlogCategory({ posts, category, categories }) {
     const [searchQuery, setSearchQuery] = useState('');
-    const [isScrolled, setIsScrolled] = useState(false);
 
     useEffect(() => {
         document.documentElement.classList.add('dark');
-        const handleScroll = () => setIsScrolled(window.scrollY > 10);
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
+        return () => document.documentElement.classList.remove('dark');
     }, []);
 
     const handleSearch = (e) => {
@@ -138,34 +137,12 @@ export default function BlogCategory({ posts, category, categories }) {
                     url: route('blog.category', category.slug),
                 }}
             />
-            <div className="min-h-screen bg-black text-white antialiased">
-                {/* Header */}
-                <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${
-                    isScrolled ? 'bg-black/80 backdrop-blur-xl border-b border-white/10' : ''
-                }`}>
-                    <div className="max-w-[1200px] mx-auto px-6">
-                        <div className="flex h-16 items-center justify-between">
-                            <Link href="/" className="flex items-center gap-2">
-                                <div className="h-8 w-8 rounded-lg bg-white flex items-center justify-center">
-                                    <svg className="h-5 w-5 text-black" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5" />
-                                    </svg>
-                                </div>
-                                <span className="text-[15px] font-semibold tracking-tight">OtakAtikin</span>
-                            </Link>
-                            <nav className="flex items-center gap-4">
-                                <Link href={route('blog.index')} className="text-[14px] font-medium text-white">Blog</Link>
-                                <Link href={route('login')} className="px-4 py-2 text-[14px] font-medium text-black bg-white hover:bg-white/90 rounded-lg transition-colors">
-                                    Login
-                                </Link>
-                            </nav>
-                        </div>
-                    </div>
-                </header>
+            <div className="public-shell bg-black text-white dark:bg-black dark:text-white">
+                <Navbar />
 
                 {/* Hero Section */}
-                <section className="pt-32 pb-16 border-b border-white/[0.06]">
-                    <div className="max-w-[1200px] mx-auto px-6">
+                <section className="public-page-header border-b border-white/[0.06]">
+                    <div className="public-container">
                         <div className="text-center max-w-2xl mx-auto">
                             <div className="inline-block px-3 py-1 text-[12px] font-medium text-[#10a37f] bg-[#10a37f]/10 rounded-full mb-4">
                                 Kategori
@@ -222,8 +199,8 @@ export default function BlogCategory({ posts, category, categories }) {
                 </section>
 
                 {/* Blog Posts */}
-                <section className="py-16">
-                    <div className="max-w-[1200px] mx-auto px-6">
+                <section className="public-section">
+                    <div className="public-container">
                         {items.length > 0 ? (
                             <>
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -254,13 +231,7 @@ export default function BlogCategory({ posts, category, categories }) {
                 </section>
 
                 {/* Footer */}
-                <footer className="border-t border-white/[0.06] py-8">
-                    <div className="max-w-[1200px] mx-auto px-6 text-center">
-                        <p className="text-[13px] text-white/40">
-                            © {new Date().getFullYear()} OtakAtikin. All rights reserved.
-                        </p>
-                    </div>
-                </footer>
+                <PublicFooter />
             </div>
         </>
     );

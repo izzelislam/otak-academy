@@ -2,6 +2,7 @@ import { Link } from '@inertiajs/react';
 import Navbar from '@/Components/Navbar';
 import { useState } from 'react';
 import Seo from '@/Components/Seo';
+import PublicFooter from '@/Components/PublicFooter';
 
 function EnvelopeIcon({ className }) {
     return (
@@ -128,7 +129,7 @@ export default function Contact({ auth }) {
                     url: route('contact'),
                 }}
             />
-            <div className="min-h-screen bg-white dark:bg-black text-gray-900 dark:text-white antialiased transition-colors duration-300">
+            <div className="public-shell">
                 <Navbar auth={auth} />
 
                 {/* Hero Section */}
@@ -171,7 +172,7 @@ export default function Contact({ auth }) {
                         />
                     </div>
 
-                    <div className="relative max-w-[1200px] mx-auto px-6 text-center">
+                    <div className="public-container relative text-center">
                         {/* Badge */}
                         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 mb-8">
                             <span className="relative flex h-2 w-2">
@@ -194,7 +195,7 @@ export default function Contact({ auth }) {
 
                 {/* Contact Methods */}
                 <section className="relative pb-20">
-                    <div className="max-w-[900px] mx-auto px-6">
+                    <div className="mx-auto w-full max-w-[900px] px-4 sm:px-6 lg:px-8">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {contactMethods.map((method, index) => (
                                 <a
@@ -276,7 +277,7 @@ export default function Contact({ auth }) {
 
                 {/* FAQ Section */}
                 <section className="relative py-20 sm:py-28 border-t border-gray-200 dark:border-white/[0.06]">
-                    <div className="max-w-[800px] mx-auto px-6">
+                    <div className="mx-auto w-full max-w-[800px] px-4 sm:px-6 lg:px-8">
                         <div className="text-center mb-12">
                             <div className="inline-flex items-center justify-center h-12 w-12 rounded-xl bg-[#10a37f]/10 border border-[#10a37f]/20 mb-4">
                                 <QuestionMarkIcon className="h-6 w-6 text-[#10a37f]" />
@@ -333,7 +334,7 @@ export default function Contact({ auth }) {
 
                 {/* CTA Section */}
                 <section className="relative py-20 sm:py-28">
-                    <div className="max-w-[800px] mx-auto px-6">
+                    <div className="mx-auto w-full max-w-[800px] px-4 sm:px-6 lg:px-8">
                         <div className="relative rounded-2xl bg-gray-100 dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/[0.08] p-10 sm:p-14 overflow-hidden text-center">
                             {/* Gradient overlay */}
                             <div 
@@ -373,39 +374,7 @@ export default function Contact({ auth }) {
                     </div>
                 </section>
 
-                {/* Footer */}
-                <footer className="border-t border-gray-200 dark:border-white/[0.06]">
-                    <div className="max-w-[1200px] mx-auto px-6 py-8">
-                        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                            <div className="flex items-center gap-3">
-                                <img src="/favicon/favicon-96x96.png" alt="OtakAtikin" className="h-6 w-6" />
-                                <p className="text-[13px] text-gray-500 dark:text-white/40">
-                                    © {new Date().getFullYear()} OtakAtikin. All rights reserved.
-                                </p>
-                            </div>
-                            <div className="flex items-center gap-6 text-[13px]">
-                                <Link href="/" className="text-gray-500 hover:text-gray-900 dark:text-white/40 dark:hover:text-white transition-colors">
-                                    Beranda
-                                </Link>
-                                <Link href={route('blog.index')} className="text-gray-500 hover:text-gray-900 dark:text-white/40 dark:hover:text-white transition-colors">
-                                    Blog
-                                </Link>
-                                <Link href={route('assets.index')} className="text-gray-500 hover:text-gray-900 dark:text-white/40 dark:hover:text-white transition-colors">
-                                    Produk Digital
-                                </Link>
-                                {/* <Link href={route('privacy-policy')} className="text-gray-500 hover:text-gray-900 dark:text-white/40 dark:hover:text-white transition-colors">
-                                    Privacy Policy
-                                </Link> */}
-                                <Link href={route('terms-conditions')} className="text-gray-500 hover:text-gray-900 dark:text-white/40 dark:hover:text-white transition-colors">
-                                    Syarat & Ketentuan
-                                </Link>
-                                <Link href={route('contact')} className="text-gray-500 hover:text-gray-900 dark:text-white/40 dark:hover:text-white transition-colors">
-                                    Kontak
-                                </Link>
-                            </div>
-                        </div>
-                    </div>
-                </footer>
+                <PublicFooter />
             </div>
         </>
     );

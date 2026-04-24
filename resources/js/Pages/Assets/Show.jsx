@@ -4,6 +4,7 @@ import axios from 'axios';
 import Navbar from '@/Components/Navbar';
 import RedeemCodeModal from '@/Components/RedeemCodeModal';
 import Seo from '@/Components/Seo';
+import PublicFooter from '@/Components/PublicFooter';
 
 function DownloadIcon({ className }) {
     return (
@@ -199,12 +200,12 @@ export default function AssetShow({ auth, asset, hasValidRedemption, redownloadI
                 data-client-key={window.midtransClientKey || ''}
             />
 
-            <div className="min-h-screen bg-white dark:bg-black text-gray-900 dark:text-white antialiased transition-colors duration-300">
+            <div className="public-shell">
                 <Navbar auth={auth} />
 
                 {/* Content */}
-                <article className="pt-24 pb-16">
-                    <div className="max-w-[1000px] mx-auto px-6">
+                <article className="public-article-layout">
+                    <div className="mx-auto w-full max-w-[1000px] px-4 sm:px-6 lg:px-8">
                         {/* Back Link */}
                         <Link 
                             href={route('assets.index')}
@@ -299,7 +300,7 @@ export default function AssetShow({ auth, asset, hasValidRedemption, redownloadI
 
                             {/* Sidebar - Download Card */}
                             <div className="lg:col-span-1">
-                                <div className="sticky top-24 bg-white dark:bg-white/[0.02] border border-gray-200 dark:border-white/[0.06] rounded-2xl p-6 shadow-sm dark:shadow-none">
+                                <div className="sticky top-20 sm:top-24 bg-white dark:bg-white/[0.02] border border-gray-200 dark:border-white/[0.06] rounded-2xl p-5 sm:p-6 shadow-sm dark:shadow-none">
                                     <h3 className="text-[16px] font-semibold text-gray-900 dark:text-white mb-4">Download</h3>
                                     
                                     {/* File Info */}
@@ -452,13 +453,7 @@ export default function AssetShow({ auth, asset, hasValidRedemption, redownloadI
                 </article>
 
                 {/* Footer */}
-                <footer className="border-t border-gray-200 dark:border-white/[0.06] py-8">
-                    <div className="max-w-[1200px] mx-auto px-6 text-center">
-                        <p className="text-[13px] text-gray-400 dark:text-white/40">
-                            © {new Date().getFullYear()} OtakAtikin. All rights reserved.
-                        </p>
-                    </div>
-                </footer>
+                <PublicFooter />
             </div>
 
             {/* Redeem Code Modal */}

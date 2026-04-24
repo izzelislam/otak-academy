@@ -1,6 +1,7 @@
 import { Link } from '@inertiajs/react';
 import Navbar from '@/Components/Navbar';
 import Seo from '@/Components/Seo';
+import PublicFooter from '@/Components/PublicFooter';
 
 function CalendarIcon({ className }) {
     return (
@@ -61,12 +62,12 @@ export default function BlogShow({ post, categories, auth }) {
                     mainEntityOfPage: canonical,
                 }}
             />
-            <div className="min-h-screen bg-white dark:bg-black text-gray-900 dark:text-white antialiased transition-colors duration-300">
+            <div className="public-shell">
                 <Navbar auth={auth} />
 
                 {/* Article */}
-                <article className="pt-24 pb-16">
-                    <div className="max-w-[800px] mx-auto px-6">
+                <article className="public-article-layout">
+                    <div className="mx-auto w-full max-w-[800px] px-4 sm:px-6 lg:px-8">
                         {/* Back Link */}
                         <Link 
                             href={route('blog.index')}
@@ -158,14 +159,7 @@ export default function BlogShow({ post, categories, auth }) {
                     </div>
                 </article>
 
-                {/* Footer */}
-                <footer className="border-t border-gray-200 dark:border-white/[0.06] py-8">
-                    <div className="max-w-[1200px] mx-auto px-6 text-center">
-                        <p className="text-[13px] text-gray-400 dark:text-white/40">
-                            © {new Date().getFullYear()} OtakAtikin. All rights reserved.
-                        </p>
-                    </div>
-                </footer>
+                <PublicFooter />
             </div>
         </>
     );

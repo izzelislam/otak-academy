@@ -2,6 +2,7 @@ import { Link, router } from '@inertiajs/react';
 import { useState } from 'react';
 import Navbar from '@/Components/Navbar';
 import Seo from '@/Components/Seo';
+import PublicFooter from '@/Components/PublicFooter';
 
 function LockIcon({ className }) {
     return (
@@ -219,12 +220,12 @@ export default function AssetsIndex({ assets, currentType, auth }) {
                     url: canonical,
                 }}
             />
-            <div className="min-h-screen bg-white dark:bg-black text-gray-900 dark:text-white antialiased transition-colors duration-300">
+            <div className="public-shell">
                 <Navbar auth={auth} />
 
                 {/* Hero Section */}
-                <section className="pt-32 pb-16 border-b border-gray-200 dark:border-white/[0.06]">
-                    <div className="max-w-[1200px] mx-auto px-6">
+                <section className="public-page-header border-b border-gray-200 dark:border-white/[0.06]">
+                    <div className="public-container">
                         <div className="text-center max-w-2xl mx-auto">
                             <h1 className="text-[40px] sm:text-[56px] font-semibold tracking-[-0.02em] leading-[1.1]">
                                 Ebook & Produk Digital
@@ -279,8 +280,8 @@ export default function AssetsIndex({ assets, currentType, auth }) {
                 </section>
 
                 {/* Assets Grid */}
-                <section className="py-16">
-                    <div className="max-w-[1200px] mx-auto px-6">
+                <section className="public-section">
+                    <div className="public-container">
                         {isLoading ? (
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {[...Array(6)].map((_, i) => (
@@ -308,14 +309,7 @@ export default function AssetsIndex({ assets, currentType, auth }) {
                     </div>
                 </section>
 
-                {/* Footer */}
-                <footer className="border-t border-gray-200 dark:border-white/[0.06] py-8">
-                    <div className="max-w-[1200px] mx-auto px-6 text-center">
-                        <p className="text-[13px] text-gray-400 dark:text-white/40">
-                            © {new Date().getFullYear()} OtakAtikin. All rights reserved.
-                        </p>
-                    </div>
-                </footer>
+                <PublicFooter />
             </div>
         </>
     );

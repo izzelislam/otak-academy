@@ -1,6 +1,7 @@
 import { Link } from '@inertiajs/react';
 import Navbar from '@/Components/Navbar';
 import Seo from '@/Components/Seo';
+import PublicFooter from '@/Components/PublicFooter';
 
 export default function PrivacyPolicy({ auth }) {
     return (
@@ -16,11 +17,11 @@ export default function PrivacyPolicy({ auth }) {
                     url: route('privacy-policy'),
                 }}
             />
-            <div className="min-h-screen bg-white dark:bg-black text-gray-900 dark:text-white antialiased transition-colors duration-300">
+            <div className="public-shell">
                 <Navbar auth={auth} />
 
                 {/* Content */}
-                <main className="max-w-4xl mx-auto px-6 pt-28 pb-16">
+                <main className="public-container-sm pt-24 pb-16 sm:pt-28 sm:pb-20 lg:pt-32">
                     <div className="mb-12">
                         <h1 className="text-[32px] sm:text-[40px] font-semibold tracking-[-0.02em] text-gray-900 dark:text-white">
                             Privacy Policy
@@ -212,39 +213,7 @@ export default function PrivacyPolicy({ auth }) {
                     </div>
                 </main>
 
-                {/* Footer */}
-                <footer className="border-t border-gray-200 dark:border-white/[0.06]">
-                    <div className="max-w-[1200px] mx-auto px-6 py-8">
-                        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                            <div className="flex items-center gap-3">
-                                <img src="/favicon/favicon-96x96.png" alt="OtakAtikin" className="h-6 w-6" />
-                                <p className="text-[13px] text-gray-500 dark:text-white/40">
-                                    © {new Date().getFullYear()} OtakAtikin. All rights reserved.
-                                </p>
-                            </div>
-                            <div className="flex items-center gap-6 text-[13px]">
-                                <Link href="/" className="text-gray-500 hover:text-gray-900 dark:text-white/40 dark:hover:text-white transition-colors">
-                                    Beranda
-                                </Link>
-                                <Link href={route('blog.index')} className="text-gray-500 hover:text-gray-900 dark:text-white/40 dark:hover:text-white transition-colors">
-                                    Blog
-                                </Link>
-                                <Link href={route('assets.index')} className="text-gray-500 hover:text-gray-900 dark:text-white/40 dark:hover:text-white transition-colors">
-                                    Produk Digital
-                                </Link>
-                                {/* <Link href={route('privacy-policy')} className="text-gray-500 hover:text-gray-900 dark:text-white/40 dark:hover:text-white transition-colors">
-                                    Privacy Policy
-                                </Link> */}
-                                <Link href={route('terms-conditions')} className="text-gray-500 hover:text-gray-900 dark:text-white/40 dark:hover:text-white transition-colors">
-                                    Syarat & Ketentuan
-                                </Link>
-                                <Link href={route('contact')} className="text-gray-500 hover:text-gray-900 dark:text-white/40 dark:hover:text-white transition-colors">
-                                    Kontak
-                                </Link>
-                            </div>
-                        </div>
-                    </div>
-                </footer>
+                <PublicFooter />
             </div>
         </>
     );

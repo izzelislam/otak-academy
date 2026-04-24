@@ -1,5 +1,6 @@
 import { Link } from '@inertiajs/react';
 import Navbar from '@/Components/Navbar';
+import PublicFooter from '@/Components/PublicFooter';
 import Seo from '@/Components/Seo';
 
 function AcademicCapIcon({ className }) {
@@ -119,11 +120,11 @@ export default function Welcome({ auth }) {
                     },
                 ]}
             />
-            <div className="min-h-screen bg-white dark:bg-black text-gray-900 dark:text-white antialiased transition-colors duration-300">
+            <div className="public-shell">
                 <Navbar auth={auth} />
 
                 {/* Hero Section */}
-                <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+                <section className="public-hero-shell relative flex items-center justify-center overflow-hidden">
                     {/* Base background */}
                     <div className="absolute inset-0 bg-white dark:bg-black" />
                     
@@ -187,7 +188,7 @@ export default function Welcome({ auth }) {
                         />
                     </div>
 
-                    <div className="relative max-w-[1200px] mx-auto px-6 py-32 text-center">
+                    <div className="public-container relative pb-16 pt-24 text-center sm:pb-20 sm:pt-28 lg:py-32">
                         {/* Badge */}
                         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 mb-8">
                             <span className="relative flex h-2 w-2">
@@ -217,7 +218,7 @@ export default function Welcome({ auth }) {
                                 <>
                                     <Link
                                         href={route('assets.index')}
-                                        className="group inline-flex items-center justify-center gap-2 px-6 py-3 text-[15px] font-medium text-white bg-black hover:bg-black/90 dark:text-black dark:bg-white dark:hover:bg-white/90 rounded-xl transition-all"
+                                        className="public-mobile-cta group inline-flex items-center justify-center gap-2 rounded-xl bg-black px-6 py-3 text-[15px] font-medium text-white transition-all hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-white/90"
                                     >
                                         Lihat Ebook & Produk Digital
                                         <ArrowRightIcon className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
@@ -226,7 +227,7 @@ export default function Welcome({ auth }) {
                                         href="https://ai.otakatikin.com"
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="group inline-flex items-center justify-center gap-2 px-6 py-3 text-[15px] font-medium text-gray-600 hover:text-gray-900 bg-transparent border border-gray-200 hover:border-gray-300 dark:text-white/80 dark:hover:text-white dark:bg-white/5 dark:hover:bg-white/10 dark:border-white/10 dark:hover:border-white/20 rounded-xl transition-all"
+                                        className="public-mobile-cta group inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-transparent px-6 py-3 text-[15px] font-medium text-gray-600 transition-all hover:border-gray-300 hover:text-gray-900 dark:border-white/10 dark:bg-white/5 dark:text-white/80 dark:hover:border-white/20 dark:hover:bg-white/10 dark:hover:text-white"
                                     >
                                         <SparklesIcon className="h-5 w-5" />
                                         Buka Ebook Generator AI
@@ -236,7 +237,7 @@ export default function Welcome({ auth }) {
                                 <>
                                     <Link
                                         href={route('register')}
-                                        className="group inline-flex items-center justify-center gap-2 px-6 py-3 text-[15px] font-medium text-white bg-black hover:bg-black/90 dark:text-black dark:bg-white dark:hover:bg-white/90 rounded-xl transition-all"
+                                        className="public-mobile-cta group inline-flex items-center justify-center gap-2 rounded-xl bg-black px-6 py-3 text-[15px] font-medium text-white transition-all hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-white/90"
                                     >
                                         Mulai belajar gratis
                                         <ArrowRightIcon className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
@@ -245,7 +246,7 @@ export default function Welcome({ auth }) {
                                         href="https://ai.otakatikin.com"
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="group inline-flex items-center justify-center gap-2 px-6 py-3 text-[15px] font-medium text-gray-600 hover:text-gray-900 bg-transparent border border-gray-200 hover:border-gray-300 dark:text-white/80 dark:hover:text-white dark:bg-white/5 dark:hover:bg-white/10 dark:border-white/10 dark:hover:border-white/20 rounded-xl transition-all"
+                                        className="public-mobile-cta group inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-transparent px-6 py-3 text-[15px] font-medium text-gray-600 transition-all hover:border-gray-300 hover:text-gray-900 dark:border-white/10 dark:bg-white/5 dark:text-white/80 dark:hover:border-white/20 dark:hover:bg-white/10 dark:hover:text-white"
                                     >
                                         <SparklesIcon className="h-5 w-5" />
                                         Coba Ebook Generator AI
@@ -284,8 +285,8 @@ export default function Welcome({ auth }) {
                 </section>
 
                 {/* Features Section */}
-                <section className="relative py-24 sm:py-32">
-                    <div className="max-w-[1200px] mx-auto px-6">
+                <section className="relative public-section">
+                    <div className="public-container">
                         <div className="text-center mb-16">
                             <h2 className="text-[32px] sm:text-[40px] font-semibold text-gray-900 dark:text-white tracking-[-0.02em]">
                                 Semua yang kamu butuhkan
@@ -317,8 +318,8 @@ export default function Welcome({ auth }) {
                 </section>
 
                 {/* Why Section */}
-                <section className="relative py-24 sm:py-32 border-t border-gray-200 dark:border-white/[0.06]">
-                    <div className="max-w-[1200px] mx-auto px-6">
+                <section className="relative public-section border-t border-gray-200 dark:border-white/[0.06]">
+                    <div className="public-container">
                         <div className="grid lg:grid-cols-2 gap-16 items-center">
                             <div>
                                 <h2 className="text-[32px] sm:text-[40px] font-semibold text-gray-900 dark:text-white tracking-[-0.02em] leading-tight">
@@ -377,8 +378,8 @@ export default function Welcome({ auth }) {
                     </div>
                 </section>
 
-                <section className="relative py-24 sm:py-28 border-t border-gray-200 dark:border-white/[0.06]">
-                    <div className="max-w-[1200px] mx-auto px-6">
+                <section className="relative public-section border-t border-gray-200 dark:border-white/[0.06]">
+                    <div className="public-container">
                         <div className="grid lg:grid-cols-[1.15fr_0.85fr] gap-8 items-stretch">
                             <div className="relative rounded-3xl border border-gray-200 dark:border-white/[0.08] bg-gradient-to-br from-gray-100 to-white dark:from-white/[0.04] dark:to-white/[0.01] p-8 sm:p-10 overflow-hidden">
                                 <div
@@ -445,8 +446,8 @@ export default function Welcome({ auth }) {
                 </section>
 
                 {/* Testimonials */}
-                <section className="relative py-24 sm:py-32 border-t border-gray-200 dark:border-white/[0.06]">
-                    <div className="max-w-[1200px] mx-auto px-6">
+                <section className="relative public-section border-t border-gray-200 dark:border-white/[0.06]">
+                    <div className="public-container">
                         <div className="text-center mb-16">
                             <h2 className="text-[32px] sm:text-[40px] font-semibold text-gray-900 dark:text-white tracking-[-0.02em]">
                                 Apa kata mereka
@@ -508,8 +509,8 @@ export default function Welcome({ auth }) {
                 </section>
 
                 {/* CTA Section - OpenAI Style */}
-                <section className="relative py-24 sm:py-32">
-                    <div className="max-w-[1000px] mx-auto px-1">
+                <section className="relative public-section">
+                    <div className="public-container-sm">
                         <div className="relative rounded-2xl bg-gray-100 dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/[0.08] p-10 sm:p-16 overflow-hidden">
                             {/* Subtle gradient overlay */}
                             <div 
@@ -531,7 +532,7 @@ export default function Welcome({ auth }) {
                                         <>
                                             <Link
                                                 href={route('assets.index')}
-                                                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-[14px] font-medium text-white bg-black hover:bg-black/90 dark:text-black dark:bg-white dark:hover:bg-white/90 rounded-lg transition-colors"
+                                                className="public-mobile-cta inline-flex items-center justify-center gap-2 rounded-lg bg-black px-5 py-2.5 text-[14px] font-medium text-white transition-colors hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-white/90"
                                             >
                                                 Explore Ebook & Produk Digital
                                                 <ArrowRightIcon className="h-4 w-4" />
@@ -540,7 +541,7 @@ export default function Welcome({ auth }) {
                                                 href="https://ai.otakatikin.com"
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-[14px] font-medium text-gray-600 hover:text-gray-900 dark:text-white/60 dark:hover:text-white transition-colors"
+                                                className="public-mobile-cta inline-flex items-center justify-center gap-2 px-5 py-2.5 text-[14px] font-medium text-gray-600 transition-colors hover:text-gray-900 dark:text-white/60 dark:hover:text-white"
                                             >
                                                 Coba Ebook Generator AI
                                             </a>
@@ -549,7 +550,7 @@ export default function Welcome({ auth }) {
                                         <>
                                             <Link
                                                 href={route('register')}
-                                                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-[14px] font-medium text-white bg-black hover:bg-black/90 dark:text-black dark:bg-white dark:hover:bg-white/90 rounded-lg transition-colors"
+                                                className="public-mobile-cta inline-flex items-center justify-center gap-2 rounded-lg bg-black px-5 py-2.5 text-[14px] font-medium text-white transition-colors hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-white/90"
                                             >
                                                 Daftar untuk akses course
                                                 <ArrowRightIcon className="h-4 w-4" />
@@ -558,7 +559,7 @@ export default function Welcome({ auth }) {
                                                 href="https://ai.otakatikin.com"
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="inline-flex items-center justify-center px-5 py-2.5 text-[14px] font-medium text-gray-600 hover:text-gray-900 dark:text-white/60 dark:hover:text-white transition-colors"
+                                                className="public-mobile-cta inline-flex items-center justify-center px-5 py-2.5 text-[14px] font-medium text-gray-600 transition-colors hover:text-gray-900 dark:text-white/60 dark:hover:text-white"
                                             >
                                                 Coba Ebook Generator AI
                                             </a>
@@ -570,67 +571,25 @@ export default function Welcome({ auth }) {
                     </div>
                 </section>
 
-                {/* Footer - OpenAI Style */}
-                <footer className="relative border-t border-gray-200 dark:border-white/[0.06]">
-                    <div className="max-w-[1200px] mx-auto px-6">
-                        {/* Big text CTA - Main focus */}
-                        <div className="py-16 sm:py-24">
-                            <Link 
-                                href={auth.user ? route('member.classes.index') : route('register')}
-                                className="group block"
-                            >
-                                <div className="relative overflow-hidden h-[100px] sm:h-[150px] lg:h-[180px]">
-                                    <span className="absolute inset-0 flex items-center text-[400px] sm:text-[130px] lg:text-[245px] font-bold text-gray-900 dark:text-white/[0.80] leading-none tracking-[-0.04em] transition-all duration-500 group-hover:opacity-0 group-hover:-translate-y-10 select-none">
-                                        OtaKAtikin
-                                    </span>
-                                    <span className="absolute inset-0 flex items-center text-[40px] sm:text-[70px] lg:text-[150px] font-bold text-gray-900 dark:text-white leading-none tracking-[-0.04em] opacity-0 translate-y-10 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0 select-none whitespace-nowrap">
-                                        Mulai Sekarang →
-                                    </span>
-                                </div>
-                            </Link>
-                        </div>
-
-                        <div className="max-w-[1200px] mx-auto px-6 py-8">
-                            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                                <div className="flex items-center gap-3">
-                                    <img src="/favicon/favicon-96x96.png" alt="OtakAtikin" className="h-6 w-6" />
-                                    <p className="text-[13px] text-gray-500 dark:text-white/40">
-                                        © {new Date().getFullYear()} OtakAtikin. All rights reserved.
-                                    </p>
-                                </div>
-                                <div className="flex items-center gap-6 text-[13px]">
-                                    <Link href="/" className="text-gray-500 hover:text-gray-900 dark:text-white/40 dark:hover:text-white transition-colors">
-                                        Beranda
-                                    </Link>
-                                    <Link href={route('blog.index')} className="text-gray-500 hover:text-gray-900 dark:text-white/40 dark:hover:text-white transition-colors">
-                                        Blog
-                                    </Link>
-                                    <Link href={route('assets.index')} className="text-gray-500 hover:text-gray-900 dark:text-white/40 dark:hover:text-white transition-colors">
-                                        Produk Digital
-                                    </Link>
-                                    <a
-                                        href="https://ai.otakatikin.com"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="text-gray-500 hover:text-gray-900 dark:text-white/40 dark:hover:text-white transition-colors"
-                                    >
-                                        Ebook Generator AI
-                                    </a>
-                                    {/* <Link href={route('privacy-policy')} className="text-gray-500 hover:text-gray-900 dark:text-white/40 dark:hover:text-white transition-colors">
-                                        Privacy Policy
-                                    </Link> */}
-                                    <Link href={route('terms-conditions')} className="text-gray-500 hover:text-gray-900 dark:text-white/40 dark:hover:text-white transition-colors">
-                                        Syarat & Ketentuan
-                                    </Link>
-                                    <Link href={route('contact')} className="text-gray-500 hover:text-gray-900 dark:text-white/40 dark:hover:text-white transition-colors">
-                                        Kontak
-                                    </Link>
-                                </div>
+                <section className="border-t border-gray-200 dark:border-white/[0.06]">
+                    <div className="public-container py-16 sm:py-24">
+                        <Link
+                            href={auth.user ? route('member.classes.index') : route('register')}
+                            className="group block"
+                        >
+                            <div className="relative overflow-hidden h-[88px] sm:h-[140px] lg:h-[180px]">
+                                <span className="absolute inset-0 flex items-center justify-center whitespace-nowrap text-[84px] font-bold leading-none tracking-[-0.04em] text-gray-900 transition-all duration-500 group-hover:-translate-y-10 group-hover:opacity-0 dark:text-white/[0.8] sm:text-[130px] lg:text-[245px]">
+                                    OtaKAtikin
+                                </span>
+                                <span className="absolute inset-0 flex items-center justify-center whitespace-nowrap text-[34px] font-bold leading-none tracking-[-0.04em] text-gray-900 opacity-0 translate-y-10 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100 dark:text-white sm:text-[70px] lg:text-[150px]">
+                                    Mulai Sekarang →
+                                </span>
                             </div>
-                        </div>
-
+                        </Link>
                     </div>
-                </footer>
+                </section>
+
+                <PublicFooter />
             </div>
 
             <style>{`
