@@ -119,6 +119,7 @@ class GenerateSitemapCommandTest extends TestCase
         $this->assertStringContainsString('https://otakatikin.test/blog/category/laravel', $contents);
         $this->assertStringContainsString('https://otakatikin.test/blog/optimasi-seo-laravel', $contents);
         $this->assertStringContainsString('https://otakatikin.test/assets/starter-kit-laravel', $contents);
+        $this->assertStringContainsString('https://otakatikin.test/ebook-generator', $contents);
         $this->assertStringNotContainsString('draft-internal', $contents);
         $this->assertStringNotContainsString('hidden-asset', $contents);
     }

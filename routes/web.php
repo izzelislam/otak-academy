@@ -187,6 +187,15 @@ Route::get('/kontak', function () {
     ]);
 })->name('contact');
 
+// AI Ebook Generator Landing Page
+Route::get('/ebook-generator', function () {
+    return Inertia::render('EbookGenerator', [
+        'auth' => [
+            'user' => auth()->user(),
+        ],
+    ]);
+})->name('ebook-generator');
+
 // Privacy Policy Route
 Route::get('/privacy-policy', function () {
     return Inertia::render('PrivacyPolicy', [

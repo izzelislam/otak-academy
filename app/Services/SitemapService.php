@@ -57,6 +57,7 @@ class SitemapService
             $this->makeEntry("{$baseUrl}/", $now, 'daily', '1.0'),
             $this->makeEntry("{$baseUrl}/blog", $now, 'daily', '0.9'),
             $this->makeEntry("{$baseUrl}/assets", $now, 'daily', '0.9'),
+            $this->makeEntry("{$baseUrl}/ebook-generator", $now, 'daily', '0.9'),
             $this->makeEntry("{$baseUrl}/kontak", $now, 'monthly', '0.6'),
             $this->makeEntry("{$baseUrl}/privacy-policy", $now, 'yearly', '0.3'),
             $this->makeEntry("{$baseUrl}/syarat-ketentuan", $now, 'yearly', '0.3'),

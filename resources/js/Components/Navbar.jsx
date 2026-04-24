@@ -109,15 +109,13 @@ export default function Navbar({ auth = {} }) {
                         >
                             Produk Digital
                         </Link>
-                        <a
-                            href="https://ai.otakatikin.com"
-                            target="_blank"
-                            rel="noopener noreferrer"
+                        <Link
+                            href={route('ebook-generator')}
                             className="flex items-center gap-1.5 px-4 py-2 text-[14px] font-medium text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white transition-colors"
                         >
                             <SparklesIcon className="w-4 h-4" />
                             Ebook Generator AI
-                        </a>
+                        </Link>
                         <Link
                             href={route('contact')}
                             className="flex items-center gap-1.5 px-4 py-2 text-[14px] font-medium text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white transition-colors"
@@ -214,16 +212,14 @@ export default function Navbar({ auth = {} }) {
                         >
                             Produk Digital
                         </Link>
-                        <a
-                            href="https://ai.otakatikin.com"
-                            target="_blank"
-                            rel="noopener noreferrer"
+                        <Link
+                            href={route('ebook-generator')}
                             className="flex items-center gap-2 text-base font-medium text-gray-900 dark:text-white hover:text-[#10a37f] dark:hover:text-[#10a37f]"
                             onClick={() => setMobileMenuOpen(false)}
                         >
                             <SparklesIcon className="w-5 h-5" />
                             Ebook Generator AI
-                        </a>
+                        </Link>
                         <Link
                             href={route('contact')}
                             className="flex items-center gap-2 text-base font-medium text-gray-900 dark:text-white hover:text-[#10a37f] dark:hover:text-[#10a37f]"
