@@ -29,9 +29,11 @@ function CourseCard({ course }) {
             </div>
             <div className="p-4">
                 <h3 className="font-medium text-gray-900 dark:text-white mb-2 line-clamp-2">{course.title}</h3>
-                <p className="text-sm text-gray-500 dark:text-slate-400 mb-4 line-clamp-2">
-                    {course.description || 'Explore this comprehensive course and enhance your skills.'}
-                </p>
+                {course.description ? (
+                    <div className="text-sm text-gray-500 dark:text-slate-400 mb-4 line-clamp-2 [&>*]:m-0" dangerouslySetInnerHTML={{ __html: course.description }} />
+                ) : (
+                    <p className="text-sm text-gray-500 dark:text-slate-400 mb-4 line-clamp-2">Explore this comprehensive course and enhance your skills.</p>
+                )}
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <div className="flex items-center text-xs text-gray-500 dark:text-slate-400">
@@ -89,9 +91,11 @@ function FeaturedCourseCard({ course }) {
                         )}
                     </div>
                     <h2 className="text-xl font-bold text-white mb-2">{course.title}</h2>
-                    <p className="text-white/80 text-sm mb-4 line-clamp-2">
-                        {course.description || 'Explore this comprehensive course and enhance your skills.'}
-                    </p>
+                    {course.description ? (
+                        <div className="text-white/80 text-sm mb-4 line-clamp-2 [&>*]:m-0" dangerouslySetInnerHTML={{ __html: course.description }} />
+                    ) : (
+                        <p className="text-white/80 text-sm mb-4 line-clamp-2">Explore this comprehensive course and enhance your skills.</p>
+                    )}
                     <div className="flex items-center gap-4">
                         <div className="flex items-center text-white/70 text-xs">
                             <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -35,7 +35,13 @@ export default function CourseShow({ course }) {
                         </div>
                         <div>
                             <dt className="text-xs text-gray-500 dark:text-slate-400">Deskripsi</dt>
-                            <dd className="mt-0.5 text-gray-900 dark:text-white">{course.description || <span className="text-gray-400 dark:text-slate-500 italic">Tidak ada deskripsi</span>}</dd>
+                            <dd className="mt-0.5 text-gray-900 dark:text-white">
+                                {course.description ? (
+                                    <div className="prose prose-sm dark:prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: course.description }} />
+                                ) : (
+                                    <span className="text-gray-400 dark:text-slate-500 italic">Tidak ada deskripsi</span>
+                                )}
+                            </dd>
                         </div>
                         {course.thumbnail && (
                             <div>

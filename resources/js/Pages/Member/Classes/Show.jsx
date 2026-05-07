@@ -104,9 +104,11 @@ export default function ClassShow({ course, isEnrolled }) {
 
                             <h1 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">{course.title}</h1>
 
-                            <p className="text-sm text-gray-500 dark:text-slate-400 mb-4 line-clamp-2">
-                                {course.description || 'Explore this comprehensive course and enhance your skills.'}
-                            </p>
+                            {course.description ? (
+                                <div className="text-sm text-gray-500 dark:text-slate-400 mb-4 prose prose-sm dark:prose-invert max-w-none line-clamp-3" dangerouslySetInnerHTML={{ __html: course.description }} />
+                            ) : (
+                                <p className="text-sm text-gray-500 dark:text-slate-400 mb-4">Explore this comprehensive course and enhance your skills.</p>
+                            )}
 
                             {/* Stats */}
                             <div className="flex flex-wrap items-center gap-4 text-xs text-gray-500 dark:text-slate-400 mb-4">

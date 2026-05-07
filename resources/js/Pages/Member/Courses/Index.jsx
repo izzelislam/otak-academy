@@ -99,9 +99,11 @@ export default function CoursesIndex({ courses }) {
                                     <h3 className="font-medium text-gray-900 dark:text-white mb-2 line-clamp-2">
                                         {course.title}
                                     </h3>
-                                    <p className="text-sm text-gray-500 dark:text-slate-400 mb-4 line-clamp-2">
-                                        {course.description || 'Explore this comprehensive course and enhance your skills.'}
-                                    </p>
+                                    {course.description ? (
+                                        <div className="text-sm text-gray-500 dark:text-slate-400 mb-4 line-clamp-2 [&>*]:m-0" dangerouslySetInnerHTML={{ __html: course.description }} />
+                                    ) : (
+                                        <p className="text-sm text-gray-500 dark:text-slate-400 mb-4 line-clamp-2">Explore this comprehensive course and enhance your skills.</p>
+                                    )}
                                     
                                     <div className="mb-4">
                                         <div className="flex items-center justify-between mb-2">
