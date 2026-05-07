@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\MaterialController as AdminMaterialController;
 use App\Http\Controllers\Admin\MemberController as AdminMemberController;
 use App\Http\Controllers\Admin\RedeemCodeController as AdminRedeemCodeController;
 use App\Http\Controllers\Admin\SessionController as AdminSessionController;
+use App\Http\Controllers\Admin\SubMaterialController as AdminSubMaterialController;
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\PaymentController;
@@ -100,6 +101,18 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
     Route::put('courses/{course}/sessions/{session}/materials/order', [AdminMaterialController::class, 'updateOrder'])
         ->name('courses.sessions.materials.order');
 
+    // Sub-Material Management (nested under courses.materials)
+    Route::get('courses/{course}/materials/{material}/sub-materials/create', [AdminSubMaterialController::class, 'create'])
+        ->name('courses.materials.sub-materials.create');
+    Route::post('courses/{course}/materials/{material}/sub-materials', [AdminSubMaterialController::class, 'store'])
+        ->name('courses.materials.sub-materials.store');
+    Route::get('courses/{course}/materials/{material}/sub-materials/{subMaterial}/edit', [AdminSubMaterialController::class, 'edit'])
+        ->name('courses.materials.sub-materials.edit');
+    Route::put('courses/{course}/materials/{material}/sub-materials/{subMaterial}', [AdminSubMaterialController::class, 'update'])
+        ->name('courses.materials.sub-materials.update');
+    Route::delete('courses/{course}/materials/{material}/sub-materials/{subMaterial}', [AdminSubMaterialController::class, 'destroy'])
+        ->name('courses.materials.sub-materials.destroy');
+
     // Redeem Code Management
     Route::resource('redeem-codes', AdminRedeemCodeController::class)->except(['edit', 'update']);
 
@@ -152,7 +165,13 @@ Route::middleware(['auth', 'verified'])->prefix('member')->name('member.')->grou
     // My Assets
     Route::get('/assets', [App\Http\Controllers\Member\AssetController::class, 'index'])->name('assets.index');
 
-    // Material View & Complete
+    // Material View & Complete (sub-materials)
+    Route::get('/courses/{course}/sub-materials/{subMaterial}', [MemberCourseController::class, 'showSubMaterial'])
+        ->name('courses.sub-materials.show');
+    Route::post('/courses/{course}/sub-materials/{subMaterial}/complete', [MemberCourseController::class, 'completeSubMaterial'])
+        ->name('courses.sub-materials.complete');
+
+    // Legacy material routes (backward compat)
     Route::get('/courses/{course}/materials/{material}', [MemberCourseController::class, 'showMaterial'])
         ->name('courses.materials.show');
     Route::post('/courses/{course}/materials/{material}/complete', [MemberCourseController::class, 'completeMaterial'])

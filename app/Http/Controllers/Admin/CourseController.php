@@ -78,6 +78,9 @@ class CourseController extends Controller
             'sessions.materials' => function ($query) {
                 $query->orderBy('order_priority');
             },
+            'sessions.materials.subMaterials' => function ($query) {
+                $query->orderBy('order_priority');
+            },
         ]);
 
         $course->loadCount(['redeemCodes', 'enrolledUsers']);

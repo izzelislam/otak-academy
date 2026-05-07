@@ -48,6 +48,11 @@ class Material extends Model
     /**
      * Get the progress records for this material.
      */
+    public function subMaterials(): HasMany
+    {
+        return $this->hasMany(SubMaterial::class)->orderBy('order_priority');
+    }
+
     public function progress(): HasMany
     {
         return $this->hasMany(UserProgress::class);

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Course;
 use App\Models\Material;
+use App\Models\SubMaterial;
 use App\Models\User;
 use App\Models\UserProgress;
 
@@ -23,15 +24,18 @@ class MemberCourseService
 
     public function calculateCourseProgress(User $user, Course $course): int
     {
-        $totalMaterials = $course->materials()->count();
-        $completedMaterials = $user->progress()
-            ->whereIn('material_id', $course->materials()->pluck('materials.id'))
+        $totalSubMaterials = $this->getTotalSubMaterials($course);
+        if ($totalSubMaterials === 0) {
+            return 0;
+        }
+
+        $subMaterialIds = $this->getAllSubMaterialIds($course);
+        $completed = $user->progress()
+            ->whereIn('sub_material_id', $subMaterialIds)
             ->where('is_completed', true)
             ->count();
 
-        return $totalMaterials > 0
-            ? round(($completedMaterials / $totalMaterials) * 100)
-            : 0;
+        return round(($completed / $totalSubMaterials) * 100);
     }
 
     public function checkAccess(User $user, Course $course): void
@@ -42,6 +46,95 @@ class MemberCourseService
         }
     }
 
+    public function getCourseWithProgress(User $user, Course $course): array
+    {
+        $course->load(['sessions.materials.subMaterials']);
+
+        $subMaterialIds = $this->getAllSubMaterialIds($course);
+        $userProgress = $user->progress()
+            ->whereIn('sub_material_id', $subMaterialIds)
+            ->get()
+            ->keyBy('sub_material_id');
+
+        $totalSubMaterials = $subMaterialIds->count();
+        $progressPercentage = $totalSubMaterials > 0
+            ? round(($userProgress->where('is_completed', true)->count() / $totalSubMaterials) * 100)
+            : 0;
+
+        $currentSubMaterial = $this->findCurrentSubMaterial($course, $userProgress);
+
+        return [
+            'course' => $course,
+            'userProgress' => $userProgress,
+            'progressPercentage' => $progressPercentage,
+            'currentSubMaterial' => $currentSubMaterial,
+        ];
+    }
+
+    public function canAccessSubMaterial(User $user, Course $course, SubMaterial $subMaterial): bool
+    {
+        $course->load(['sessions.materials.subMaterials']);
+
+        $subMaterialIds = $this->getAllSubMaterialIds($course);
+        $userProgress = $user->progress()
+            ->whereIn('sub_material_id', $subMaterialIds)
+            ->get()
+            ->keyBy('sub_material_id');
+
+        $allSubMaterials = $this->getAllSubMaterials($course);
+
+        foreach ($allSubMaterials as $sm) {
+            if ($sm->id === $subMaterial->id) {
+                return true;
+            }
+            if (!isset($userProgress[$sm->id]) || !$userProgress[$sm->id]->is_completed) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public function getSubMaterialWithProgress(User $user, Course $course, SubMaterial $subMaterial): array
+    {
+        $course->load(['sessions.materials.subMaterials']);
+
+        $subMaterialIds = $this->getAllSubMaterialIds($course);
+        $userProgress = $user->progress()
+            ->whereIn('sub_material_id', $subMaterialIds)
+            ->get()
+            ->keyBy('sub_material_id');
+
+        $totalSubMaterials = $subMaterialIds->count();
+        $progressPercentage = $totalSubMaterials > 0
+            ? round(($userProgress->where('is_completed', true)->count() / $totalSubMaterials) * 100)
+            : 0;
+
+        return [
+            'course' => $course,
+            'subMaterial' => $subMaterial,
+            'userProgress' => $userProgress,
+            'progressPercentage' => $progressPercentage,
+            'isCompleted' => isset($userProgress[$subMaterial->id]) && $userProgress[$subMaterial->id]->is_completed,
+        ];
+    }
+
+    public function markSubMaterialComplete(User $user, SubMaterial $subMaterial): void
+    {
+        UserProgress::updateOrCreate(
+            [
+                'user_id' => $user->id,
+                'sub_material_id' => $subMaterial->id,
+            ],
+            [
+                'material_id' => $subMaterial->material_id,
+                'is_completed' => true,
+                'completed_at' => now(),
+            ]
+        );
+    }
+
+    // Legacy support
     public function checkMaterialBelongsToCourse(Course $course, Material $material): void
     {
         $belongs = $course->materials()->where('materials.id', $material->id)->exists();
@@ -50,70 +143,20 @@ class MemberCourseService
         }
     }
 
-    public function getCourseWithProgress(User $user, Course $course): array
-    {
-        $course->load(['sessions.materials']);
-
-        $materialIds = $course->materials()->pluck('materials.id');
-        $userProgress = $user->progress()
-            ->whereIn('material_id', $materialIds)
-            ->get()
-            ->keyBy('material_id');
-
-        $progressPercentage = $this->calculateProgressPercentage($materialIds->count(), $userProgress);
-        $currentMaterial = $this->findCurrentMaterial($course, $userProgress);
-
-        return [
-            'course' => $course,
-            'userProgress' => $userProgress,
-            'progressPercentage' => $progressPercentage,
-            'currentMaterial' => $currentMaterial,
-        ];
-    }
-
     public function canAccessMaterial(User $user, Course $course, Material $material): bool
     {
-        $course->load(['sessions.materials']);
-
-        $materialIds = $course->materials()->pluck('materials.id');
-        $userProgress = $user->progress()
-            ->whereIn('material_id', $materialIds)
-            ->get()
-            ->keyBy('material_id');
-
-        $allMaterials = $this->getAllMaterials($course);
-
-        foreach ($allMaterials as $m) {
-            if ($m->id === $material->id) {
-                return true;
-            }
-            if (!isset($userProgress[$m->id]) || !$userProgress[$m->id]->is_completed) {
-                return false;
-            }
-        }
-
         return true;
     }
 
     public function getMaterialWithProgress(User $user, Course $course, Material $material): array
     {
-        $course->load(['sessions.materials']);
-        $material->load('session');
-
-        $materialIds = $course->materials()->pluck('materials.id');
-        $userProgress = $user->progress()
-            ->whereIn('material_id', $materialIds)
-            ->get()
-            ->keyBy('material_id');
-
-        $progressPercentage = $this->calculateProgressPercentage($materialIds->count(), $userProgress);
-
+        $course->load(['sessions.materials.subMaterials']);
         return [
             'course' => $course,
             'material' => $material,
-            'userProgress' => $userProgress,
-            'progressPercentage' => $progressPercentage,
-            'isCompleted' => isset($userProgress[$material->id]) && $userProgress[$material->id]->is_completed,
+            'userProgress' => collect(),
+            'progressPercentage' => 0,
+            'isCompleted' => false,
         ];
     }
 
@@ -131,36 +174,43 @@ class MemberCourseService
         );
     }
 
-    private function calculateProgressPercentage(int $totalMaterials, $userProgress): int
+    private function getTotalSubMaterials(Course $course): int
     {
-        $completedMaterials = $userProgress->where('is_completed', true)->count();
-
-        return $totalMaterials > 0
-            ? round(($completedMaterials / $totalMaterials) * 100)
-            : 0;
+        return SubMaterial::whereHas('material.session', function ($q) use ($course) {
+            $q->where('course_id', $course->id);
+        })->count();
     }
 
-    private function getAllMaterials(Course $course): array
+    private function getAllSubMaterialIds(Course $course)
     {
-        $allMaterials = [];
+        return SubMaterial::whereHas('material.session', function ($q) use ($course) {
+            $q->where('course_id', $course->id);
+        })->pluck('id');
+    }
+
+    private function getAllSubMaterials(Course $course): array
+    {
+        $all = [];
         foreach ($course->sessions as $session) {
             foreach ($session->materials as $material) {
-                $allMaterials[] = $material;
+                foreach ($material->subMaterials as $sub) {
+                    $all[] = $sub;
+                }
             }
         }
-        return $allMaterials;
+        return $all;
     }
 
-    private function findCurrentMaterial(Course $course, $userProgress): ?Material
+    private function findCurrentSubMaterial(Course $course, $userProgress): ?SubMaterial
     {
-        $allMaterials = $this->getAllMaterials($course);
+        $allSubMaterials = $this->getAllSubMaterials($course);
 
-        foreach ($allMaterials as $material) {
-            if (!isset($userProgress[$material->id]) || !$userProgress[$material->id]->is_completed) {
-                return $material;
+        foreach ($allSubMaterials as $sub) {
+            if (!isset($userProgress[$sub->id]) || !$userProgress[$sub->id]->is_completed) {
+                return $sub;
             }
         }
 
-        return count($allMaterials) > 0 ? end($allMaterials) : null;
+        return count($allSubMaterials) > 0 ? end($allSubMaterials) : null;
     }
 }

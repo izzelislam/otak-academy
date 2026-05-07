@@ -44,7 +44,7 @@ class ClassController extends Controller
         $user = auth()->user();
         $isEnrolled = $user->courses()->where('courses.id', $course->id)->exists();
 
-        $course->load(['sessions.materials']);
+        $course->load(['sessions.materials.subMaterials']);
         $course->loadCount(['sessions', 'enrolledUsers']);
 
         return Inertia::render('Member/Classes/Show', [

@@ -25,6 +25,7 @@ class UserProgress extends Model
     protected $fillable = [
         'user_id',
         'material_id',
+        'sub_material_id',
         'is_completed',
         'completed_at',
     ];
@@ -56,5 +57,10 @@ class UserProgress extends Model
     public function material(): BelongsTo
     {
         return $this->belongsTo(Material::class);
+    }
+
+    public function subMaterial(): BelongsTo
+    {
+        return $this->belongsTo(SubMaterial::class);
     }
 }

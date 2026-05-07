@@ -2,12 +2,19 @@ import AdminLayout from '@/Layouts/AdminLayout';
 import Button, { IconButton } from '@/Components/Button';
 import { BackLink } from '@/Components/Admin/FormCard';
 import { Head, Link, router } from '@inertiajs/react';
+import { useState } from 'react';
 
 export default function CourseShow({ course }) {
     const typeIcons = { video: '🎬', text: '📝', pdf: '📄', ebook: '📚', gmeet: '🎥', document: '📎' };
     const firstSession = course.sessions?.[0];
     const allMaterials = course.sessions?.flatMap(s => s.materials || []) || [];
-    const handleDeleteMaterial = (sessionId, materialId) => confirm('Hapus materi ini?') && router.delete(route('admin.courses.sessions.materials.destroy', [course.id, sessionId, materialId]));
+    const totalSubMaterials = allMaterials.reduce((acc, m) => acc + (m.sub_materials?.length || 0), 0);
+
+    const [expanded, setExpanded] = useState({});
+    const toggle = (id) => setExpanded(prev => ({ ...prev, [id]: !prev[id] }));
+
+    const handleDeleteMaterial = (sessionId, materialId) => confirm('Hapus materi ini beserta semua sub-materinya?') && router.delete(route('admin.courses.sessions.materials.destroy', [course.id, sessionId, materialId]));
+    const handleDeleteSubMaterial = (materialId, subMaterialId) => confirm('Hapus sub-materi ini?') && router.delete(route('admin.courses.materials.sub-materials.destroy', [course.id, materialId, subMaterialId]));
 
     return (
         <AdminLayout title={course.title}>
@@ -56,6 +63,7 @@ export default function CourseShow({ course }) {
                     <div className="space-y-2">
                         {[
                             { label: 'Materi', value: allMaterials.length },
+                            { label: 'Sub-Materi', value: totalSubMaterials },
                             { label: 'Enrolled', value: course.enrolled_users_count || 0 },
                             { label: 'Codes', value: course.redeem_codes_count || 0 },
                         ].map(stat => (
@@ -79,23 +87,67 @@ export default function CourseShow({ course }) {
                 </div>
                 <div className="p-4">
                     {allMaterials.length > 0 ? (
-                        <div className="space-y-1.5">
+                        <div className="space-y-2">
                             {allMaterials.map((material, index) => (
-                                <div key={material.id} className="flex items-center justify-between bg-gray-50 dark:bg-slate-800/50 p-3 rounded-lg border border-gray-100 dark:border-slate-800">
-                                    <div className="flex items-center gap-3">
-                                        <span className="w-7 h-7 rounded-full bg-[#10a37f]/10 dark:bg-[#10a37f]/20 flex items-center justify-center text-xs font-bold text-[#10a37f]">{index + 1}</span>
-                                        <span>{typeIcons[material.type] || '📎'}</span>
-                                        <span className="text-sm font-medium text-gray-900 dark:text-white">{material.title}</span>
-                                        <span className="px-2 py-0.5 text-xs bg-gray-200 dark:bg-slate-700 text-gray-600 dark:text-slate-300 rounded-full">{material.type}</span>
+                                <div key={material.id} className="border border-gray-200 dark:border-slate-800 rounded-lg overflow-hidden">
+                                    <div
+                                        className="flex items-center justify-between p-3 bg-gray-50 dark:bg-slate-800/50 cursor-pointer hover:bg-gray-100 dark:hover:bg-slate-800"
+                                        onClick={() => toggle(material.id)}
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <span className="w-7 h-7 rounded-full bg-[#10a37f]/10 dark:bg-[#10a37f]/20 flex items-center justify-center text-xs font-bold text-[#10a37f]">{index + 1}</span>
+                                            <span className="text-sm font-medium text-gray-900 dark:text-white">{material.title}</span>
+                                            <span className="text-xs text-gray-500 dark:text-slate-400">({material.sub_materials?.length || 0} sub-materi)</span>
+                                        </div>
+                                        <div className="flex items-center gap-1">
+                                            <Link
+                                                href={route('admin.courses.materials.sub-materials.create', [course.id, material.id])}
+                                                onClick={e => e.stopPropagation()}
+                                                className="px-2 py-1 text-xs text-[#10a37f] hover:bg-[#10a37f]/10 rounded font-medium"
+                                            >
+                                                + Sub-Materi
+                                            </Link>
+                                            <IconButton as={Link} href={route('admin.courses.sessions.materials.edit', [course.id, firstSession?.id, material.id])} onClick={e => e.stopPropagation()}>
+                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                                            </IconButton>
+                                            <IconButton variant="danger" onClick={e => { e.stopPropagation(); handleDeleteMaterial(firstSession?.id, material.id); }}>
+                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                            </IconButton>
+                                            <svg className={`w-4 h-4 text-gray-400 dark:text-slate-500 transition-transform ${expanded[material.id] ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" /></svg>
+                                        </div>
                                     </div>
-                                    <div className="flex items-center gap-1">
-                                        <IconButton as={Link} href={route('admin.courses.sessions.materials.edit', [course.id, firstSession?.id, material.id])}>
-                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
-                                        </IconButton>
-                                        <IconButton variant="danger" onClick={() => handleDeleteMaterial(firstSession?.id, material.id)}>
-                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                                        </IconButton>
-                                    </div>
+
+                                    {expanded[material.id] && (
+                                        <div className="border-t border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-3">
+                                            {material.sub_materials?.length > 0 ? (
+                                                <div className="space-y-1.5">
+                                                    {material.sub_materials.map((sub, subIndex) => (
+                                                        <div key={sub.id} className="flex items-center justify-between p-2.5 rounded-lg bg-gray-50 dark:bg-slate-800/50 border border-gray-100 dark:border-slate-800">
+                                                            <div className="flex items-center gap-2.5">
+                                                                <span className="text-xs text-gray-400 dark:text-slate-500 w-5 text-center">{subIndex + 1}.</span>
+                                                                <span>{typeIcons[sub.type] || '📎'}</span>
+                                                                <span className="text-sm text-gray-900 dark:text-white">{sub.title}</span>
+                                                                <span className="px-1.5 py-0.5 text-[10px] bg-gray-200 dark:bg-slate-700 text-gray-600 dark:text-slate-300 rounded-full uppercase font-medium">{sub.type}</span>
+                                                            </div>
+                                                            <div className="flex items-center gap-1">
+                                                                <IconButton as={Link} href={route('admin.courses.materials.sub-materials.edit', [course.id, material.id, sub.id])}>
+                                                                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                                                                </IconButton>
+                                                                <IconButton variant="danger" onClick={() => handleDeleteSubMaterial(material.id, sub.id)}>
+                                                                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                                                </IconButton>
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            ) : (
+                                                <p className="text-center py-4 text-xs text-gray-500 dark:text-slate-400">
+                                                    Belum ada sub-materi.{' '}
+                                                    <Link href={route('admin.courses.materials.sub-materials.create', [course.id, material.id])} className="text-[#10a37f] hover:underline">Tambah</Link>
+                                                </p>
+                                            )}
+                                        </div>
+                                    )}
                                 </div>
                             ))}
                         </div>

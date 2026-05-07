@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Member;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\Material;
+use App\Models\SubMaterial;
 use App\Services\MemberCourseService;
 use Inertia\Inertia;
 
@@ -61,6 +62,33 @@ class CourseController extends Controller
         $this->courseService->markMaterialComplete($user, $material);
 
         return redirect()->back()->with('success', 'Material marked as complete!');
+    }
+
+    public function showSubMaterial(Course $course, SubMaterial $subMaterial)
+    {
+        $user = auth()->user();
+
+        $this->courseService->checkAccess($user, $course);
+
+        $canAccess = $this->courseService->canAccessSubMaterial($user, $course, $subMaterial);
+        if (!$canAccess) {
+            return redirect()->route('member.courses.show', $course->id)
+                ->with('error', 'Selesaikan sub-materi sebelumnya terlebih dahulu.');
+        }
+
+        $data = $this->courseService->getSubMaterialWithProgress($user, $course, $subMaterial);
+
+        return Inertia::render('Member/Course/Show', $data);
+    }
+
+    public function completeSubMaterial(Course $course, SubMaterial $subMaterial)
+    {
+        $user = auth()->user();
+
+        $this->courseService->checkAccess($user, $course);
+        $this->courseService->markSubMaterialComplete($user, $subMaterial);
+
+        return redirect()->back()->with('success', 'Sub-materi selesai!');
     }
 
     public function complete(Course $course)
