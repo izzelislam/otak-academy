@@ -122,7 +122,7 @@ export default function Navbar({ auth = {} }) {
                             Blog
                         </Link>
                         <Link
-                            href={route('member.classes.index')}
+                            href={route('kelas.index')}
                             className="px-4 py-2 text-[14px] font-medium text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white transition-colors"
                         >
                             Kelas
@@ -233,7 +233,7 @@ export default function Navbar({ auth = {} }) {
                                 Blog
                             </Link>
                             <Link
-                                href={route('member.classes.index')}
+                                href={route('kelas.index')}
                                 className="text-base font-medium text-gray-900 dark:text-white hover:text-[#10a37f] dark:hover:text-[#10a37f]"
                                 onClick={() => setMobileMenuOpen(false)}
                             >

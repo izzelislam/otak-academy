@@ -521,7 +521,7 @@ export default function Welcome({ auth, courses = [] }) {
                                     </p>
                                 </div>
                                 <Link
-                                    href={route('member.classes.index')}
+                                    href={route('kelas.index')}
                                     className="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 text-[14px] font-medium text-gray-700 hover:text-gray-900 border border-gray-200 hover:border-gray-300 dark:text-white/80 dark:hover:text-white dark:border-white/10 dark:hover:border-white/20 rounded-xl transition-colors"
                                 >
                                     Lihat Semua Kelas
@@ -533,7 +533,7 @@ export default function Welcome({ auth, courses = [] }) {
                                 {courses.map((course) => (
                                     <Link
                                         key={course.id}
-                                        href={auth.user ? route('member.classes.show', course.id) : route('register')}
+                                        href={route('kelas.show', course.slug)}
                                         className="group block rounded-2xl border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-white/[0.02] overflow-hidden hover:border-[#10a37f]/30 dark:hover:border-[#10a37f]/30 transition-all hover:shadow-lg hover:shadow-[#10a37f]/5"
                                     >
                                         <div className="aspect-video bg-gray-100 dark:bg-white/[0.04] relative overflow-hidden">
@@ -579,7 +579,7 @@ export default function Welcome({ auth, courses = [] }) {
 
                             <div className="mt-8 text-center sm:hidden">
                                 <Link
-                                    href={route('member.classes.index')}
+                                    href={route('kelas.index')}
                                     className="inline-flex items-center gap-2 px-5 py-2.5 text-[14px] font-medium text-gray-700 hover:text-gray-900 border border-gray-200 hover:border-gray-300 dark:text-white/80 dark:hover:text-white dark:border-white/10 dark:hover:border-white/20 rounded-xl transition-colors"
                                 >
                                     Lihat Semua Kelas

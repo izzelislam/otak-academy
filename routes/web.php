@@ -24,6 +24,7 @@ use App\Http\Controllers\Admin\PaymentController as AdminPaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SecureDownloadController;
 use Illuminate\Foundation\Application;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -50,6 +51,38 @@ Route::prefix('blog')->name('blog.')->group(function () {
     Route::get('/category/{slug}', [BlogController::class, 'category'])->name('category');
     Route::get('/{slug}', [BlogController::class, 'show'])->name('show');
 });
+
+// Public Course/Kelas Routes
+Route::get('/kelas', function (Request $request) {
+    $query = \App\Models\Course::where('is_published', true)
+        ->withCount(['sessions', 'enrolledUsers']);
+
+    $type = $request->input('type');
+    if ($type === 'free') {
+        $query->where('access_type', 'free');
+    } elseif ($type === 'premium') {
+        $query->where('access_type', 'premium');
+    }
+
+    $courses = $query->orderBy('created_at', 'desc')->paginate(12);
+
+    return Inertia::render('Courses/Index', [
+        'courses' => $courses,
+        'currentType' => $type,
+    ]);
+})->name('kelas.index');
+
+Route::get('/kelas/{course:slug}', function (\App\Models\Course $course) {
+    if (!$course->is_published) {
+        abort(404);
+    }
+    $course->load(['sessions.materials.subMaterials']);
+    $course->loadCount(['sessions', 'enrolledUsers']);
+
+    return Inertia::render('Courses/Show', [
+        'course' => $course,
+    ]);
+})->name('kelas.show');
 
 // Public Asset Routes
 Route::prefix('assets')->name('assets.')->group(function () {
