@@ -163,18 +163,46 @@ export default function CoursesIndex({ courses, currentType, auth }) {
 
                 <section className="public-page-header border-b border-gray-200 dark:border-white/[0.06]">
                     <div className="public-container">
-                        <div className="text-center max-w-2xl mx-auto">
+                        <div className="text-center max-w-3xl mx-auto">
+                            <div className="inline-flex items-center gap-2 rounded-full border border-red-200 dark:border-red-500/20 bg-red-50 dark:bg-red-500/10 px-3 py-1 text-[12px] font-medium text-red-600 dark:text-red-400 mb-5">
+                                <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                                Live Class — Bukan Rekaman
+                            </div>
                             <h1 className="text-[40px] sm:text-[56px] font-semibold tracking-[-0.02em] leading-[1.1]">
-                                Kelas Online
+                                Kelas Live Online
                             </h1>
-                            <p className="mt-4 text-[16px] sm:text-[18px] text-gray-600 dark:text-white/50">
-                                Pelajari skill baru lewat kelas terstruktur, praktikal, dan relevan dengan kebutuhan industri
+                            <p className="mt-4 text-[16px] sm:text-[18px] text-gray-600 dark:text-white/50 leading-relaxed">
+                                Bukan kelas rekaman biasa. Ini kelas live interaktif via Zoom & YouTube — langsung praktik bareng instruktur, tanya jawab real-time, dan dapat feedback langsung.
                             </p>
-                            <div className="mt-5 flex flex-wrap justify-center gap-2 text-[12px] font-medium">
-                                <span className="rounded-full bg-gray-100 px-3 py-1 text-gray-600 dark:bg-white/5 dark:text-white/50">Web Development</span>
-                                <span className="rounded-full bg-gray-100 px-3 py-1 text-gray-600 dark:bg-white/5 dark:text-white/50">Programming</span>
-                                <span className="rounded-full bg-gray-100 px-3 py-1 text-gray-600 dark:bg-white/5 dark:text-white/50">Design</span>
-                                <span className="rounded-full bg-gray-100 px-3 py-1 text-gray-600 dark:bg-white/5 dark:text-white/50">AI & Automation</span>
+
+                            <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4 text-left max-w-2xl mx-auto">
+                                <div className="flex items-start gap-3 p-3 rounded-xl bg-gray-50 dark:bg-white/[0.03] border border-gray-100 dark:border-white/[0.06]">
+                                    <div className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-500/20 flex items-center justify-center flex-shrink-0">
+                                        <svg className="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                                    </div>
+                                    <div>
+                                        <p className="text-[13px] font-semibold text-gray-900 dark:text-white">Live via Zoom</p>
+                                        <p className="text-[11px] text-gray-500 dark:text-white/40 mt-0.5">Interaksi langsung, bukan nonton sendiri</p>
+                                    </div>
+                                </div>
+                                <div className="flex items-start gap-3 p-3 rounded-xl bg-gray-50 dark:bg-white/[0.03] border border-gray-100 dark:border-white/[0.06]">
+                                    <div className="w-8 h-8 rounded-lg bg-[#10a37f]/10 flex items-center justify-center flex-shrink-0">
+                                        <svg className="w-4 h-4 text-[#10a37f]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
+                                    </div>
+                                    <div>
+                                        <p className="text-[13px] font-semibold text-gray-900 dark:text-white">Langsung Praktik</p>
+                                        <p className="text-[11px] text-gray-500 dark:text-white/40 mt-0.5">Coding bareng, bukan cuma teori</p>
+                                    </div>
+                                </div>
+                                <div className="flex items-start gap-3 p-3 rounded-xl bg-gray-50 dark:bg-white/[0.03] border border-gray-100 dark:border-white/[0.06]">
+                                    <div className="w-8 h-8 rounded-lg bg-purple-100 dark:bg-purple-500/20 flex items-center justify-center flex-shrink-0">
+                                        <svg className="w-4 h-4 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
+                                    </div>
+                                    <div>
+                                        <p className="text-[13px] font-semibold text-gray-900 dark:text-white">Tanya Jawab</p>
+                                        <p className="text-[11px] text-gray-500 dark:text-white/40 mt-0.5">Stuck? Langsung tanya instruktur</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
