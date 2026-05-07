@@ -1,21 +1,25 @@
 import AdminLayout from '@/Layouts/AdminLayout';
 import { FormCard, FormInput, FormTextarea, FormCheckbox, FormActions, BackLink } from '@/Components/Admin/FormCard';
+import { FileDropzone } from '@/Components/Admin/FileDropzone';
 import { Head, useForm } from '@inertiajs/react';
 
 export default function CourseEdit({ course }) {
-    const { data, setData, put, processing, errors } = useForm({
+    const { data, setData, post, processing, errors } = useForm({
         title: course.title || '',
         slug: course.slug || '',
         description: course.description || '',
-        thumbnail: course.thumbnail || '',
+        thumbnail: null,
         is_published: course.is_published || false,
         access_type: course.access_type || 'free',
         price: course.price || 0,
+        _method: 'PUT',
     });
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        put(route('admin.courses.update', course.id));
+        post(route('admin.courses.update', course.id), {
+            forceFormData: true,
+        });
     };
 
     return (
@@ -53,14 +57,14 @@ export default function CourseEdit({ course }) {
                             placeholder="Jelaskan apa yang akan dipelajari..."
                             error={errors.description}
                         />
-                        <FormInput
-                            label="Thumbnail URL"
-                            id="thumbnail"
-                            type="url"
+                        <FileDropzone
+                            label="Thumbnail"
+                            accept={{'image/*': ['.jpg', '.jpeg', '.png', '.webp']}}
+                            onDrop={(file) => setData('thumbnail', file)}
                             value={data.thumbnail}
-                            onChange={(e) => setData('thumbnail', e.target.value)}
-                            placeholder="https://example.com/image.jpg"
+                            currentUrl={course.thumbnail}
                             error={errors.thumbnail}
+                            hint="Format: JPG, PNG, WebP. Maks 2MB. Kosongkan jika tidak ingin mengubah."
                         />
 
                         {/* Access Type */}

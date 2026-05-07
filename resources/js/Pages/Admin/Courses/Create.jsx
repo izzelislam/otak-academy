@@ -1,12 +1,13 @@
 import AdminLayout from '@/Layouts/AdminLayout';
 import { FormCard, FormInput, FormTextarea, FormCheckbox, FormActions, BackLink } from '@/Components/Admin/FormCard';
+import { FileDropzone } from '@/Components/Admin/FileDropzone';
 import { Head, useForm } from '@inertiajs/react';
 
 export default function CourseCreate() {
     const { data, setData, post, processing, errors } = useForm({
         title: '',
         description: '',
-        thumbnail: '',
+        thumbnail: null,
         is_published: false,
         access_type: 'free',
         price: 0,
@@ -14,7 +15,9 @@ export default function CourseCreate() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        post(route('admin.courses.store'));
+        post(route('admin.courses.store'), {
+            forceFormData: true,
+        });
     };
 
     return (
@@ -45,14 +48,13 @@ export default function CourseCreate() {
                             placeholder="Jelaskan apa yang akan dipelajari siswa..."
                             error={errors.description}
                         />
-                        <FormInput
-                            label="Thumbnail URL"
-                            id="thumbnail"
-                            type="url"
+                        <FileDropzone
+                            label="Thumbnail"
+                            accept={{'image/*': ['.jpg', '.jpeg', '.png', '.webp']}}
+                            onDrop={(file) => setData('thumbnail', file)}
                             value={data.thumbnail}
-                            onChange={(e) => setData('thumbnail', e.target.value)}
-                            placeholder="https://example.com/image.jpg"
                             error={errors.thumbnail}
+                            hint="Format: JPG, PNG, WebP. Maks 2MB."
                         />
 
                         {/* Access Type */}

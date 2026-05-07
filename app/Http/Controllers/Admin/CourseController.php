@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Course;
+use App\Services\MediaService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -38,19 +39,27 @@ class CourseController extends Controller
      * Store a newly created course in storage.
      * Slug is auto-generated from title.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request, MediaService $mediaService): RedirectResponse
     {
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
-            'thumbnail' => ['nullable', 'string', 'max:255'],
+            'thumbnail' => ['nullable', 'file', 'image', 'max:2048'],
             'is_published' => ['boolean'],
             'access_type' => ['required', 'in:free,premium'],
             'price' => ['required_if:access_type,premium', 'integer', 'min:0'],
         ]);
 
-        // Slug is auto-generated in the Course model boot method
-        $course = Course::create($validated);
+        $thumbnailUrl = null;
+        if ($request->hasFile('thumbnail')) {
+            $media = $mediaService->uploadMedia($request->file('thumbnail'));
+            $thumbnailUrl = $mediaService->getMediaUrl($media);
+        }
+
+        $course = Course::create([
+            ...\Arr::except($validated, ['thumbnail']),
+            'thumbnail' => $thumbnailUrl,
+        ]);
 
         return redirect()
             ->route('admin.courses.show', $course)
@@ -92,7 +101,7 @@ class CourseController extends Controller
     /**
      * Update the specified course in storage.
      */
-    public function update(Request $request, Course $course): RedirectResponse
+    public function update(Request $request, Course $course, MediaService $mediaService): RedirectResponse
     {
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
@@ -103,13 +112,20 @@ class CourseController extends Controller
                 Rule::unique('courses')->ignore($course->id),
             ],
             'description' => ['nullable', 'string'],
-            'thumbnail' => ['nullable', 'string', 'max:255'],
+            'thumbnail' => ['nullable', 'file', 'image', 'max:2048'],
             'is_published' => ['boolean'],
             'access_type' => ['required', 'in:free,premium'],
             'price' => ['required_if:access_type,premium', 'integer', 'min:0'],
         ]);
 
-        $course->update($validated);
+        $updateData = \Arr::except($validated, ['thumbnail']);
+
+        if ($request->hasFile('thumbnail')) {
+            $media = $mediaService->uploadMedia($request->file('thumbnail'), $course);
+            $updateData['thumbnail'] = $mediaService->getMediaUrl($media);
+        }
+
+        $course->update($updateData);
 
         return redirect()
             ->route('admin.courses.show', $course)
