@@ -1,6 +1,7 @@
 import AdminLayout from '@/Layouts/AdminLayout';
-import { FormCard, FormInput, FormTextarea, FormCheckbox, FormActions, BackLink } from '@/Components/Admin/FormCard';
+import { FormCard, FormInput, FormCheckbox, FormActions, BackLink } from '@/Components/Admin/FormCard';
 import { FileDropzone } from '@/Components/Admin/FileDropzone';
+import RichTextEditor from '@/Components/Admin/RichTextEditor';
 import { Head, useForm } from '@inertiajs/react';
 
 export default function CourseCreate() {
@@ -40,11 +41,10 @@ export default function CourseCreate() {
                             required
                             autoFocus
                         />
-                        <FormTextarea
+                        <RichTextEditor
                             label="Deskripsi"
-                            id="description"
                             value={data.description}
-                            onChange={(e) => setData('description', e.target.value)}
+                            onChange={(val) => setData('description', val)}
                             placeholder="Jelaskan apa yang akan dipelajari siswa..."
                             error={errors.description}
                         />
