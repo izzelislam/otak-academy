@@ -27,7 +27,7 @@ export default function CourseShow({ course, auth }) {
                         <div className="grid lg:grid-cols-[1fr_340px] gap-10">
                             <div>
                                 {course.thumbnail && (
-                                    <div className="aspect-video rounded-2xl overflow-hidden mb-8 border border-gray-200 dark:border-white/[0.08]">
+                                    <div className="aspect-square rounded-2xl overflow-hidden mb-8 border border-gray-200 dark:border-white/[0.08]">
                                         <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover" />
                                     </div>
                                 )}
@@ -110,17 +110,26 @@ export default function CourseShow({ course, auth }) {
                                         {auth?.user ? (
                                             <Link
                                                 href={route('member.classes.show', course.id)}
-                                                className="block w-full text-center px-5 py-3 text-[14px] font-medium text-white bg-[#10a37f] hover:bg-[#0d8b6c] rounded-xl transition-colors"
+                                                className={`block w-full text-center px-5 py-3 text-[14px] font-medium text-white rounded-xl transition-colors ${
+                                                    course.access_type === 'premium' 
+                                                        ? 'bg-amber-500 hover:bg-amber-600' 
+                                                        : 'bg-[#10a37f] hover:bg-[#0d8b6c]'
+                                                }`}
                                             >
-                                                {course.access_type === 'premium' ? `Beli Kelas — Rp ${new Intl.NumberFormat('id-ID').format(course.price)}` : 'Mulai Belajar'}
+                                                {course.access_type === 'premium' ? `Beli Kelas — Rp ${new Intl.NumberFormat('id-ID').format(course.price)}` : 'Mulai Belajar Gratis'}
                                             </Link>
                                         ) : (
                                             <Link
-                                                href={route('register')}
+                                                href={route('login')}
                                                 className="block w-full text-center px-5 py-3 text-[14px] font-medium text-white bg-[#10a37f] hover:bg-[#0d8b6c] rounded-xl transition-colors"
                                             >
-                                                Daftar untuk Akses
+                                                Login untuk Akses Kelas
                                             </Link>
+                                        )}
+                                        {!auth?.user && (
+                                            <p className="mt-3 text-center text-[12px] text-gray-400 dark:text-white/30">
+                                                Belum punya akun? <Link href={route('register')} className="text-[#10a37f] hover:underline">Daftar gratis</Link>
+                                            </p>
                                         )}
                                     </div>
                                 </div>
