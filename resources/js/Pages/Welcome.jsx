@@ -74,7 +74,7 @@ const features = [
     },
 ];
 
-export default function Welcome({ auth }) {
+export default function Welcome({ auth, courses = [] }) {
     const canonical = typeof window !== 'undefined' ? `${window.location.origin}/` : '/';
 
     return (
@@ -508,7 +508,88 @@ export default function Welcome({ auth }) {
                     </div>
                 </section>
 
-                {/* CTA Section - OpenAI Style */}
+                {courses.length > 0 && (
+                    <section className="relative public-section border-t border-gray-200 dark:border-white/[0.06]">
+                        <div className="public-container">
+                            <div className="flex items-end justify-between mb-10">
+                                <div>
+                                    <h2 className="text-[32px] sm:text-[40px] font-semibold text-gray-900 dark:text-white tracking-[-0.02em]">
+                                        Kelas Online
+                                    </h2>
+                                    <p className="mt-3 text-[16px] sm:text-[18px] text-gray-500 dark:text-white/40">
+                                        Pelajari skill baru lewat kelas terstruktur dan praktikal
+                                    </p>
+                                </div>
+                                <Link
+                                    href={route('member.classes.index')}
+                                    className="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 text-[14px] font-medium text-gray-700 hover:text-gray-900 border border-gray-200 hover:border-gray-300 dark:text-white/80 dark:hover:text-white dark:border-white/10 dark:hover:border-white/20 rounded-xl transition-colors"
+                                >
+                                    Lihat Semua Kelas
+                                    <ArrowRightIcon className="h-4 w-4" />
+                                </Link>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                                {courses.map((course) => (
+                                    <Link
+                                        key={course.id}
+                                        href={auth.user ? route('member.classes.show', course.id) : route('register')}
+                                        className="group block rounded-2xl border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-white/[0.02] overflow-hidden hover:border-[#10a37f]/30 dark:hover:border-[#10a37f]/30 transition-all hover:shadow-lg hover:shadow-[#10a37f]/5"
+                                    >
+                                        <div className="aspect-video bg-gray-100 dark:bg-white/[0.04] relative overflow-hidden">
+                                            {course.thumbnail ? (
+                                                <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                                            ) : (
+                                                <div className="w-full h-full flex items-center justify-center">
+                                                    <AcademicCapIcon className="w-12 h-12 text-gray-300 dark:text-white/20" />
+                                                </div>
+                                            )}
+                                            {course.access_type === 'premium' && (
+                                                <div className="absolute top-3 right-3 px-2.5 py-1 rounded-lg bg-amber-500/90 backdrop-blur-sm text-white text-[11px] font-semibold">
+                                                    Premium
+                                                </div>
+                                            )}
+                                        </div>
+                                        <div className="p-5">
+                                            <h3 className="text-[16px] font-semibold text-gray-900 dark:text-white line-clamp-2 group-hover:text-[#10a37f] transition-colors">
+                                                {course.title}
+                                            </h3>
+                                            {course.description && (
+                                                <div className="mt-2 text-[13px] text-gray-500 dark:text-white/40 line-clamp-2 [&>*]:m-0" dangerouslySetInnerHTML={{ __html: course.description }} />
+                                            )}
+                                            <div className="mt-4 flex items-center gap-4 text-[12px] text-gray-400 dark:text-white/30">
+                                                <span className="flex items-center gap-1">
+                                                    <BookOpenIcon className="w-3.5 h-3.5" />
+                                                    {course.sessions_count || 0} materi
+                                                </span>
+                                                <span className="flex items-center gap-1">
+                                                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                                                    {course.enrolled_users_count || 0} siswa
+                                                </span>
+                                            </div>
+                                            {course.access_type === 'premium' && course.price > 0 && (
+                                                <div className="mt-3 text-[15px] font-bold text-amber-600 dark:text-amber-400">
+                                                    Rp {new Intl.NumberFormat('id-ID').format(course.price)}
+                                                </div>
+                                            )}
+                                        </div>
+                                    </Link>
+                                ))}
+                            </div>
+
+                            <div className="mt-8 text-center sm:hidden">
+                                <Link
+                                    href={route('member.classes.index')}
+                                    className="inline-flex items-center gap-2 px-5 py-2.5 text-[14px] font-medium text-gray-700 hover:text-gray-900 border border-gray-200 hover:border-gray-300 dark:text-white/80 dark:hover:text-white dark:border-white/10 dark:hover:border-white/20 rounded-xl transition-colors"
+                                >
+                                    Lihat Semua Kelas
+                                    <ArrowRightIcon className="h-4 w-4" />
+                                </Link>
+                            </div>
+                        </div>
+                    </section>
+                )}
+
                 <section className="relative public-section">
                     <div className="public-container-sm">
                         <div className="relative rounded-2xl bg-gray-100 dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/[0.08] p-10 sm:p-16 overflow-hidden">

@@ -28,11 +28,18 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
+    $courses = \App\Models\Course::where('is_published', true)
+        ->withCount(['sessions', 'enrolledUsers'])
+        ->orderBy('created_at', 'desc')
+        ->take(6)
+        ->get();
+
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
+        'courses' => $courses,
     ]);
 });
 
