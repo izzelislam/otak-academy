@@ -18,7 +18,7 @@ class MaterialController extends Controller
     /**
      * Valid material types.
      */
-    protected const MATERIAL_TYPES = ['video', 'text', 'pdf', 'ebook', 'gmeet'];
+    protected const MATERIAL_TYPES = ['video', 'text', 'pdf', 'ebook', 'gmeet', 'document'];
 
     /**
      * Display a listing of materials for a session.
@@ -59,13 +59,10 @@ class MaterialController extends Controller
             'order_priority' => ['nullable', 'integer', 'min:0'],
         ];
 
-        // Conditional validation
         if ($request->hasFile('file')) {
             $rules['file'] = ['required', 'file', 'max:102400']; // 100MB max
-            $rules['content'] = ['nullable', 'string'];
-        } else {
-            $rules['content'] = ['required', 'string'];
         }
+        $rules['content'] = ['nullable', 'string'];
 
         $validated = $request->validate($rules);
 
@@ -95,7 +92,7 @@ class MaterialController extends Controller
             DB::commit();
 
             return redirect()
-                ->route('admin.courses.sessions.show', [$course, $session])
+                ->route('admin.courses.show', $course)
                 ->with('success', 'Material created successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -142,13 +139,8 @@ class MaterialController extends Controller
 
         if ($request->hasFile('file')) {
             $rules['file'] = ['required', 'file', 'max:102400'];
-            $rules['content'] = ['nullable', 'string'];
-        } else {
-            // content is required if it's text type or if no file is being uploaded AND no existing content (unless type changed).
-            // Simplification: just require content if it's not a file upload, but for existing materials, 
-            // the frontend might send the old URL in 'content'.
-            $rules['content'] = ['required', 'string'];
         }
+        $rules['content'] = ['nullable', 'string'];
 
         $validated = $request->validate($rules);
 
@@ -170,7 +162,7 @@ class MaterialController extends Controller
             DB::commit();
 
             return redirect()
-                ->route('admin.courses.sessions.show', [$course, $session])
+                ->route('admin.courses.show', $course)
                 ->with('success', 'Material updated successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -186,7 +178,7 @@ class MaterialController extends Controller
         $material->delete();
 
         return redirect()
-            ->route('admin.courses.sessions.show', [$course, $session])
+            ->route('admin.courses.show', $course)
             ->with('success', 'Material deleted successfully.');
     }
 
@@ -208,7 +200,7 @@ class MaterialController extends Controller
         }
 
         return redirect()
-            ->route('admin.courses.sessions.show', [$course, $session])
+            ->route('admin.courses.show', $course)
             ->with('success', 'Material order updated successfully.');
     }
 }
